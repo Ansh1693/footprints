@@ -1,0 +1,126 @@
+@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap");
+@import url(./card.css);
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.libre-font {
+  font-family: "Libre Baskerville", serif;
+}
+
+.custom-paragraph {
+  white-space: pre-line; /* Preserve line breaks (\n) and collapse multiple spaces */
+  margin-bottom: 1em; /* Add spacing between paragraphs */
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+
+    --primary: 220, 62%, 45%;
+    --primary-foreground: 219, 45%, 73%;
+
+    --secondary: 216, 100%, 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    
+    --tertiary: 216, 100%, 96%, 1;
+    --tertiary-foreground: 222.2 47.4% 11.2%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 215 20.2% 65.1%;
+
+    --radius: 0.5rem;
+  }
+
+  [data-theme='green'] {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --primary: 101 63% 45%;
+    --primary-foreground: 222.2 47.4% 1.2%;
+
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 216 34% 17%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+
+/* For WebKit-based browsers (Chrome, Safari) */
+
+::-webkit-scrollbar {
+  width: 0em;
+  /* Adjust this if you want to customize scrollbar width */
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  /* Change this to the color you want for the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  /* Change this to the color you want for the scrollbar thumb */
+  border-radius: 0.25em;
+  /* Add border-radius if you want rounded corners for the thumb */
+}
+
+
+/* gradient border */
+.gradient-border{
+  background: linear-gradient(162deg, #86A2D7 11.13%, #C3D0E9 90.11%);
+}
+
+.pin-parent{
+ padding: 2px;
+ @apply gradient-border rounded-full;
+}

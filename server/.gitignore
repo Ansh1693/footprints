@@ -1,0 +1,10 @@
+# Configs
+**.env
+**.DS_Store
++ .turbo
+
+# Libraries
+**/node_modules
+
+# Production
+**/build

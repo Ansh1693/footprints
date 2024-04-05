@@ -1,0 +1,17 @@
+.reddit-card {
+  background: linear-gradient(
+    174deg,
+    rgba(242, 192, 174, 0.4) 0%,
+    rgba(248, 224, 216, 0.74) 18.23%,
+    rgba(248, 216, 216, 0.03) 100%
+  );
+}
+
+.twitter-card {
+  background: linear-gradient(
+    174deg,
+    #ebf9ff 0%,
+    rgba(227, 246, 255, 0.51) 18.23%,
+    rgba(219, 244, 255, 0) 100%
+  );
+}

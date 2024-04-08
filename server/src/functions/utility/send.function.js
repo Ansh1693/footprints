@@ -16,7 +16,9 @@ export const sendOTP = async (email) => {
 		const subject = generateSubject('otp', { otp })
 		const template = generateTemplate('otp', { otp })
 
-		await sendEmail(email, subject, template)
+		// await sendEmail(email, subject, template)
+
+		console.log(otp)
 
 		return { otp }
 	} catch (error) {

@@ -67,12 +67,15 @@ export const googleCallback = async (state, code, { state: sessionState }) => {
 
 		if (checkUser.foundUser) {
 			const oldUser = await read({
-				profile_id
+				profile_id: checkUser.user.profile_id
 			});
 			user = { ...user, _id: checkUser.user._id, auth:{
 				...user.auth,
-				...oldUser[0].reddit._doc
+				...oldUser[0]?.auth?._doc
 			} }
+
+			console.log(user);
+			console.log(oldUser)
 
 			await update(user)
 
@@ -166,7 +169,7 @@ export const redditCallback = async (
 		profile_id: profile_id,
 		_id: checkedUser[0]._id,
 		auth: {
-			...checkedUser[0].auth._doc,
+			...checkedUser[0]?.auth?._doc,
 			reddit: {
 				reddit_id: data.id,
 				reddit_username: data.name,

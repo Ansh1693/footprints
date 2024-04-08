@@ -71,6 +71,7 @@ import user from './routes/user.route.js'
 import tag from './routes/tag.route.js'
 import utility from './routes/utility.route.js'
 import query from './routes/query.route.js'
+import connect from './routes/connect.route.js'
 
 app.register(auth, { prefix: '/auth' })
 app.register(blok, { prefix: '/blok' })
@@ -79,6 +80,7 @@ app.register(user, { prefix: '/user' })
 app.register(tag, { prefix: '/tag' })
 app.register(utility, { prefix: '/utility' })
 app.register(query, { prefix: '/query' })
+app.register(connect , {prefix: '/connect'})
 
 app.listen({ port: process.env.PORT || 3000, host: '0.0.0.0' }, (error) => {
 	if (error) {

@@ -41,6 +41,8 @@ export const update = async (userObject) => {
 	}
 }
 
+
+
 /**
  * A function that will delete a user
  *

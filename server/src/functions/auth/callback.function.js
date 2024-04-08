@@ -2,9 +2,12 @@ import { google as googleAPI } from 'googleapis'
 
 import { generateUsername } from '../utility/generate.function.js'
 import { checkEmail } from '../utility/check.function.js'
-import { create, update } from '../crud/user.function.js'
+import { create, read, update } from '../crud/user.function.js'
 
 import google from '../../utils/api/google.js'
+import Snoowrap from 'snoowrap'
+import redditAuth from '../../utils/api/reddit.js'
+import { User } from '../../utils/initializers/mongoose.initializer.js'
 
 /**
  * A function that handles the callback request for Google
@@ -59,11 +62,17 @@ export const googleCallback = async (state, code, { state: sessionState }) => {
 				profile_image: data.photos[0].url,
 			},
 		}
-
+		
 		const checkUser = await checkEmail(data.emailAddresses[0].value)
 
 		if (checkUser.foundUser) {
-			user = { ...user, _id: checkUser.user._id }
+			const oldUser = await read({
+				profile_id
+			});
+			user = { ...user, _id: checkUser.user._id, auth:{
+				...user.auth,
+				...oldUser[0].reddit._doc
+			} }
 
 			await update(user)
 
@@ -118,3 +127,72 @@ export const emailCallback = async (state, userObject) => {
 		throw error
 	}
 }
+
+export const redditCallback = async (
+	profile_id,
+	sessionState,
+	state,
+	code
+  ) => {
+	try {
+	  if (!state || !sessionState || !code)
+		throw new Error("You denied the app or your session expired!");
+  
+	  if (state !== sessionState) throw new Error("Stored tokens didn't match!");
+
+	  console.log(profile_id, "gg")
+  
+	  const client = await Snoowrap.fromAuthCode({
+		code: code,
+		userAgent: "Reddit client for Slipbox",
+		clientId: process.env.REDDIT_CLIENT_ID,
+		clientSecret: process.env.REDDIT_CLIENT_SECRET,
+		redirectUri: `${process.env.REDDIT_HOST}`,
+	  });
+
+  
+	  const redditUserClient = redditAuth(client.refreshToken);
+  
+	  const data = JSON.parse(JSON.stringify(await redditUserClient.getMe()));
+
+	//   console.log(data , "151");
+
+	const checkedUser = await read({
+		profile_id
+	});
+
+	
+	  let user = {
+		profile_id: profile_id,
+		_id: checkedUser[0]._id,
+		auth: {
+			...checkedUser[0].auth._doc,
+			reddit: {
+				reddit_id: data.id,
+				reddit_username: data.name,
+				tokens: {
+					access_token: client.accessToken,
+					refresh_token: client.refreshToken,
+				},
+			},
+		},
+		
+	}
+
+
+
+
+
+
+	if(checkedUser){
+		
+		await update(user);
+
+	}
+
+  
+	  return user;
+	} catch (error) {
+	  throw error;
+	}
+  };

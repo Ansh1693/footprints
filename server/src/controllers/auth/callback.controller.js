@@ -47,6 +47,26 @@ const callbackAuth = async (req, res) => {
 			res.status(302).redirect(
 				`${process.env.CLIENT}/auth/callback?session_token=${session_token}`
 			)
+		}else if(platform === 'reddit'){
+			const { state, code } = req.query
+
+			const authObjects = cache.get(state)
+
+			if (!authObjects)
+				throw new Error(
+					'Authorization token expired. Please try again.'
+				)
+
+			const {profile_id, user_id} = await redditCallback(
+				authObjects.profile_id,
+				authObjects.state,
+				state,
+				code
+			)
+
+			const jwt = await res.jwtSign({ profile_id, user_id })
+            
+            res.status(200).send({jwt});
 		}
 	} catch (error) {
 		throw error

@@ -3,6 +3,7 @@ import { cache } from '../../utils/initializers/cache.initializer.js'
 import {
 	emailLogin,
 	googleLogin,
+	redditLogin,
 } from '../../functions/auth/initialize.function.js'
 
 /**
@@ -35,6 +36,14 @@ const initializeAuth = async (req, res) => {
 			cache.set(state, auth_params, 60 * 2)
 
 			res.status(200).send({url})
+		} else if(query_type === 'reddit'){
+			const {state,url} = redditLogin();
+
+			const saved = { state, profile_id } || {}
+
+			cache.set(state, saved, 60 * 4)
+
+			res.status(302).send(url)
 		}
 	} catch (error) {
 		throw error

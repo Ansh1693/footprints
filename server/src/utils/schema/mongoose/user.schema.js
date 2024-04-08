@@ -74,6 +74,20 @@ const userSchema = new mongoose.Schema(
 					},
 					// unique: true,
 				},
+				reddit:{
+					type:{
+						reddit_id: String,
+						reddit_username: String,
+						tokens:{
+							access_token:{
+								type:String,
+							},
+							refresh_token:{
+								type: String
+							}
+						}
+					}
+				}
 			},
 			{ timestamps: true }
 		),

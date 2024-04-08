@@ -21,7 +21,7 @@ export const uploadImage = async (file, profile_id) => {
 
 		const fileKey = `${profile_id}_${file.filename.replace(/\s/g, '_')}`
 
-		await S3.send(
+		const h2 = await S3.send(
 			new PutObjectCommand({
 				Bucket: process.env.CLOUDFLARE_BUCKET,
 				Key: fileKey,
@@ -38,8 +38,10 @@ export const uploadImage = async (file, profile_id) => {
 			})
 		)
 
+		console.log(h2);
+
 		return {
-			url: `${process.env.CLOUDFLARE_CDN}/${process.env.CLOUDFLARE_BUCKET}/${fileKey}`,
+			url: `${process.env.CLOUDFLARE_CDN}/${fileKey}`,
 		}
 	} catch (error) {
 		throw error
@@ -60,7 +62,7 @@ export const uploadAudio = async (file, profile_id) => {
 
 		const fileKey = `${profile_id}_${file.filename.replace(/\s/g, '_')}`
 
-		await S3.send(
+		const h2 = await S3.send(
 			new PutObjectCommand({
 				Bucket: process.env.CLOUDFLARE_BUCKET,
 				Key: fileKey,
@@ -74,8 +76,10 @@ export const uploadAudio = async (file, profile_id) => {
 			})
 		)
 
+		console.log(h2);
+
 		return {
-			url: `${process.env.CLOUDFLARE_CDN}/${process.env.CLOUDFLARE_BUCKET}/${fileKey}`,
+			url: `${process.env.CLOUDFLARE_URI}/${fileKey}`,
 		}
 	} catch (error) {
 		throw error

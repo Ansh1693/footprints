@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(cuid())
+  email          String          @unique
+  name           String
+  description    String?
+  username       String          @unique
+  profileId      String          @unique
+  password       String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  UserMetadataId String          @unique
+  UserMetadata   UserMetadata    @relation(fields: [UserMetadataId], references: [id])
+  UserAuthId     String          @unique
+  UserAuth       UserAuth        @relation(fields: [UserAuthId], references: [id])
+  Document       Document[]
+  Comments       Comments[]
+  Tags           Tag[]
+  Blok           Blok[]
+  BlokFollowers  BlokFollowers[]
+}
+
+model UserMetadata {
+  id            String   @id @default(cuid())
+  User          User?
+  profileImage  String?
+  profileBanner String?
+  status        Status
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model UserAuth {
+  id         String      @id @default(cuid())
+  User       User?
+  GoogleAuth GoogleAuth?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  RedditAuth RedditAuth?
+}
+
+model GoogleAuth {
+  id           String   @id @default(cuid())
+  UserAuthId   String   @unique
+  UserAuth     UserAuth @relation(fields: [UserAuthId], references: [id])
+  accessToken  String?
+  refreshToken String?
+  googleId     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model RedditAuth {
+  id             String   @id @default(cuid())
+  UserAuthId     String   @unique
+  UserAuth       UserAuth @relation(fields: [UserAuthId], references: [id])
+  accessToken    String?
+  refreshToken   String?
+  redditId       String
+  redditUsername String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Document {
+  id               String            @id @default(cuid())
+  userId           String
+  User             User              @relation(fields: [userId], references: [id])
+  heading          String?
+  body             String?
+  Status           Status
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  Comments         Comments[]
+  DocumentMetadata DocumentMetadata?
+  RedditData       RedditData?
+  PinterestData    PinterestData?
+  TagsDocument     TagsDocument[]
+  BloksDocument    BloksDocument[]
+}
+
+model DocumentMetadata {
+  id           String   @id @default(cuid())
+  documentId   String   @unique
+  Document     Document @relation(fields: [documentId], references: [id])
+  documentType String
+  bodyImageUrl String?
+  sourceUrl    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RedditData {
+  id         String   @id @default(cuid())
+  username   String?
+  postId     String?
+  documentId String   @unique
+  Document   Document @relation(fields: [documentId], references: [id])
+}
+
+model PinterestData {
+  id         String   @id @default(cuid())
+  username   String?
+  postId     String?
+  documentId String   @unique
+  Document   Document @relation(fields: [documentId], references: [id])
+}
+
+model Comments {
+  id         String   @id @default(cuid())
+  userId     String
+  User       User     @relation(fields: [userId], references: [id])
+  documentId String
+  Document   Document @relation(fields: [documentId], references: [id])
+  body       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Tag {
+  id           String         @id @default(cuid())
+  tagName      String
+  userId       String
+  User         User           @relation(fields: [userId], references: [id])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  TagsDocument TagsDocument[]
+}
+
+model TagsDocument {
+  tagId      String
+  Tag        Tag      @relation(fields: [tagId], references: [id])
+  documentId String
+  Document   Document @relation(fields: [documentId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@id([tagId, documentId])
+}
+
+model Blok {
+  id            String          @id @default(cuid())
+  userId        String
+  User          User            @relation(fields: [userId], references: [id])
+  blokName      String
+  description   String?
+  status        Status
+  BloksDocument BloksDocument[]
+  BlokMetadata  BlokMetadata?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  BlokFollowers BlokFollowers[]
+}
+
+model BloksDocument {
+  blokId     String
+  Blok       Blok     @relation(fields: [blokId], references: [id])
+  documentId String
+  Document   Document @relation(fields: [documentId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@id([blokId, documentId])
+}
+
+model BlokMetadata {
+  id         String   @id @default(cuid())
+  blokHeader String
+  blokId     String   @unique
+  Blok       Blok     @relation(fields: [blokId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model BlokFollowers {
+  blokId    String
+  Blok      Blok     @relation(fields: [blokId], references: [id])
+  userId    String
+  User      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([blokId, userId])
+}
+
+enum Status {
+  Verified
+  Public
+  Deleted
+  Pinned
+  Comments
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "../ERD.svg"
+}

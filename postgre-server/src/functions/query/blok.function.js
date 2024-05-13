@@ -1,4 +1,4 @@
-import { Blok, User } from '../../utils/initializers/mongoose.initializer.js'
+import prisma from "../../utils/initializers/prisma.initializer.js";
 
 /**
  * A function that will return a user specific blok
@@ -7,33 +7,27 @@ import { Blok, User } from '../../utils/initializers/mongoose.initializer.js'
  * @param {string} profile_id
  */
 export const readBlok = async (blok_id, profile_id = undefined) => {
-	try {
-		const foundBlok = await Blok.findById(blok_id)
-			.populate({
-				path: 'user_id',
-				populate: { path: 'userMetadata' },
-			})
-			.populate({
-				path: 'documents',
-				populate: { path: 'documentMetadata' },
-			})
-			.populate('blokMetadata')
-			.lean()
-			.exec()
+  try {
+    // Fetch blok with specified ID and populate related data
+    const foundBlok = await prisma.blok.findUnique({
+      where: { id: blok_id },
+      include: {
+        user: { include: { userMetadata: true } },
+        documents: { include: { documentMetadata: true } },
+        blokMetadata: true,
+      },
+    });
 
-		if (foundBlok.status.public) {
-			return foundBlok
-		}
-
-		if (!foundBlok.status.public && foundBlok.profile_id !== profile_id) {
-			throw new Error('Blok is not public')
-		}
-
-		return foundBlok
-	} catch (error) {
-		throw error
-	}
-}
+    // Check blok status and ownership
+    if (foundBlok.status === "Public" || foundBlok.profileId === profile_id) {
+      return foundBlok;
+    } else {
+      throw new Error("Blok is not public");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * A function that will return the public bloks of a particular user
@@ -41,22 +35,25 @@ export const readBlok = async (blok_id, profile_id = undefined) => {
  * @param {string} profile_id
  */
 export const readBloks = async (profile_id) => {
-	try {
-		return await Blok.find({
-			$and: [{ profile_id: profile_id }, { 'status.public': true }],
-		})
-			.select(['-documents'])
-			.populate({
-				path: 'user_id',
-				populate: { path: 'userMetadata' },
-			})
-			.populate('blokMetadata')
-			.lean()
-			.exec()
-	} catch (error) {
-		throw error
-	}
-}
+  try {
+    // Fetch public bloks of a user
+    return await prisma.blok.findMany({
+      where: {
+        AND: [{ profileId: profile_id }, { status: "Public" }],
+      },
+      select: {
+        id: true,
+        blokName: true,
+        description: true,
+        status: true,
+        user: { include: { userMetadata: true } },
+        blokMetadata: true,
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * A function that will make a user follow a specific blok
@@ -65,36 +62,35 @@ export const readBloks = async (profile_id) => {
  * @param {import('../../../types/schema/blok.schema.js').blokDocument} blokObject
  */
 export const followBlok = async (user_id, blokObject) => {
-	try {
-		const foundBlok = await Blok.findById(blokObject._id)
-			.select(['status'])
-			.lean()
-			.exec()
+  try {
+    const foundBlok = await prisma.blok.findUnique({
+      where: { id: blokObject.id },
+      select: { status: true },
+    });
 
-		if (!foundBlok.status.public) {
-			throw new Error('Blok is not public.')
-		}
+    if (!foundBlok.status.public) {
+      throw new Error("Blok is not public.");
+    }
 
-		await Promise.allSettled([
-			Blok.findByIdAndUpdate(
-				blokObject._id,
-				{ $push: { followers: user_id } },
-				{ new: true }
-			).exec(),
-			User.findByIdAndUpdate(
-				user_id,
-				{ $push: { following: blokObject._id } },
-				{ new: true }
-			).exec(),
-		])
+    // Update blok to add user as follower
+    await prisma.blok.update({
+      where: { id: blokObject.id },
+      data: { followers: { connect: { id: user_id } } },
+    });
 
-		return {
-			success: true,
-		}
-	} catch (error) {
-		throw error
-	}
-}
+    // Update user to add blok as following
+    await prisma.user.update({
+      where: { id: user_id },
+      data: { following: { connect: { id: blokObject.id } } },
+    });
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * A function that will make a user unfollow a specific blok
@@ -103,27 +99,26 @@ export const followBlok = async (user_id, blokObject) => {
  * @param {import('../../../types/schema/blok.schema.js').blokDocument} blokObject
  */
 export const unfollowBlok = async (user_id, blokObject) => {
-	try {
-		await Promise.allSettled([
-			Blok.findByIdAndUpdate(
-				blokObject._id,
-				{ $pull: { followers: user_id } },
-				{ new: true }
-			).exec(),
-			User.findByIdAndUpdate(
-				user_id,
-				{ $pull: { following: blokObject._id } },
-				{ new: true }
-			).exec(),
-		])
+  try {
+    // Update blok to disconnect follower
+    await prisma.blok.update({
+      where: { id: blokObject.id },
+      data: { followers: { disconnect: { id: user_id } } },
+    });
 
-		return {
-			success: true,
-		}
-	} catch (error) {
-		throw error
-	}
-}
+    // Update user to disconnect following
+    await prisma.user.update({
+      where: { id: user_id },
+      data: { following: { disconnect: { id: blokObject.id } } },
+    });
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * A function that add bookmark to blok
@@ -131,22 +126,21 @@ export const unfollowBlok = async (user_id, blokObject) => {
  * @param {import('../../../types/schema/blok.schema.js').blokDocument} blokObject
  * @param {string} document_id
  */
-
 export const addDocument = async (blokObject, document_id) => {
-	try {
-		await Blok.findByIdAndUpdate(
-			blokObject._id,
-			{ $push: { documents: document_id } },
-			{ new: true }
-		).exec()
+  try {
+    // Add document to blok
+    await prisma.blok.update({
+      where: { id: blokObject.id },
+      data: { documents: { connect: { id: document_id }, new: true } },
+    });
 
-		return {
-			success: true,
-		}
-	} catch (error) {
-		throw error
-	}
-}
+    return {
+      success: true,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * A function that remove bookmark from blok
@@ -154,19 +148,18 @@ export const addDocument = async (blokObject, document_id) => {
  * @param {import('../../../types/schema/blok.schema.js').blokDocument} blokObject
  * @param {string} document_id
  */
-
 export const removeDocument = async (blokObject, document_id) => {
-	try {
-		await Blok.findByIdAndUpdate(
-			blokObject._id,
-			{ $pull: { documents: document_id } },
-			{ new: true }
-		).exec()
+  try {
+    // Remove document from blok
+    await prisma.blok.update({
+      where: { id: blokObject.id },
+      data: { documents: { disconnect: { id: document_id } } },
+    });
 
-		return {
-			success: true,
-		}
-	} catch (error) {
-		throw error
-	}
-}
+    return {
+      success: true,
+    };
+  } catch (error) {
+    throw error;
+  }
+};

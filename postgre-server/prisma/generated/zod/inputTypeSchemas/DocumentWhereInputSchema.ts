@@ -1,0 +1,41 @@
+import type { Prisma } from '@prisma/client';
+
+import { z } from 'zod';
+import { StringFilterSchema } from './StringFilterSchema';
+import { StringNullableFilterSchema } from './StringNullableFilterSchema';
+import { EnumStatusFilterSchema } from './EnumStatusFilterSchema';
+import { StatusSchema } from './StatusSchema';
+import { DateTimeFilterSchema } from './DateTimeFilterSchema';
+import { UserRelationFilterSchema } from './UserRelationFilterSchema';
+import { UserWhereInputSchema } from './UserWhereInputSchema';
+import { CommentsListRelationFilterSchema } from './CommentsListRelationFilterSchema';
+import { DocumentMetadataNullableRelationFilterSchema } from './DocumentMetadataNullableRelationFilterSchema';
+import { DocumentMetadataWhereInputSchema } from './DocumentMetadataWhereInputSchema';
+import { RedditDataNullableRelationFilterSchema } from './RedditDataNullableRelationFilterSchema';
+import { RedditDataWhereInputSchema } from './RedditDataWhereInputSchema';
+import { PinterestDataNullableRelationFilterSchema } from './PinterestDataNullableRelationFilterSchema';
+import { PinterestDataWhereInputSchema } from './PinterestDataWhereInputSchema';
+import { TagsDocumentListRelationFilterSchema } from './TagsDocumentListRelationFilterSchema';
+import { BloksDocumentListRelationFilterSchema } from './BloksDocumentListRelationFilterSchema';
+
+export const DocumentWhereInputSchema: z.ZodType<Prisma.DocumentWhereInput> = z.object({
+  AND: z.union([ z.lazy(() => DocumentWhereInputSchema),z.lazy(() => DocumentWhereInputSchema).array() ]).optional(),
+  OR: z.lazy(() => DocumentWhereInputSchema).array().optional(),
+  NOT: z.union([ z.lazy(() => DocumentWhereInputSchema),z.lazy(() => DocumentWhereInputSchema).array() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  heading: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  body: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  Status: z.union([ z.lazy(() => EnumStatusFilterSchema),z.lazy(() => StatusSchema) ]).optional(),
+  createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
+  User: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),
+  Comments: z.lazy(() => CommentsListRelationFilterSchema).optional(),
+  DocumentMetadata: z.union([ z.lazy(() => DocumentMetadataNullableRelationFilterSchema),z.lazy(() => DocumentMetadataWhereInputSchema) ]).optional().nullable(),
+  RedditData: z.union([ z.lazy(() => RedditDataNullableRelationFilterSchema),z.lazy(() => RedditDataWhereInputSchema) ]).optional().nullable(),
+  PinterestData: z.union([ z.lazy(() => PinterestDataNullableRelationFilterSchema),z.lazy(() => PinterestDataWhereInputSchema) ]).optional().nullable(),
+  TagsDocument: z.lazy(() => TagsDocumentListRelationFilterSchema).optional(),
+  BloksDocument: z.lazy(() => BloksDocumentListRelationFilterSchema).optional()
+}).strict();
+
+export default DocumentWhereInputSchema;

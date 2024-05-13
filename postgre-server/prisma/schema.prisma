@@ -14,7 +14,6 @@ model User {
   description    String?
   username       String          @unique
   profileId      String          @unique
-  password       String
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   UserMetadataId String          @unique
@@ -39,35 +38,35 @@ model UserMetadata {
 }
 
 model UserAuth {
-  id         String      @id @default(cuid())
-  User       User?
-  GoogleAuth GoogleAuth?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  RedditAuth RedditAuth?
+  id           String      @id @default(cuid())
+  User         User?
+  GoogleAuthId String      @unique
+  GoogleAuth   GoogleAuth? @relation(fields: [GoogleAuthId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  RedditAuthId String      @unique
+  RedditAuth   RedditAuth? @relation(fields: [RedditAuthId], references: [id])
 }
 
 model GoogleAuth {
-  id           String   @id @default(cuid())
-  UserAuthId   String   @unique
-  UserAuth     UserAuth @relation(fields: [UserAuthId], references: [id])
+  id           String    @id @default(cuid())
+  UserAuth     UserAuth?
   accessToken  String?
   refreshToken String?
   googleId     String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model RedditAuth {
-  id             String   @id @default(cuid())
-  UserAuthId     String   @unique
-  UserAuth       UserAuth @relation(fields: [UserAuthId], references: [id])
+  id             String    @id @default(cuid())
+  UserAuth       UserAuth?
   accessToken    String?
   refreshToken   String?
   redditId       String
   redditUsername String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
 
 model Document {
@@ -200,7 +199,7 @@ enum Status {
   Comments
 }
 
-generator erd {
-  provider = "prisma-erd-generator"
-  output   = "../ERD.svg"
+generator zod {
+  provider         = "zod-prisma-types"
+  useMultipleFiles = true
 }

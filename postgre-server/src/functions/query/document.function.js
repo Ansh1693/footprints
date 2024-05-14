@@ -1,106 +1,92 @@
-import { Document } from '../../utils/initializers/mongoose.initializer.js'
+import {
+  Comments,
+  Document,
+} from "../../utils/initializers/prisma.initializer";
 
 /**
  * A function that will send return a specific document
  *
- * @param {string} document_id
- * @param {string} profile_id
  */
-export const readDocument = async (document_id, profile_id = undefined) => {
-	try {
-		const foundDocument = await Document.findById(document_id)
-			.populate({
-				path: 'comments',
-				populate: { path: 'user', populate: 'userMetadata' },
-			})
-			.populate('tags')
-			.populate('documentMetadata')
-			.lean()
-			.exec()
+export const readDocument = async (documentId, profileId = undefined) => {
+  try {
+    const foundDocument = await Document.findUnique({
+      where: {
+        id: documentId,
+      },
+      include: {
+        DocumentMetadata: true,
+        Comments: {
+          include: {
+            User: {
+              select: {
+                id: true,
+                username: true,
+                name: true,
+              },
+            },
+          },
+        },
 
-		if (foundDocument.status.public) {
-			return foundDocument
-		}
+        RedditData: true,
+        PinterestData: true,
+        TagsDocument: {
+          include: {
+            Tag: true,
+          },
+        },
+      },
+    });
 
-		if (
-			!foundDocument.status.public &&
-			foundDocument.profile_id !== profile_id
-		) {
-			throw new Error('Document is not public.')
-		}
+    if (foundDocument.public === false) {
+      if (profileId !== foundDocument.userId) {
+        throw new Error("Document is not public.");
+      }
+    }
 
-		return foundDocument
-	} catch (error) {
-		throw error
-	}
-}
+    return foundDocument;
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * A function that will post a comment for a specific document
  *
- * @param {import('../../../types/schema/document.schema').documentDocument} documentObject
- * @param {import('../../../types/schema/document.schema').commentDocument} commentObject
  */
 export const postComment = async (documentObject, commentObject) => {
-	try {
-		const foundDocument = await Document.findById(documentObject._id)
-			.select(['status'])
-			.lean()
-			.exec()
+  try {
+    await Comments.create({
+      data: {
+        body: commentObject.comment,
+        documentId: documentObject.id,
+        userId: commentObject.userId,
+      },
+    });
 
-		if (!foundDocument.status.comments) {
-			throw new Error(
-				'Owner has disabled public comments on this Document.'
-			)
-		}
-
-		await Document.findByIdAndUpdate(
-			documentObject._id,
-			{
-				$push: {
-					comments: {
-						comment: commentObject.comment,
-						user: commentObject.user,
-					},
-				},
-			},
-			{ new: true }
-		)
-			.lean()
-			.exec()
-
-		return {
-			success: true,
-		}
-	} catch (error) {
-		throw error
-	}
-}
+    return {
+      success: true,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * A function that will delete a comment for a specific document
  *
- * @param {import('../../../types/schema/document.schema').documentDocument} documentObject
- * @param {import('../../../types/schema/document.schema').commentDocument} commentObject
  */
 export const deleteComment = async (documentObject, commentObject) => {
-	try {
-		await Document.findByIdAndUpdate(
-			documentObject._id,
-			{
-				$pull: {
-					comments: commentObject._id,
-				},
-			},
-			{ new: true }
-		)
-			.lean()
-			.exec()
-
-		return {
-			success: true,
-		}
-	} catch (error) {
-		throw error
-	}
-}
+  try {
+    await Comments.delete({
+      where: {
+        id: commentObject.id,
+        documentId: documentObject.id,
+      },
+    });
+    return {
+      success: true,
+    };
+  } catch (error) {
+    throw error;
+  }
+};

@@ -12,20 +12,18 @@ const userObjectSchema = z.object({
 });
 
 const QuerySchema = z.object({
-  query_type: z.enum(["email", "google"]),
+  queryType: z.enum(["email", "google"]),
 });
 
 /**
  * A controller to handle the auth initialization requests
  *
- * @param {import("fastify").FastifyRequest} req
- * @param {import("fastify").FastifyReply} res
  */
 const initializeAuth = async (req, res) => {
   try {
-    const { query_type } = QuerySchema.parse(req.query);
+    const { queryType } = QuerySchema.parse(req.query);
 
-    if (query_type === "email") {
+    if (queryType === "email") {
       if (!req.body.userObject) {
         throw new Error("User object missing.");
       }

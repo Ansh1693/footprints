@@ -8,7 +8,8 @@ export const BlokCountOrderByAggregateInputSchema: z.ZodType<Prisma.BlokCountOrd
   userId: z.lazy(() => SortOrderSchema).optional(),
   blokName: z.lazy(() => SortOrderSchema).optional(),
   description: z.lazy(() => SortOrderSchema).optional(),
-  status: z.lazy(() => SortOrderSchema).optional(),
+  public: z.lazy(() => SortOrderSchema).optional(),
+  deleted: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();

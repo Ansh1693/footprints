@@ -7,7 +7,7 @@ export const UserMetadataMinOrderByAggregateInputSchema: z.ZodType<Prisma.UserMe
   id: z.lazy(() => SortOrderSchema).optional(),
   profileImage: z.lazy(() => SortOrderSchema).optional(),
   profileBanner: z.lazy(() => SortOrderSchema).optional(),
-  status: z.lazy(() => SortOrderSchema).optional(),
+  verified: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();

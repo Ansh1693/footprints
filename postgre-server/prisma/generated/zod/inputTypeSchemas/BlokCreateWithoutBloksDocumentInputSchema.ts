@@ -1,7 +1,6 @@
 import type { Prisma } from '@prisma/client';
 
 import { z } from 'zod';
-import { StatusSchema } from './StatusSchema';
 import { UserCreateNestedOneWithoutBlokInputSchema } from './UserCreateNestedOneWithoutBlokInputSchema';
 import { BlokMetadataCreateNestedOneWithoutBlokInputSchema } from './BlokMetadataCreateNestedOneWithoutBlokInputSchema';
 import { BlokFollowersCreateNestedManyWithoutBlokInputSchema } from './BlokFollowersCreateNestedManyWithoutBlokInputSchema';
@@ -10,7 +9,8 @@ export const BlokCreateWithoutBloksDocumentInputSchema: z.ZodType<Prisma.BlokCre
   id: z.string().cuid().optional(),
   blokName: z.string(),
   description: z.string().optional().nullable(),
-  status: z.lazy(() => StatusSchema),
+  public: z.boolean().optional(),
+  deleted: z.boolean().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   User: z.lazy(() => UserCreateNestedOneWithoutBlokInputSchema),

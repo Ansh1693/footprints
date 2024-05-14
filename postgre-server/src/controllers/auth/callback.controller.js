@@ -5,20 +5,25 @@ import {
   googleCallback,
 } from "../../functions/auth/callback.function.js";
 
+import { z } from "zod";
+
+const QuerySchema = z.object({
+  platform: z.enum(["email", "google"]),
+});
+
 /**
  * A controller to handle the auth callback requests
  *
- * @param {import("fastify").FastifyRequest} req
- * @param {import("fastify").FastifyReply} res
  */
+
 const callbackAuth = async (req, res) => {
   try {
-    const { platform } = req.params;
+    const { platform } = QuerySchema.parse(req.params);
     const { state, code } = req.query;
 
-    const auth_params = cache.get(state);
+    const authParams = cache.get(state);
 
-    if (!auth_params) {
+    if (!authParams) {
       throw new Error("Authorization token expired, please try again.");
     }
 
@@ -27,27 +32,27 @@ const callbackAuth = async (req, res) => {
         throw new Error("User object missing.");
       }
 
-      const { profile_id, user_id } = await emailCallback(
+      const { profileId, userId } = await emailCallback(
         state,
         req.body.userObject,
       );
 
-      const session_token = await res.jwtSign({ profile_id, user_id });
+      const session_token = await res.jwtSign({ profileId, userId });
 
       res.status(200).send({ data: { session_token } });
     } else if (platform === "google") {
-      const { profile_id, user_id } = await googleCallback(
+      const { profileId, userId } = await googleCallback(
         state,
         code,
-        auth_params,
+        authParams,
       );
 
-      const session_token = await res.jwtSign({ profile_id, user_id });
+      const sessionToken = await res.jwtSign({ profileId, userId });
 
       res
         .status(302)
         .redirect(
-          `${process.env.CLIENT}/auth/callback?session_token=${session_token}`,
+          `${process.env.CLIENT}/auth/callback?session_token=${sessionToken}`,
         );
     }
   } catch (error) {

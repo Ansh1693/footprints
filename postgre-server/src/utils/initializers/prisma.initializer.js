@@ -12,6 +12,7 @@ export const RedditAuth = prisma.redditAuth;
 export const Document = prisma.document;
 export const DocumentMetadata = prisma.documentMetadata;
 export const Tag = prisma.tag;
+export const TagsDocument = prisma.tagsDocument;
 export const RedditData = prisma.redditData;
 export const PinterestData = prisma.pinterestData;
 export const Comments = prisma.comments;

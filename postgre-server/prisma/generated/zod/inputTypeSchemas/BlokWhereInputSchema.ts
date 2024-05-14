@@ -3,8 +3,7 @@ import type { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { StringFilterSchema } from './StringFilterSchema';
 import { StringNullableFilterSchema } from './StringNullableFilterSchema';
-import { EnumStatusFilterSchema } from './EnumStatusFilterSchema';
-import { StatusSchema } from './StatusSchema';
+import { BoolFilterSchema } from './BoolFilterSchema';
 import { DateTimeFilterSchema } from './DateTimeFilterSchema';
 import { UserRelationFilterSchema } from './UserRelationFilterSchema';
 import { UserWhereInputSchema } from './UserWhereInputSchema';
@@ -21,7 +20,8 @@ export const BlokWhereInputSchema: z.ZodType<Prisma.BlokWhereInput> = z.object({
   userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   blokName: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  status: z.union([ z.lazy(() => EnumStatusFilterSchema),z.lazy(() => StatusSchema) ]).optional(),
+  public: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
+  deleted: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   User: z.union([ z.lazy(() => UserRelationFilterSchema),z.lazy(() => UserWhereInputSchema) ]).optional(),

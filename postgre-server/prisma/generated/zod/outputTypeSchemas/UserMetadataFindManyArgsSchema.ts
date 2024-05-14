@@ -13,7 +13,7 @@ export const UserMetadataSelectSchema: z.ZodType<Prisma.UserMetadataSelect> = z.
   id: z.boolean().optional(),
   profileImage: z.boolean().optional(),
   profileBanner: z.boolean().optional(),
-  status: z.boolean().optional(),
+  verified: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   updatedAt: z.boolean().optional(),
   User: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),

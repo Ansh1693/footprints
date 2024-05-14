@@ -1,49 +1,52 @@
-import prisma from "../../utils/initializers/prisma.initializer";
+import {
+  User,
+  Tag,
+  Blok,
+  Document,
+} from "../../utils/initializers/prisma.initializer";
 
 /**
  * A function that will check the availability of a username
  *
- * @param {string} username
  */
-// export const checkUsername = async (username) => {
-//   try {
-//     if (
-//       process.env.BLACKLISTEDUSERNAMES.split(",").some(
-//         (blacklistedUsername) => blacklistedUsername === username,
-//       )
-//     ) {
-//       return { availabilityStatus: false };
-//     }
+export const checkUsername = async (username) => {
+  try {
+    if (
+      process.env.BLACKLISTEDUSERNAMES.split(",").some(
+        (blacklistedUsername) => blacklistedUsername === username,
+      )
+    ) {
+      return { availabilityStatus: false };
+    }
 
-//     const foundUsername = await User.findOne({ username: username })
-//       .select(["username", "profile_id", "_id"])
-//       .lean()
-//       .exec();
+    const foundUsername = await User.findUnique({
+      where: { username: username },
+      select: { profileId: true, id: true },
+    });
 
-//     if (!foundUsername) {
-//       return { availabilityStatus: true };
-//     } else {
-//       return {
-//         availabilityStatus: false,
-//         user: {
-//           profile_id: foundUsername.profile_id,
-//           _id: foundUsername._id,
-//         },
-//       };
-//     }
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+    if (!foundUsername) {
+      return { availabilityStatus: true };
+    } else {
+      return {
+        availabilityStatus: false,
+        user: {
+          profileId: foundUsername.profileId,
+          id: foundUsername.id,
+        },
+      };
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
- * A function to check if the email is registered
  *
  * @param {string} email
  */
 export const checkEmail = async (email) => {
   try {
-    const foundEmail = await prisma.user.findUnique({
+    const foundEmail = await User.findUnique({
       where: { email: email },
       select: { email: true, profileId: true, id: true },
     });
@@ -69,58 +72,83 @@ export const checkEmail = async (email) => {
 /**
  * A function that will check access to different models for a particular user
  *
- * @param {string} profile_id
- * @param {string} modelType
- * @param {string} model_id
  */
-// export const checkAccess = async (profile_id, modelType, model_id) => {
-//   try {
-//     if (modelType === "tag") {
-//       const tag = await Tag.findById(model_id)
-//         .select("profile_id")
-//         .lean()
-//         .exec();
+export const checkAccess = async (profileId, modelType, modelId) => {
+  try {
+    if (modelType === "tag") {
+      const tag = await Tag.findUnique({
+        where: { id: modelId },
+        include: {
+          User: {
+            select: {
+              profileId: true,
+              id: true,
+              username: true,
+            },
+          },
+        },
+      });
 
-//       if (profile_id !== tag.profile_id) {
-//         throw new Error(
-//           "User doesn't have permissions to make modifications to this tag.",
-//         );
-//       }
-//     } else if (modelType === "blok") {
-//       const blok = await Blok.findById(model_id)
-//         .select("profile_id")
-//         .lean()
-//         .exec();
+      if (profileId !== tag.User.profileId) {
+        throw new Error(
+          "User doesn't have permissions to make modifications to this tag.",
+        );
+      }
+    } else if (modelType === "blok") {
+      const blok = await Blok.findUnique({
+        where: { id: modelId },
+        include: {
+          User: {
+            select: {
+              profileId: true,
+              id: true,
+              username: true,
+            },
+          },
+        },
+      });
 
-//       if (profile_id !== blok.profile_id) {
-//         throw new Error(
-//           "User doesn't have permissions to make modifications to this blok.",
-//         );
-//       }
-//     } else if (modelType === "document") {
-//       const document = await Document.findById(model_id)
-//         .select("profile_id")
-//         .lean()
-//         .exec();
+      if (profileId !== blok.User.profileId) {
+        throw new Error(
+          "User doesn't have permissions to make modifications to this blok.",
+        );
+      }
+    } else if (modelType === "document") {
+      const document = await Document.findUnique({
+        where: { id: modelId },
+        include: {
+          User: {
+            select: {
+              profileId: true,
+              id: true,
+              username: true,
+            },
+          },
+        },
+      });
 
-//       if (profile_id !== document.profile_id) {
-//         throw new Error(
-//           "User doesn't have permissions to make modifications to this document.",
-//         );
-//       }
-//     } else if (modelType === "user") {
-//       const user = await User.findById(model_id)
-//         .select("profile_id")
-//         .lean()
-//         .exec();
+      if (profileId !== document.User.profileId) {
+        throw new Error(
+          "User doesn't have permissions to make modifications to this document.",
+        );
+      }
+    } else if (modelType === "user") {
+      const user = await User.findUnique({
+        where: { id: modelId },
+        select: {
+          profileId: true,
+          id: true,
+          username: true,
+        },
+      });
 
-//       if (profile_id !== user.profile_id) {
-//         throw new Error(
-//           "User doesn't have permissions to make modifications to this user.",
-//         );
-//       }
-//     }
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+      if (profileId !== user.profileId) {
+        throw new Error(
+          "User doesn't have permissions to make modifications to this user.",
+        );
+      }
+    }
+  } catch (error) {
+    throw error;
+  }
+};

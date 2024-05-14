@@ -1,53 +1,100 @@
-import { Blok, User } from '../../utils/initializers/mongoose.initializer.js'
-
+import {
+  Blok,
+  BlokFollowers,
+  BlokMetadata,
+  BloksDocument,
+  User,
+} from "../../utils/initializers/prisma.initializer";
 /**
  * A function that will create a new blok
  *
- * @param {import("../../../types/schema/blok.schema").blokDocument} blokObject
  */
 export const create = async (blokObject) => {
-	try {
-		const createdBlok = await Blok.create(blokObject)
+  try {
+    const createdBlok = await Blok.create({
+      data: {
+        create: {
+          ...blokObject,
+          BlokMetadata: {
+            create: {
+              ...blokObject.BlokMetadata,
+            },
+          },
+        },
+      },
+    });
 
-		await User.findByIdAndUpdate(createdBlok.user_id, {
-			$push: { bloks: createdBlok._id },
-		})
-			.lean()
-			.exec()
+    for (const Doc of blokObject.Documents) {
+      await BloksDocument.create({
+        data: {
+          documentId: Doc.id,
+          blokId: createdBlok.id,
+        },
+      });
+    }
 
-		return createdBlok
-	} catch (error) {
-		throw error
-	}
-}
+    return createdBlok;
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * A function that will read a blok(s)
  *
- * @param {import("../../../types/schema/blok.schema").blokDocument} blokObject
  */
 export const read = async (blokObject) => {
-	try {
-		return await Blok.find(blokObject).populate('documents').exec()
-	} catch (error) {
-		throw error
-	}
-}
+  try {
+    return await Blok.findUnique({
+      where: {
+        ...blokObject,
+      },
+      include: {
+        BlokMetadata: true,
+        BloksDocument: {
+          include: {
+            Document: true,
+          },
+        },
+        BlokFollowers: {
+          include: {
+            User: true,
+          },
+        },
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * A function that will update a blok
  *
- * @param {import("../../../types/schema/blok.schema").blokDocument} blokObject
  */
 export const update = async (blokObject) => {
-	try {
-		return await Blok.findByIdAndUpdate(blokObject._id, blokObject, {
-			new: true,
-		}).exec()
-	} catch (error) {
-		throw error
-	}
-}
+  try {
+    const updatedBlok = {
+      update: {
+        ...blokObject,
+        BlokMetadata: {
+          update: {
+            ...blokObject.BlokMetadata,
+          },
+        },
+      },
+    };
+
+    return await Blok.update({
+      where: {
+        ...blokObject,
+      },
+      data: updatedBlok,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * A function that will delete a blok
@@ -55,9 +102,28 @@ export const update = async (blokObject) => {
  * @param {import("../../../types/schema/blok.schema").blokDocument} blokObject
  */
 export const del = async (blokObject) => {
-	try {
-		return await Blok.findByIdAndDelete(blokObject._id).exec()
-	} catch (error) {
-		throw error
-	}
-}
+  try {
+    BloksDocument.deleteMany({
+      where: {
+        blokId: blokObject.id,
+      },
+    });
+
+    BlokFollowers.deleteMany({
+      where: {
+        blokId: blokObject.id,
+      },
+    });
+
+    return await Blok.delete({
+      where: {
+        ...blokObject,
+      },
+      include: {
+        BlokMetadata: true,
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+};

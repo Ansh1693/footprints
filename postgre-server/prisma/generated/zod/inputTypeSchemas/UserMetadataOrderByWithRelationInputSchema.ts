@@ -9,7 +9,7 @@ export const UserMetadataOrderByWithRelationInputSchema: z.ZodType<Prisma.UserMe
   id: z.lazy(() => SortOrderSchema).optional(),
   profileImage: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   profileBanner: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  status: z.lazy(() => SortOrderSchema).optional(),
+  verified: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
   User: z.lazy(() => UserOrderByWithRelationInputSchema).optional()

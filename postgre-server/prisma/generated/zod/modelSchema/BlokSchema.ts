@@ -1,16 +1,16 @@
 import { z } from 'zod';
-import { StatusSchema } from '../inputTypeSchemas/StatusSchema'
 
 /////////////////////////////////////////
 // BLOK SCHEMA
 /////////////////////////////////////////
 
 export const BlokSchema = z.object({
-  status: StatusSchema,
   id: z.string().cuid(),
   userId: z.string(),
   blokName: z.string(),
   description: z.string().nullable(),
+  public: z.boolean(),
+  deleted: z.boolean(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })

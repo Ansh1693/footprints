@@ -17,9 +17,9 @@ model User {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   UserMetadataId String          @unique
-  UserMetadata   UserMetadata    @relation(fields: [UserMetadataId], references: [id])
+  UserMetadata   UserMetadata    @relation(fields: [UserMetadataId], references: [id], onDelete: Cascade)
   UserAuthId     String          @unique
-  UserAuth       UserAuth        @relation(fields: [UserAuthId], references: [id])
+  UserAuth       UserAuth        @relation(fields: [UserAuthId], references: [id], onDelete: Cascade)
   Document       Document[]
   Comments       Comments[]
   Tags           Tag[]
@@ -32,7 +32,7 @@ model UserMetadata {
   User          User?
   profileImage  String?
   profileBanner String?
-  status        Status
+  verified      Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -41,11 +41,11 @@ model UserAuth {
   id           String      @id @default(cuid())
   User         User?
   GoogleAuthId String      @unique
-  GoogleAuth   GoogleAuth? @relation(fields: [GoogleAuthId], references: [id])
+  GoogleAuth   GoogleAuth? @relation(fields: [GoogleAuthId], references: [id], onDelete: Cascade)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   RedditAuthId String      @unique
-  RedditAuth   RedditAuth? @relation(fields: [RedditAuthId], references: [id])
+  RedditAuth   RedditAuth? @relation(fields: [RedditAuthId], references: [id], onDelete: Cascade)
 }
 
 model GoogleAuth {
@@ -72,10 +72,13 @@ model RedditAuth {
 model Document {
   id               String            @id @default(cuid())
   userId           String
-  User             User              @relation(fields: [userId], references: [id])
+  User             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   heading          String?
   body             String?
-  Status           Status
+  public           Boolean           @default(false)
+  deleted          Boolean           @default(false)
+  pinned           Boolean           @default(false)
+  comment          Boolean           @default(false)
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   Comments         Comments[]
@@ -89,7 +92,7 @@ model Document {
 model DocumentMetadata {
   id           String   @id @default(cuid())
   documentId   String   @unique
-  Document     Document @relation(fields: [documentId], references: [id])
+  Document     Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
   documentType String
   bodyImageUrl String?
   sourceUrl    String?
@@ -103,7 +106,7 @@ model RedditData {
   username   String?
   postId     String?
   documentId String   @unique
-  Document   Document @relation(fields: [documentId], references: [id])
+  Document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 }
 
 model PinterestData {
@@ -111,15 +114,15 @@ model PinterestData {
   username   String?
   postId     String?
   documentId String   @unique
-  Document   Document @relation(fields: [documentId], references: [id])
+  Document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 }
 
 model Comments {
   id         String   @id @default(cuid())
   userId     String
-  User       User     @relation(fields: [userId], references: [id])
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   documentId String
-  Document   Document @relation(fields: [documentId], references: [id])
+  Document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
   body       String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -129,7 +132,7 @@ model Tag {
   id           String         @id @default(cuid())
   tagName      String
   userId       String
-  User         User           @relation(fields: [userId], references: [id])
+  User         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   TagsDocument TagsDocument[]
@@ -137,9 +140,9 @@ model Tag {
 
 model TagsDocument {
   tagId      String
-  Tag        Tag      @relation(fields: [tagId], references: [id])
+  Tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
   documentId String
-  Document   Document @relation(fields: [documentId], references: [id])
+  Document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -149,10 +152,11 @@ model TagsDocument {
 model Blok {
   id            String          @id @default(cuid())
   userId        String
-  User          User            @relation(fields: [userId], references: [id])
+  User          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   blokName      String
   description   String?
-  status        Status
+  public        Boolean         @default(false)
+  deleted       Boolean         @default(false)
   BloksDocument BloksDocument[]
   BlokMetadata  BlokMetadata?
   createdAt     DateTime        @default(now())
@@ -162,9 +166,9 @@ model Blok {
 
 model BloksDocument {
   blokId     String
-  Blok       Blok     @relation(fields: [blokId], references: [id])
+  Blok       Blok     @relation(fields: [blokId], references: [id], onDelete: Cascade)
   documentId String
-  Document   Document @relation(fields: [documentId], references: [id])
+  Document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -175,28 +179,20 @@ model BlokMetadata {
   id         String   @id @default(cuid())
   blokHeader String
   blokId     String   @unique
-  Blok       Blok     @relation(fields: [blokId], references: [id])
+  Blok       Blok     @relation(fields: [blokId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
 
 model BlokFollowers {
   blokId    String
-  Blok      Blok     @relation(fields: [blokId], references: [id])
+  Blok      Blok     @relation(fields: [blokId], references: [id], onDelete: Cascade)
   userId    String
-  User      User     @relation(fields: [userId], references: [id])
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@id([blokId, userId])
-}
-
-enum Status {
-  Verified
-  Public
-  Deleted
-  Pinned
-  Comments
 }
 
 generator zod {

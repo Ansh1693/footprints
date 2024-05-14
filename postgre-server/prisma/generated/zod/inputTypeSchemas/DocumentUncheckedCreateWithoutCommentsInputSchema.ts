@@ -1,7 +1,6 @@
 import type { Prisma } from '@prisma/client';
 
 import { z } from 'zod';
-import { StatusSchema } from './StatusSchema';
 import { DocumentMetadataUncheckedCreateNestedOneWithoutDocumentInputSchema } from './DocumentMetadataUncheckedCreateNestedOneWithoutDocumentInputSchema';
 import { RedditDataUncheckedCreateNestedOneWithoutDocumentInputSchema } from './RedditDataUncheckedCreateNestedOneWithoutDocumentInputSchema';
 import { PinterestDataUncheckedCreateNestedOneWithoutDocumentInputSchema } from './PinterestDataUncheckedCreateNestedOneWithoutDocumentInputSchema';
@@ -13,7 +12,10 @@ export const DocumentUncheckedCreateWithoutCommentsInputSchema: z.ZodType<Prisma
   userId: z.string(),
   heading: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
-  Status: z.lazy(() => StatusSchema),
+  public: z.boolean().optional(),
+  deleted: z.boolean().optional(),
+  pinned: z.boolean().optional(),
+  comment: z.boolean().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   DocumentMetadata: z.lazy(() => DocumentMetadataUncheckedCreateNestedOneWithoutDocumentInputSchema).optional(),

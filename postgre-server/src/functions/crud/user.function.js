@@ -49,11 +49,15 @@ export const create = async (userObject) => {
 /**
  * A function that will read a user(s)
  *
- * @param {import('../../../types/schema/user.schema.js').userDocument} userObject
+ *
  */
 export const read = async (userObject) => {
   try {
-    return await User.find(userObject).exec();
+    return await User.findUnique({
+      where: {
+        ...userObject,
+      },
+    });
   } catch (error) {
     throw error;
   }
@@ -62,13 +66,65 @@ export const read = async (userObject) => {
 /**
  * A function that will update a user
  *
- * @param {import('../../../types/schema/user.schema.js').userDocument} userObject
+ *
  */
 export const update = async (userObject) => {
   try {
-    return await User.findByIdAndUpdate(userObject._id, userObject, {
-      new: true,
-    }).exec();
+    const userToUpdate = await prisma.user.findUnique({
+      where: { id: userObject.id },
+      include: {
+        UserMetadata: true,
+        UserAuth: {
+          include: {
+            GoogleAuth: true,
+            RedditAuth: true,
+          },
+        },
+      },
+    });
+
+    if (!userToUpdate) {
+      throw new Error(`User with ID ${userObject.id} not found`);
+    }
+
+    return await prisma.user.update({
+      where: { id: userObject.id },
+      data: {
+        firstName: updatedUserObject.firstName || userToUpdate.firstName,
+        lastName: updatedUserObject.lastName || userToUpdate.lastName,
+        UserMetadata: {
+          update: {
+            ...userToUpdate.UserMetadata,
+            ...updatedUserObject.UserMetadata,
+          },
+        },
+        UserAuth: {
+          update: {
+            GoogleAuth: {
+              update: {
+                ...(userToUpdate.UserAuth.GoogleAuth || {}),
+                ...(updatedUserObject.UserAuth.google || {}),
+              },
+            },
+            RedditAuth: {
+              update: {
+                ...(userToUpdate.UserAuth.RedditAuth || {}),
+                ...(updatedUserObject.UserAuth.reddit || {}),
+              },
+            },
+          },
+        },
+      },
+      include: {
+        UserMetadata: true,
+        UserAuth: {
+          include: {
+            GoogleAuth: true,
+            RedditAuth: true,
+          },
+        },
+      },
+    });
   } catch (error) {
     throw error;
   }
@@ -77,11 +133,29 @@ export const update = async (userObject) => {
 /**
  * A function that will delete a user
  *
- * @param {import('../../../types/schema/user.schema.js').userDocument} userObject
+ *
  */
 export const del = async (userObject) => {
   try {
-    return await User.findByIdAndDelete(userObject._id).exec();
+    return await User.delete({
+      where: {
+        ...userObject,
+      },
+      include: {
+        UserMetadata: true,
+        UserAuth: {
+          include: {
+            GoogleAuth: true,
+            RedditAuth: true,
+          },
+          Document: true,
+          Comments: true,
+          Tags: true,
+          Blok: true,
+          BlokFollowers: true,
+        },
+      },
+    });
   } catch (error) {
     throw error;
   }

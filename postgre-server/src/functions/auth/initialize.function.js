@@ -9,7 +9,6 @@ import randomstring from "randomstring";
 /**
  * A function that takes care of the email login method
  *
- * @param {import('../../../types/schema/user.schema.js').userDocument} userObject
  */
 export const emailLogin = async (userObject) => {
   try {

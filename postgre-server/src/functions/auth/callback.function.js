@@ -3,7 +3,7 @@ import { google as googleAPI } from "googleapis";
 import { generateUsername } from "../utility/generate.function.js";
 import { checkEmail } from "../utility/check.function.js";
 import { create, read, update } from "../crud/user.function.js";
-import prisma from "../../utils/initializers/prisma.initializer.js";
+// import { User } from "../../utils/initializers/prisma.initializer.js";
 
 import google from "../../utils/api/google.js";
 import Snoowrap from "snoowrap";
@@ -12,9 +12,6 @@ import redditAuth from "../../utils/api/reddit.js";
 /**
  * A function that handles the callback request for Google
  *
- * @param {string} state
- * @param {string} code
- * @param {object} authParams
  */
 export const googleCallback = async (state, code, { state: sessionState }) => {
   try {
@@ -40,19 +37,15 @@ export const googleCallback = async (state, code, { state: sessionState }) => {
         personFields: "names,emailAddresses,photos",
       });
 
-    const google_id = data.resourceName.match("[0-9]+$")[0];
+    const googleId = data.resourceName.match("[0-9]+$")[0];
 
-    /**
-     * @type {import('../../../types/schema/user.schema.js').userDocument}
-     */
     let user = {
       name: data.names[0].displayName,
       email: data.emailAddresses[0].value,
       username: generateUsername(data.emailAddresses[0].value),
       auth: {
         google: {
-          googleId: google_id,
-
+          googleId: googleId,
           accessToken: tokens.access_token,
           refreshToken: tokens.refresh_token,
         },
@@ -66,15 +59,15 @@ export const googleCallback = async (state, code, { state: sessionState }) => {
 
     if (checkUser.foundUser) {
       const oldUser = await read({
-        profile_id: checkUser.user.profile_id,
+        profileId: checkUser.user.profileId,
       });
       user = {
         ...user,
-        _id: checkUser.user._id,
-        auth: {
-          ...user.auth,
-          ...oldUser[0]?.auth?._doc,
-        },
+        id: checkUser.user.id,
+        // auth: {
+        //   ...user.auth,
+        //   ...oldUser[0]?.auth?._doc,
+        // },
       };
 
       console.log(user);
@@ -83,14 +76,14 @@ export const googleCallback = async (state, code, { state: sessionState }) => {
       await update(user);
 
       return {
-        profile_id: checkUser.user.profile_id,
-        user_id: checkUser.user._id,
+        profileId: checkUser.user.profileId,
+        userId: checkUser.user.id,
       };
     }
 
     const newUser = await create(user);
 
-    return { profile_id: newUser.profile_id, user_id: newUser._id };
+    return { profileId: newUser.profileId, userId: newUser.id };
   } catch (error) {
     throw error;
   }
@@ -99,8 +92,6 @@ export const googleCallback = async (state, code, { state: sessionState }) => {
 /**
  * A function that handles the callback request for Email
  *
- * @param {string} state
- * @param {import('../../../types/schema/user.schema.js').userDocument} userObject
  */
 export const emailCallback = async (state, userObject) => {
   try {
@@ -112,13 +103,12 @@ export const emailCallback = async (state, userObject) => {
 
     if (checkUser.foundUser) {
       return {
-        profile_id: checkUser.user.profile_id,
-        user_id: checkUser.user._id,
+        profileId: checkUser.user.profileId,
+        userId: checkUser.user.id,
       };
     }
 
     /**
-     * @type {import('../../../types/schema/user.schema.js').userDocument}
      */
     const user = {
       name: userObject.name,
@@ -128,20 +118,20 @@ export const emailCallback = async (state, userObject) => {
 
     const newUser = await create(user);
 
-    return { profile_id: newUser.profile_id, user_id: newUser._id };
+    return { profileId: newUser.profileId, userId: newUser.id };
   } catch (error) {
     throw error;
   }
 };
 
-export const redditCallback = async (profile_id, sessionState, state, code) => {
+export const redditCallback = async (profileId, sessionState, state, code) => {
   try {
     if (!state || !sessionState || !code)
       throw new Error("You denied the app or your session expired!");
 
     if (state !== sessionState) throw new Error("Stored tokens didn't match!");
 
-    console.log(profile_id, "gg");
+    console.log(profileId, "gg");
 
     const client = await Snoowrap.fromAuthCode({
       code: code,
@@ -158,21 +148,19 @@ export const redditCallback = async (profile_id, sessionState, state, code) => {
     //   console.log(data , "151");
 
     const checkedUser = await read({
-      profile_id,
+      profileId,
     });
 
     let user = {
-      profile_id: profile_id,
-      _id: checkedUser[0]._id,
+      profileId: profileId,
+      id: checkedUser[0]._id,
       auth: {
-        ...checkedUser[0]?.auth?._doc,
+        ...checkedUser[0]?.auth,
         reddit: {
-          reddit_id: data.id,
-          reddit_username: data.name,
-          tokens: {
-            access_token: client.accessToken,
-            refresh_token: client.refreshToken,
-          },
+          redditId: data.id,
+          redditUsername: data.name,
+          accessToken: client.accessToken,
+          refreshToken: client.refreshToken,
         },
       },
     };

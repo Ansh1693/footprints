@@ -12,6 +12,7 @@ import { UserArgsSchema } from "../outputTypeSchemas/UserArgsSchema"
 
 export const UserMetadataSelectSchema: z.ZodType<Prisma.UserMetadataSelect> = z.object({
   id: z.boolean().optional(),
+  userId: z.boolean().optional(),
   profileImage: z.boolean().optional(),
   profileBanner: z.boolean().optional(),
   verified: z.boolean().optional(),

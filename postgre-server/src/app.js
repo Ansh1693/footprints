@@ -61,30 +61,29 @@ import fastifyHealthcheck from "fastify-healthcheck";
 app.register(fastifyHealthcheck, { healthcheckUrl: "/utility/health" });
 
 import auth from "./routes/auth.route.js";
-// import blok from "./routes/blok.route.js";
-// import document from "./routes/document.route.js";
-// import user from "./routes/user.route.js";
-// import tag from "./routes/tag.route.js";
-// import utility from "./routes/utility.route.js";
-// import query from "./routes/query.route.js";
-// import connect from "./routes/connect.route.js";
+import blok from "./routes/blok.route.js";
+import document from "./routes/document.route.js";
+import user from "./routes/user.route.js";
+import tag from "./routes/tag.route.js";
+import utility from "./routes/utility.route.js";
+import query from "./routes/query.route.js";
+import connect from "./routes/connect.route.js";
 import prisma from "./utils/initializers/prisma.initializer.js";
 
 app.register(auth, { prefix: "/auth" });
-// app.register(blok, { prefix: "/blok" });
-// app.register(document, { prefix: "/document" });
-// app.register(user, { prefix: "/user" });
-// app.register(tag, { prefix: "/tag" });
-// app.register(utility, { prefix: "/utility" });
-// app.register(query, { prefix: "/query" });
-// app.register(connect, { prefix: "/connect" });
+app.register(blok, { prefix: "/blok" });
+app.register(document, { prefix: "/document" });
+app.register(user, { prefix: "/user" });
+app.register(tag, { prefix: "/tag" });
+app.register(utility, { prefix: "/utility" });
+app.register(query, { prefix: "/query" });
+app.register(connect, { prefix: "/connect" });
 
 app.listen(
   { port: process.env.PORT || 3000, host: "0.0.0.0" },
   async (error) => {
     try {
       await prisma.$connect();
-      console.log(prisma);
     } catch (e) {
       console.log(e);
     }

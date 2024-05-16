@@ -4,8 +4,8 @@ import { z } from 'zod';
 import { StringFieldUpdateOperationsInputSchema } from './StringFieldUpdateOperationsInputSchema';
 import { NullableStringFieldUpdateOperationsInputSchema } from './NullableStringFieldUpdateOperationsInputSchema';
 import { DateTimeFieldUpdateOperationsInputSchema } from './DateTimeFieldUpdateOperationsInputSchema';
-import { UserMetadataUpdateOneRequiredWithoutUserNestedInputSchema } from './UserMetadataUpdateOneRequiredWithoutUserNestedInputSchema';
-import { UserAuthUpdateOneRequiredWithoutUserNestedInputSchema } from './UserAuthUpdateOneRequiredWithoutUserNestedInputSchema';
+import { UserMetadataUpdateOneWithoutUserNestedInputSchema } from './UserMetadataUpdateOneWithoutUserNestedInputSchema';
+import { UserAuthUpdateOneWithoutUserNestedInputSchema } from './UserAuthUpdateOneWithoutUserNestedInputSchema';
 import { CommentsUpdateManyWithoutUserNestedInputSchema } from './CommentsUpdateManyWithoutUserNestedInputSchema';
 import { TagUpdateManyWithoutUserNestedInputSchema } from './TagUpdateManyWithoutUserNestedInputSchema';
 import { BlokUpdateManyWithoutUserNestedInputSchema } from './BlokUpdateManyWithoutUserNestedInputSchema';
@@ -20,8 +20,8 @@ export const UserUpdateWithoutDocumentInputSchema: z.ZodType<Prisma.UserUpdateWi
   profileId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  UserMetadata: z.lazy(() => UserMetadataUpdateOneRequiredWithoutUserNestedInputSchema).optional(),
-  UserAuth: z.lazy(() => UserAuthUpdateOneRequiredWithoutUserNestedInputSchema).optional(),
+  UserMetadata: z.lazy(() => UserMetadataUpdateOneWithoutUserNestedInputSchema).optional(),
+  UserAuth: z.lazy(() => UserAuthUpdateOneWithoutUserNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentsUpdateManyWithoutUserNestedInputSchema).optional(),
   Tags: z.lazy(() => TagUpdateManyWithoutUserNestedInputSchema).optional(),
   Blok: z.lazy(() => BlokUpdateManyWithoutUserNestedInputSchema).optional(),

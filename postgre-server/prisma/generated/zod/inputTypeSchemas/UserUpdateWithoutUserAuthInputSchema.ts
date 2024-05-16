@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { StringFieldUpdateOperationsInputSchema } from './StringFieldUpdateOperationsInputSchema';
 import { NullableStringFieldUpdateOperationsInputSchema } from './NullableStringFieldUpdateOperationsInputSchema';
 import { DateTimeFieldUpdateOperationsInputSchema } from './DateTimeFieldUpdateOperationsInputSchema';
-import { UserMetadataUpdateOneRequiredWithoutUserNestedInputSchema } from './UserMetadataUpdateOneRequiredWithoutUserNestedInputSchema';
+import { UserMetadataUpdateOneWithoutUserNestedInputSchema } from './UserMetadataUpdateOneWithoutUserNestedInputSchema';
 import { DocumentUpdateManyWithoutUserNestedInputSchema } from './DocumentUpdateManyWithoutUserNestedInputSchema';
 import { CommentsUpdateManyWithoutUserNestedInputSchema } from './CommentsUpdateManyWithoutUserNestedInputSchema';
 import { TagUpdateManyWithoutUserNestedInputSchema } from './TagUpdateManyWithoutUserNestedInputSchema';
@@ -20,7 +20,7 @@ export const UserUpdateWithoutUserAuthInputSchema: z.ZodType<Prisma.UserUpdateWi
   profileId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  UserMetadata: z.lazy(() => UserMetadataUpdateOneRequiredWithoutUserNestedInputSchema).optional(),
+  UserMetadata: z.lazy(() => UserMetadataUpdateOneWithoutUserNestedInputSchema).optional(),
   Document: z.lazy(() => DocumentUpdateManyWithoutUserNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentsUpdateManyWithoutUserNestedInputSchema).optional(),
   Tags: z.lazy(() => TagUpdateManyWithoutUserNestedInputSchema).optional(),

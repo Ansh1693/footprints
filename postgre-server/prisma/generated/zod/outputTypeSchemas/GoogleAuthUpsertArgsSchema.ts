@@ -12,6 +12,7 @@ import { UserAuthArgsSchema } from "../outputTypeSchemas/UserAuthArgsSchema"
 
 export const GoogleAuthSelectSchema: z.ZodType<Prisma.GoogleAuthSelect> = z.object({
   id: z.boolean().optional(),
+  userAuthId: z.boolean().optional(),
   accessToken: z.boolean().optional(),
   refreshToken: z.boolean().optional(),
   googleId: z.boolean().optional(),

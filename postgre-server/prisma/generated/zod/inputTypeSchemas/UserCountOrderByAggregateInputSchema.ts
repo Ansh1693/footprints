@@ -11,9 +11,7 @@ export const UserCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserCountOrd
   username: z.lazy(() => SortOrderSchema).optional(),
   profileId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
-  updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  UserMetadataId: z.lazy(() => SortOrderSchema).optional(),
-  UserAuthId: z.lazy(() => SortOrderSchema).optional()
+  updatedAt: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export default UserCountOrderByAggregateInputSchema;

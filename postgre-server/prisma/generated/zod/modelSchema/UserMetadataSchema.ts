@@ -6,6 +6,7 @@ import { z } from 'zod';
 
 export const UserMetadataSchema = z.object({
   id: z.string().cuid(),
+  userId: z.string(),
   profileImage: z.string().nullable(),
   profileBanner: z.string().nullable(),
   verified: z.boolean(),

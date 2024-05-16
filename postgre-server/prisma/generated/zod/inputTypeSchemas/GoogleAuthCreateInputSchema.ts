@@ -10,7 +10,7 @@ export const GoogleAuthCreateInputSchema: z.ZodType<Prisma.GoogleAuthCreateInput
   googleId: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  UserAuth: z.lazy(() => UserAuthCreateNestedOneWithoutGoogleAuthInputSchema).optional()
+  UserAuth: z.lazy(() => UserAuthCreateNestedOneWithoutGoogleAuthInputSchema)
 }).strict();
 
 export default GoogleAuthCreateInputSchema;

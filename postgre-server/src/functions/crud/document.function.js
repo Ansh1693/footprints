@@ -7,7 +7,7 @@ import {
   DocumentMetadata,
   RedditData,
   TagsDocument,
-} from "../../utils/initializers/prisma.initializer";
+} from "../../utils/initializers/prisma.initializer.js";
 
 /**
  * A function that will create a new document

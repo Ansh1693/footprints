@@ -20,8 +20,6 @@ export const UserOrderByWithRelationInputSchema: z.ZodType<Prisma.UserOrderByWit
   profileId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  UserMetadataId: z.lazy(() => SortOrderSchema).optional(),
-  UserAuthId: z.lazy(() => SortOrderSchema).optional(),
   UserMetadata: z.lazy(() => UserMetadataOrderByWithRelationInputSchema).optional(),
   UserAuth: z.lazy(() => UserAuthOrderByWithRelationInputSchema).optional(),
   Document: z.lazy(() => DocumentOrderByRelationAggregateInputSchema).optional(),

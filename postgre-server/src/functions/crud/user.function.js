@@ -21,7 +21,7 @@ export const create = async (userObject) => {
       },
     };
 
-    if (userObject.UserAuth.google) {
+    if (userObject?.UserAuth?.google) {
       newUser.UserAuth.create.GoogleAuth = {
         create: {
           ...userObject.UserAuth.google,
@@ -35,8 +35,8 @@ export const create = async (userObject) => {
         UserMetadata: true,
         UserAuth: {
           include: {
-            GoogleAuth: userObject.userAuth.google ? true : false,
-            RedditAuth: userObject.userAuth.reddit ? true : false,
+            GoogleAuth: userObject?.userAuth?.google ? true : false,
+            RedditAuth: userObject?.userAuth?.reddit ? true : false,
           },
         },
       },
@@ -57,6 +57,15 @@ export const read = async (userObject) => {
       where: {
         ...userObject,
       },
+      include: {
+        UserMetadata: true,
+        UserAuth: {
+          include: {
+            GoogleAuth: true,
+            RedditAuth: true,
+          },
+        },
+      },
     });
   } catch (error) {
     throw error;
@@ -70,7 +79,7 @@ export const read = async (userObject) => {
  */
 export const update = async (userObject) => {
   try {
-    const userToUpdate = await prisma.user.findUnique({
+    const userToUpdate = await User.findUnique({
       where: { id: userObject.id },
       include: {
         UserMetadata: true,
@@ -87,33 +96,56 @@ export const update = async (userObject) => {
       throw new Error(`User with ID ${userObject.id} not found`);
     }
 
-    return await prisma.user.update({
+    const updatedUser = {
+      name: userObject?.name,
+      UserMetadata: {
+        update: {
+          ...userObject?.UserMetadata,
+        },
+      },
+    };
+
+    if (userObject?.UserAuth?.google) {
+      updatedUser.UserAuth = {
+        update: {
+          GoogleAuth: {},
+        },
+      };
+
+      updatedUser.UserAuth.update.GoogleAuth = {
+        upsert: {
+          create: {
+            ...userObject.UserAuth.google,
+          },
+          update: {
+            ...userObject.UserAuth.google,
+          },
+        },
+      };
+    }
+
+    if (userObject?.UserAuth?.reddit) {
+      updatedUser.UserAuth = {
+        update: {
+          RedditAuth: {},
+        },
+      };
+
+      updatedUser.UserAuth.update.RedditAuth = {
+        upsert: {
+          create: {
+            ...userObject.UserAuth.reddit,
+          },
+          update: {
+            ...userObject.UserAuth.reddit,
+          },
+        },
+      };
+    }
+    return await User.update({
       where: { id: userObject.id },
       data: {
-        firstName: updatedUserObject.firstName || userToUpdate.firstName,
-        lastName: updatedUserObject.lastName || userToUpdate.lastName,
-        UserMetadata: {
-          update: {
-            ...userToUpdate.UserMetadata,
-            ...updatedUserObject.UserMetadata,
-          },
-        },
-        UserAuth: {
-          update: {
-            GoogleAuth: {
-              update: {
-                ...(userToUpdate.UserAuth.GoogleAuth || {}),
-                ...(updatedUserObject.UserAuth.google || {}),
-              },
-            },
-            RedditAuth: {
-              update: {
-                ...(userToUpdate.UserAuth.RedditAuth || {}),
-                ...(updatedUserObject.UserAuth.reddit || {}),
-              },
-            },
-          },
-        },
+        ...updatedUser,
       },
       include: {
         UserMetadata: true,

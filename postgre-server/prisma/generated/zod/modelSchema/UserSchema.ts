@@ -13,8 +13,6 @@ export const UserSchema = z.object({
   profileId: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  UserMetadataId: z.string(),
-  UserAuthId: z.string(),
 })
 
 export type User = z.infer<typeof UserSchema>

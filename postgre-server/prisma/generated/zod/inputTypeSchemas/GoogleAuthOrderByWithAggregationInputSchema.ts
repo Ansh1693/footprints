@@ -9,6 +9,7 @@ import { GoogleAuthMinOrderByAggregateInputSchema } from './GoogleAuthMinOrderBy
 
 export const GoogleAuthOrderByWithAggregationInputSchema: z.ZodType<Prisma.GoogleAuthOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
+  userAuthId: z.lazy(() => SortOrderSchema).optional(),
   accessToken: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   refreshToken: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   googleId: z.lazy(() => SortOrderSchema).optional(),

@@ -4,9 +4,9 @@ import { z } from 'zod';
 import { StringFilterSchema } from './StringFilterSchema';
 import { StringNullableFilterSchema } from './StringNullableFilterSchema';
 import { DateTimeFilterSchema } from './DateTimeFilterSchema';
-import { UserMetadataRelationFilterSchema } from './UserMetadataRelationFilterSchema';
+import { UserMetadataNullableRelationFilterSchema } from './UserMetadataNullableRelationFilterSchema';
 import { UserMetadataWhereInputSchema } from './UserMetadataWhereInputSchema';
-import { UserAuthRelationFilterSchema } from './UserAuthRelationFilterSchema';
+import { UserAuthNullableRelationFilterSchema } from './UserAuthNullableRelationFilterSchema';
 import { UserAuthWhereInputSchema } from './UserAuthWhereInputSchema';
 import { DocumentListRelationFilterSchema } from './DocumentListRelationFilterSchema';
 import { CommentsListRelationFilterSchema } from './CommentsListRelationFilterSchema';
@@ -26,10 +26,8 @@ export const UserWhereInputSchema: z.ZodType<Prisma.UserWhereInput> = z.object({
   profileId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
-  UserMetadataId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  UserAuthId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  UserMetadata: z.union([ z.lazy(() => UserMetadataRelationFilterSchema),z.lazy(() => UserMetadataWhereInputSchema) ]).optional(),
-  UserAuth: z.union([ z.lazy(() => UserAuthRelationFilterSchema),z.lazy(() => UserAuthWhereInputSchema) ]).optional(),
+  UserMetadata: z.union([ z.lazy(() => UserMetadataNullableRelationFilterSchema),z.lazy(() => UserMetadataWhereInputSchema) ]).optional().nullable(),
+  UserAuth: z.union([ z.lazy(() => UserAuthNullableRelationFilterSchema),z.lazy(() => UserAuthWhereInputSchema) ]).optional().nullable(),
   Document: z.lazy(() => DocumentListRelationFilterSchema).optional(),
   Comments: z.lazy(() => CommentsListRelationFilterSchema).optional(),
   Tags: z.lazy(() => TagListRelationFilterSchema).optional(),

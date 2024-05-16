@@ -9,6 +9,7 @@ import { UserMetadataMinOrderByAggregateInputSchema } from './UserMetadataMinOrd
 
 export const UserMetadataOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserMetadataOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   profileImage: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   profileBanner: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   verified: z.lazy(() => SortOrderSchema).optional(),

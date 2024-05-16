@@ -5,6 +5,7 @@ import { SortOrderSchema } from './SortOrderSchema';
 
 export const UserMetadataCountOrderByAggregateInputSchema: z.ZodType<Prisma.UserMetadataCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   profileImage: z.lazy(() => SortOrderSchema).optional(),
   profileBanner: z.lazy(() => SortOrderSchema).optional(),
   verified: z.lazy(() => SortOrderSchema).optional(),

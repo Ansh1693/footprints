@@ -7,6 +7,7 @@ import { UserAuthOrderByWithRelationInputSchema } from './UserAuthOrderByWithRel
 
 export const GoogleAuthOrderByWithRelationInputSchema: z.ZodType<Prisma.GoogleAuthOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
+  userAuthId: z.lazy(() => SortOrderSchema).optional(),
   accessToken: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   refreshToken: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   googleId: z.lazy(() => SortOrderSchema).optional(),

@@ -10,10 +10,9 @@ import { RedditAuthArgsSchema } from "../outputTypeSchemas/RedditAuthArgsSchema"
 
 export const UserAuthSelectSchema: z.ZodType<Prisma.UserAuthSelect> = z.object({
   id: z.boolean().optional(),
-  GoogleAuthId: z.boolean().optional(),
+  userId: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   updatedAt: z.boolean().optional(),
-  RedditAuthId: z.boolean().optional(),
   User: z.union([z.boolean(),z.lazy(() => UserArgsSchema)]).optional(),
   GoogleAuth: z.union([z.boolean(),z.lazy(() => GoogleAuthArgsSchema)]).optional(),
   RedditAuth: z.union([z.boolean(),z.lazy(() => RedditAuthArgsSchema)]).optional(),

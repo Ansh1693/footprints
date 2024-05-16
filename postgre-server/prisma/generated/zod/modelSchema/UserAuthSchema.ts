@@ -6,10 +6,9 @@ import { z } from 'zod';
 
 export const UserAuthSchema = z.object({
   id: z.string().cuid(),
-  GoogleAuthId: z.string(),
+  userId: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  RedditAuthId: z.string(),
 })
 
 export type UserAuth = z.infer<typeof UserAuthSchema>

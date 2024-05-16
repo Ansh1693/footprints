@@ -37,7 +37,7 @@ const initializeAuth = async (req, res) => {
       cache.set(data.state, auth_params, 60 * 5);
 
       res.status(200).send({ data });
-    } else if (query_type === "google") {
+    } else if (queryType === "google") {
       const { state, url } = googleLogin();
 
       const auth_params = { state } || {};

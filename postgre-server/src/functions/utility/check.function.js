@@ -3,7 +3,7 @@ import {
   Tag,
   Blok,
   Document,
-} from "../../utils/initializers/prisma.initializer";
+} from "../../utils/initializers/prisma.initializer.js";
 
 /**
  * A function that will check the availability of a username

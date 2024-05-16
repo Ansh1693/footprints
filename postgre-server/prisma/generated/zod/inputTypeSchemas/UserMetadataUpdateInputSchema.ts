@@ -5,7 +5,7 @@ import { StringFieldUpdateOperationsInputSchema } from './StringFieldUpdateOpera
 import { NullableStringFieldUpdateOperationsInputSchema } from './NullableStringFieldUpdateOperationsInputSchema';
 import { BoolFieldUpdateOperationsInputSchema } from './BoolFieldUpdateOperationsInputSchema';
 import { DateTimeFieldUpdateOperationsInputSchema } from './DateTimeFieldUpdateOperationsInputSchema';
-import { UserUpdateOneWithoutUserMetadataNestedInputSchema } from './UserUpdateOneWithoutUserMetadataNestedInputSchema';
+import { UserUpdateOneRequiredWithoutUserMetadataNestedInputSchema } from './UserUpdateOneRequiredWithoutUserMetadataNestedInputSchema';
 
 export const UserMetadataUpdateInputSchema: z.ZodType<Prisma.UserMetadataUpdateInput> = z.object({
   id: z.union([ z.string().cuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
@@ -14,7 +14,7 @@ export const UserMetadataUpdateInputSchema: z.ZodType<Prisma.UserMetadataUpdateI
   verified: z.union([ z.boolean(),z.lazy(() => BoolFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  User: z.lazy(() => UserUpdateOneWithoutUserMetadataNestedInputSchema).optional()
+  User: z.lazy(() => UserUpdateOneRequiredWithoutUserMetadataNestedInputSchema).optional()
 }).strict();
 
 export default UserMetadataUpdateInputSchema;

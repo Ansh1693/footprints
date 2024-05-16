@@ -17,7 +17,7 @@ export const UserCreateWithoutUserAuthInputSchema: z.ZodType<Prisma.UserCreateWi
   profileId: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  UserMetadata: z.lazy(() => UserMetadataCreateNestedOneWithoutUserInputSchema),
+  UserMetadata: z.lazy(() => UserMetadataCreateNestedOneWithoutUserInputSchema).optional(),
   Document: z.lazy(() => DocumentCreateNestedManyWithoutUserInputSchema).optional(),
   Comments: z.lazy(() => CommentsCreateNestedManyWithoutUserInputSchema).optional(),
   Tags: z.lazy(() => TagCreateNestedManyWithoutUserInputSchema).optional(),

@@ -9,7 +9,7 @@ export const UserAuthCreateInputSchema: z.ZodType<Prisma.UserAuthCreateInput> = 
   id: z.string().cuid().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  User: z.lazy(() => UserCreateNestedOneWithoutUserAuthInputSchema).optional(),
+  User: z.lazy(() => UserCreateNestedOneWithoutUserAuthInputSchema),
   GoogleAuth: z.lazy(() => GoogleAuthCreateNestedOneWithoutUserAuthInputSchema).optional(),
   RedditAuth: z.lazy(() => RedditAuthCreateNestedOneWithoutUserAuthInputSchema).optional()
 }).strict();

@@ -10,10 +10,10 @@ import { redditLogin } from "../../functions/auth/initialize.function.js";
  */
 const initialiseConnect = async (req, res) => {
   try {
-    const { query_type } = req.query;
+    const { queryType } = req.query;
     const { profileId } = req.user;
 
-    if (query_type === "reddit") {
+    if (queryType === "reddit") {
       const { state, url } = redditLogin();
 
       const saved = { state, profileId };

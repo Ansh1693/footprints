@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { StringFieldUpdateOperationsInputSchema } from './StringFieldUpdateOperationsInputSchema';
 import { NullableStringFieldUpdateOperationsInputSchema } from './NullableStringFieldUpdateOperationsInputSchema';
 import { DateTimeFieldUpdateOperationsInputSchema } from './DateTimeFieldUpdateOperationsInputSchema';
-import { UserAuthUpdateOneRequiredWithoutUserNestedInputSchema } from './UserAuthUpdateOneRequiredWithoutUserNestedInputSchema';
+import { UserAuthUpdateOneWithoutUserNestedInputSchema } from './UserAuthUpdateOneWithoutUserNestedInputSchema';
 import { DocumentUpdateManyWithoutUserNestedInputSchema } from './DocumentUpdateManyWithoutUserNestedInputSchema';
 import { CommentsUpdateManyWithoutUserNestedInputSchema } from './CommentsUpdateManyWithoutUserNestedInputSchema';
 import { TagUpdateManyWithoutUserNestedInputSchema } from './TagUpdateManyWithoutUserNestedInputSchema';
@@ -20,7 +20,7 @@ export const UserUpdateWithoutUserMetadataInputSchema: z.ZodType<Prisma.UserUpda
   profileId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  UserAuth: z.lazy(() => UserAuthUpdateOneRequiredWithoutUserNestedInputSchema).optional(),
+  UserAuth: z.lazy(() => UserAuthUpdateOneWithoutUserNestedInputSchema).optional(),
   Document: z.lazy(() => DocumentUpdateManyWithoutUserNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentsUpdateManyWithoutUserNestedInputSchema).optional(),
   Tags: z.lazy(() => TagUpdateManyWithoutUserNestedInputSchema).optional(),

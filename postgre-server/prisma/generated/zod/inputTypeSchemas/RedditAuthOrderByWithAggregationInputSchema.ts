@@ -9,6 +9,7 @@ import { RedditAuthMinOrderByAggregateInputSchema } from './RedditAuthMinOrderBy
 
 export const RedditAuthOrderByWithAggregationInputSchema: z.ZodType<Prisma.RedditAuthOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
+  userAuthId: z.lazy(() => SortOrderSchema).optional(),
   accessToken: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   refreshToken: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   redditId: z.lazy(() => SortOrderSchema).optional(),

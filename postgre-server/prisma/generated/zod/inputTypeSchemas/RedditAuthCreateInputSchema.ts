@@ -11,7 +11,7 @@ export const RedditAuthCreateInputSchema: z.ZodType<Prisma.RedditAuthCreateInput
   redditUsername: z.string(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  UserAuth: z.lazy(() => UserAuthCreateNestedOneWithoutRedditAuthInputSchema).optional()
+  UserAuth: z.lazy(() => UserAuthCreateNestedOneWithoutRedditAuthInputSchema)
 }).strict();
 
 export default RedditAuthCreateInputSchema;

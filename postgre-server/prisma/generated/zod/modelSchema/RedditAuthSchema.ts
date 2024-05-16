@@ -6,6 +6,7 @@ import { z } from 'zod';
 
 export const RedditAuthSchema = z.object({
   id: z.string().cuid(),
+  userAuthId: z.string(),
   accessToken: z.string().nullable(),
   refreshToken: z.string().nullable(),
   redditId: z.string(),

@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { StringFieldUpdateOperationsInputSchema } from './StringFieldUpdateOperationsInputSchema';
 import { NullableStringFieldUpdateOperationsInputSchema } from './NullableStringFieldUpdateOperationsInputSchema';
 import { DateTimeFieldUpdateOperationsInputSchema } from './DateTimeFieldUpdateOperationsInputSchema';
+import { UserMetadataUncheckedUpdateOneWithoutUserNestedInputSchema } from './UserMetadataUncheckedUpdateOneWithoutUserNestedInputSchema';
+import { UserAuthUncheckedUpdateOneWithoutUserNestedInputSchema } from './UserAuthUncheckedUpdateOneWithoutUserNestedInputSchema';
 import { DocumentUncheckedUpdateManyWithoutUserNestedInputSchema } from './DocumentUncheckedUpdateManyWithoutUserNestedInputSchema';
 import { CommentsUncheckedUpdateManyWithoutUserNestedInputSchema } from './CommentsUncheckedUpdateManyWithoutUserNestedInputSchema';
 import { TagUncheckedUpdateManyWithoutUserNestedInputSchema } from './TagUncheckedUpdateManyWithoutUserNestedInputSchema';
@@ -18,8 +20,8 @@ export const UserUncheckedUpdateWithoutBlokFollowersInputSchema: z.ZodType<Prism
   profileId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  UserMetadataId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
-  UserAuthId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
+  UserMetadata: z.lazy(() => UserMetadataUncheckedUpdateOneWithoutUserNestedInputSchema).optional(),
+  UserAuth: z.lazy(() => UserAuthUncheckedUpdateOneWithoutUserNestedInputSchema).optional(),
   Document: z.lazy(() => DocumentUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   Comments: z.lazy(() => CommentsUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),
   Tags: z.lazy(() => TagUncheckedUpdateManyWithoutUserNestedInputSchema).optional(),

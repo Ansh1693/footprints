@@ -7,6 +7,7 @@ import { UserOrderByWithRelationInputSchema } from './UserOrderByWithRelationInp
 
 export const UserMetadataOrderByWithRelationInputSchema: z.ZodType<Prisma.UserMetadataOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   profileImage: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   profileBanner: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   verified: z.lazy(() => SortOrderSchema).optional(),

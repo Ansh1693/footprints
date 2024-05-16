@@ -10,7 +10,7 @@ export const UserMetadataCreateInputSchema: z.ZodType<Prisma.UserMetadataCreateI
   verified: z.boolean().optional(),
   createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
-  User: z.lazy(() => UserCreateNestedOneWithoutUserMetadataInputSchema).optional()
+  User: z.lazy(() => UserCreateNestedOneWithoutUserMetadataInputSchema)
 }).strict();
 
 export default UserMetadataCreateInputSchema;

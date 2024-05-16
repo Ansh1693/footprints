@@ -1,5 +1,5 @@
 import { z } from 'zod';
 
-export const RedditAuthScalarFieldEnumSchema = z.enum(['id','accessToken','refreshToken','redditId','redditUsername','createdAt','updatedAt']);
+export const RedditAuthScalarFieldEnumSchema = z.enum(['id','userAuthId','accessToken','refreshToken','redditId','redditUsername','createdAt','updatedAt']);
 
 export default RedditAuthScalarFieldEnumSchema;

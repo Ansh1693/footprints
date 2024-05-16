@@ -5,6 +5,7 @@ import { SortOrderSchema } from './SortOrderSchema';
 
 export const RedditAuthMaxOrderByAggregateInputSchema: z.ZodType<Prisma.RedditAuthMaxOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
+  userAuthId: z.lazy(() => SortOrderSchema).optional(),
   accessToken: z.lazy(() => SortOrderSchema).optional(),
   refreshToken: z.lazy(() => SortOrderSchema).optional(),
   redditId: z.lazy(() => SortOrderSchema).optional(),

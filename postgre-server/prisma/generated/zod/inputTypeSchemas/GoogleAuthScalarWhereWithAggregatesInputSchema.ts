@@ -10,6 +10,7 @@ export const GoogleAuthScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Go
   OR: z.lazy(() => GoogleAuthScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => GoogleAuthScalarWhereWithAggregatesInputSchema),z.lazy(() => GoogleAuthScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userAuthId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   accessToken: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   refreshToken: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   googleId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),

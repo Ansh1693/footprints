@@ -6,6 +6,7 @@ import { z } from 'zod';
 
 export const GoogleAuthSchema = z.object({
   id: z.string().cuid(),
+  userAuthId: z.string(),
   accessToken: z.string().nullable(),
   refreshToken: z.string().nullable(),
   googleId: z.string(),

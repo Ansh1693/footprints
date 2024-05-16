@@ -8,10 +8,9 @@ import { UserAuthMinOrderByAggregateInputSchema } from './UserAuthMinOrderByAggr
 
 export const UserAuthOrderByWithAggregationInputSchema: z.ZodType<Prisma.UserAuthOrderByWithAggregationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  GoogleAuthId: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  RedditAuthId: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => UserAuthCountOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => UserAuthMaxOrderByAggregateInputSchema).optional(),
   _min: z.lazy(() => UserAuthMinOrderByAggregateInputSchema).optional()

@@ -10,6 +10,7 @@ export const RedditAuthScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.Re
   OR: z.lazy(() => RedditAuthScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => RedditAuthScalarWhereWithAggregatesInputSchema),z.lazy(() => RedditAuthScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userAuthId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   accessToken: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   refreshToken: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   redditId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),

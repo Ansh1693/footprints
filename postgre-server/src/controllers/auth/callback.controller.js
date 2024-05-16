@@ -5,12 +5,6 @@ import {
   googleCallback,
 } from "../../functions/auth/callback.function.js";
 
-import { z } from "zod";
-
-const QuerySchema = z.object({
-  platform: z.enum(["email", "google"]),
-});
-
 /**
  * A controller to handle the auth callback requests
  *
@@ -18,7 +12,7 @@ const QuerySchema = z.object({
 
 const callbackAuth = async (req, res) => {
   try {
-    const { platform } = QuerySchema.parse(req.params);
+    const { platform } = req.params;
     const { state, code } = req.query;
 
     const authParams = cache.get(state);

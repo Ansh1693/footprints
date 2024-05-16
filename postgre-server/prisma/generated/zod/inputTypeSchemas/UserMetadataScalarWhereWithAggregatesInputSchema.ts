@@ -11,6 +11,7 @@ export const UserMetadataScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.
   OR: z.lazy(() => UserMetadataScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => UserMetadataScalarWhereWithAggregatesInputSchema),z.lazy(() => UserMetadataScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
+  userId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   profileImage: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   profileBanner: z.union([ z.lazy(() => StringNullableWithAggregatesFilterSchema),z.string() ]).optional().nullable(),
   verified: z.union([ z.lazy(() => BoolWithAggregatesFilterSchema),z.boolean() ]).optional(),

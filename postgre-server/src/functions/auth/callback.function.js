@@ -43,14 +43,14 @@ export const googleCallback = async (state, code, { state: sessionState }) => {
       name: data.names[0].displayName,
       email: data.emailAddresses[0].value,
       username: generateUsername(data.emailAddresses[0].value),
-      auth: {
+      UserAuth: {
         google: {
           googleId: googleId,
           accessToken: tokens.access_token,
           refreshToken: tokens.refresh_token,
         },
       },
-      userMetadata: {
+      UserMetadata: {
         profileImage: data.photos[0].url,
       },
     };
@@ -58,20 +58,14 @@ export const googleCallback = async (state, code, { state: sessionState }) => {
     const checkUser = await checkEmail(data.emailAddresses[0].value);
 
     if (checkUser.foundUser) {
-      const oldUser = await read({
-        profileId: checkUser.user.profileId,
-      });
       user = {
         ...user,
         id: checkUser.user.id,
-        // auth: {
-        //   ...user.auth,
-        //   ...oldUser[0]?.auth?._doc,
-        // },
+        UserAuth: {
+          ...user.UserAuth,
+        },
       };
-
-      console.log(user);
-      console.log(oldUser);
+      console.log(user, "user");
 
       await update(user);
 
@@ -153,9 +147,10 @@ export const redditCallback = async (profileId, sessionState, state, code) => {
 
     let user = {
       profileId: profileId,
-      id: checkedUser[0]._id,
-      auth: {
-        ...checkedUser[0]?.auth,
+      id: checkedUser.id,
+      name: checkedUser.name,
+      UserAuth: {
+        ...checkedUser?.auth,
         reddit: {
           redditId: data.id,
           redditUsername: data.name,

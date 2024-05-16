@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 export const GoogleAuthCreateManyInputSchema: z.ZodType<Prisma.GoogleAuthCreateManyInput> = z.object({
   id: z.string().cuid().optional(),
+  userAuthId: z.string(),
   accessToken: z.string().optional().nullable(),
   refreshToken: z.string().optional().nullable(),
   googleId: z.string(),

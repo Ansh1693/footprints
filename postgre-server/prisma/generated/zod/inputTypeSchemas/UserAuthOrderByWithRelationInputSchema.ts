@@ -8,10 +8,9 @@ import { RedditAuthOrderByWithRelationInputSchema } from './RedditAuthOrderByWit
 
 export const UserAuthOrderByWithRelationInputSchema: z.ZodType<Prisma.UserAuthOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
-  GoogleAuthId: z.lazy(() => SortOrderSchema).optional(),
+  userId: z.lazy(() => SortOrderSchema).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
-  RedditAuthId: z.lazy(() => SortOrderSchema).optional(),
   User: z.lazy(() => UserOrderByWithRelationInputSchema).optional(),
   GoogleAuth: z.lazy(() => GoogleAuthOrderByWithRelationInputSchema).optional(),
   RedditAuth: z.lazy(() => RedditAuthOrderByWithRelationInputSchema).optional()

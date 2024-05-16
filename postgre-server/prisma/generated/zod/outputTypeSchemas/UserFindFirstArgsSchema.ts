@@ -25,8 +25,6 @@ export const UserSelectSchema: z.ZodType<Prisma.UserSelect> = z.object({
   profileId: z.boolean().optional(),
   createdAt: z.boolean().optional(),
   updatedAt: z.boolean().optional(),
-  UserMetadataId: z.boolean().optional(),
-  UserAuthId: z.boolean().optional(),
   UserMetadata: z.union([z.boolean(),z.lazy(() => UserMetadataArgsSchema)]).optional(),
   UserAuth: z.union([z.boolean(),z.lazy(() => UserAuthArgsSchema)]).optional(),
   Document: z.union([z.boolean(),z.lazy(() => DocumentFindManyArgsSchema)]).optional(),

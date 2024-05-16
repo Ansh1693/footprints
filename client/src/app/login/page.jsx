@@ -190,7 +190,7 @@ const page = () => {
 			//   }
 
 			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/initialize?query_type=google`,
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/initialize?queryType=google`,
 				{
 					method: 'GET',
 					headers: {

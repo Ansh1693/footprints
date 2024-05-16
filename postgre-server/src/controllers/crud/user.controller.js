@@ -13,15 +13,14 @@ import { checkAccess } from "../../functions/utility/check.function.js";
  */
 export const read = async (req, res) => {
   try {
-    const { profile_id } = req.user;
+    const { profileId } = req.user;
     const { username } = req.query;
-
     const userObject = {};
 
     if (username) {
       userObject.username = username;
     } else {
-      userObject.profileId = profile_id;
+      userObject.profileId = profileId;
     }
 
     const data = await readUser(userObject);

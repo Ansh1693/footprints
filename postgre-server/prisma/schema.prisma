@@ -8,28 +8,27 @@ datasource db {
 }
 
 model User {
-  id             String          @id @default(cuid())
-  email          String          @unique
-  name           String
-  description    String?
-  username       String          @unique
-  profileId      String          @unique
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  UserMetadataId String          @unique
-  UserMetadata   UserMetadata    @relation(fields: [UserMetadataId], references: [id], onDelete: Cascade)
-  UserAuthId     String          @unique
-  UserAuth       UserAuth        @relation(fields: [UserAuthId], references: [id], onDelete: Cascade)
-  Document       Document[]
-  Comments       Comments[]
-  Tags           Tag[]
-  Blok           Blok[]
-  BlokFollowers  BlokFollowers[]
+  id            String          @id @default(cuid())
+  email         String          @unique
+  name          String
+  description   String?
+  username      String          @unique @db.VarChar(255)
+  profileId     String          @unique
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  UserMetadata  UserMetadata?
+  UserAuth      UserAuth?
+  Document      Document[]
+  Comments      Comments[]
+  Tags          Tag[]
+  Blok          Blok[]
+  BlokFollowers BlokFollowers[]
 }
 
 model UserMetadata {
   id            String   @id @default(cuid())
-  User          User?
+  userId        String   @unique
+  User          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   profileImage  String?
   profileBanner String?
   verified      Boolean  @default(false)
@@ -38,35 +37,36 @@ model UserMetadata {
 }
 
 model UserAuth {
-  id           String      @id @default(cuid())
-  User         User?
-  GoogleAuthId String      @unique
-  GoogleAuth   GoogleAuth? @relation(fields: [GoogleAuthId], references: [id], onDelete: Cascade)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  RedditAuthId String      @unique
-  RedditAuth   RedditAuth? @relation(fields: [RedditAuthId], references: [id], onDelete: Cascade)
+  id         String      @id @default(cuid())
+  userId     String      @unique
+  User       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  GoogleAuth GoogleAuth?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  RedditAuth RedditAuth?
 }
 
 model GoogleAuth {
-  id           String    @id @default(cuid())
-  UserAuth     UserAuth?
+  id           String   @id @default(cuid())
+  userAuthId   String   @unique
+  UserAuth     UserAuth @relation(fields: [userAuthId], references: [id], onDelete: Cascade)
   accessToken  String?
   refreshToken String?
   googleId     String
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model RedditAuth {
-  id             String    @id @default(cuid())
-  UserAuth       UserAuth?
+  id             String   @id @default(cuid())
+  userAuthId     String   @unique
+  UserAuth       UserAuth @relation(fields: [userAuthId], references: [id], onDelete: Cascade)
   accessToken    String?
   refreshToken   String?
   redditId       String
   redditUsername String
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model Document {

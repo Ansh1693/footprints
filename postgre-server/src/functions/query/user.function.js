@@ -1,4 +1,4 @@
-import { User } from "../../utils/initializers/prisma.initializer";
+import { User } from "../../utils/initializers/prisma.initializer.js";
 /**
  * A function that will return a profile
  *

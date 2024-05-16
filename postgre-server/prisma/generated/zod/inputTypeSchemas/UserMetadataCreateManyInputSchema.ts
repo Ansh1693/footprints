@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 export const UserMetadataCreateManyInputSchema: z.ZodType<Prisma.UserMetadataCreateManyInput> = z.object({
   id: z.string().cuid().optional(),
+  userId: z.string(),
   profileImage: z.string().optional().nullable(),
   profileBanner: z.string().optional().nullable(),
   verified: z.boolean().optional(),

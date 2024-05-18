@@ -39,13 +39,10 @@ export const read = async (req, res) => {
  */
 export const update = async (req, res) => {
   try {
-    /**
-     * @type {{userObject: import("../../../types/schema/user.schema").userDocument}}
-     */
     const { userObject } = req.body;
-    const { profile_id } = req.user;
+    const { profileId } = req.user;
 
-    await checkAccess(profile_id, "user", userObject._id);
+    await checkAccess(profileId, "user", userObject.id);
 
     const data = await updateUser(userObject);
 
@@ -63,13 +60,10 @@ export const update = async (req, res) => {
  */
 export const del = async (req, res) => {
   try {
-    /**
-     * @type {{userObject: import("../../../types/schema/user.schema").userDocument}}
-     */
     const { userObject } = req.body;
-    const { profile_id } = req.user;
+    const { profileId } = req.user;
 
-    await checkAccess(profile_id, "user", userObject._id);
+    await checkAccess(profileId, "user", userObject.id);
 
     const data = await deleteUser(userObject);
 

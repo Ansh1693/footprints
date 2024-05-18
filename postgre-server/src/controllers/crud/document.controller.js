@@ -27,7 +27,7 @@ export const create = async (req, res) => {
  */
 export const read = async (req, res) => {
   try {
-    const { profileId, userId } = req.user;
+    const { userId } = req.user;
     const { documentId } = req.query;
 
     const documentObject = {};
@@ -36,8 +36,6 @@ export const read = async (req, res) => {
     } else if (userId) {
       documentObject.userId = userId;
     }
-
-    console.log(documentObject);
 
     const data = await readDocument(documentObject);
 
@@ -71,12 +69,8 @@ export const update = async (req, res) => {
  */
 export const del = async (req, res) => {
   try {
-    const { documentId } = req.query;
+    const { documentObject } = req.body;
     const { profileId } = req.user;
-
-    const documentObject = {
-      id: documentId,
-    };
 
     await checkAccess(profileId, "document", documentObject.id);
 

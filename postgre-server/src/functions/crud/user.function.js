@@ -65,6 +65,11 @@ export const read = async (userObject) => {
             RedditAuth: true,
           },
         },
+        Document: true,
+        Blok: true,
+        Comments: true,
+        Tags: true,
+        BlokFollowers: true,
       },
     });
   } catch (error) {
@@ -98,12 +103,21 @@ export const update = async (userObject) => {
 
     const updatedUser = {
       name: userObject?.name,
+
       UserMetadata: {
         update: {
           ...userObject?.UserMetadata,
         },
       },
     };
+
+    if (userObject?.description) {
+      updatedUser.description = userObject.description;
+    }
+
+    if (userObject?.username) {
+      updatedUser.username = userObject.username;
+    }
 
     if (userObject?.UserAuth?.google) {
       updatedUser.UserAuth = {
@@ -180,11 +194,11 @@ export const del = async (userObject) => {
             GoogleAuth: true,
             RedditAuth: true,
           },
-          Document: true,
-          Comments: true,
-          Tags: true,
-          Blok: true,
-          BlokFollowers: true,
+          // Document: true,
+          // Comments: true,
+          // Tags: true,
+          // Blok: true,
+          // BlokFollowers: true,
         },
       },
     });

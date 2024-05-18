@@ -105,20 +105,37 @@ export const create = async (documentObject, blokObject = undefined) => {
  */
 export const read = async (documentObject) => {
   try {
-    return await Document.findUnique({
-      where: {
-        ...documentObject,
-      },
-      include: {
-        User: true,
-        Comments: true,
-        DocumentMetadata: true,
-        RedditData: true,
-        PinterestData: true,
-        TagsDocument: true,
-        BloksDocument: true,
-      },
-    });
+    if (documentObject?.id) {
+      return await Document.findUnique({
+        where: {
+          ...documentObject,
+        },
+        include: {
+          User: true,
+          Comments: true,
+          DocumentMetadata: true,
+          RedditData: true,
+          PinterestData: true,
+          TagsDocument: true,
+          BloksDocument: true,
+        },
+      });
+    } else {
+      return await Document.findMany({
+        where: {
+          ...documentObject,
+        },
+        include: {
+          User: true,
+          Comments: true,
+          DocumentMetadata: true,
+          RedditData: true,
+          PinterestData: true,
+          TagsDocument: true,
+          BloksDocument: true,
+        },
+      });
+    }
   } catch (error) {
     throw error;
   }
@@ -131,34 +148,11 @@ export const read = async (documentObject) => {
  */
 export const update = async (documentObject) => {
   try {
-    const docToBeUpdated = await Document.findUnique({
-      where: {
-        ...documentObject,
-      },
-      include: {
-        DocumentMetadata: true,
-        RedditData: true,
-        PinterestData: true,
-      },
-    });
-
     const updatedDocument = {
-      heading: documentObject?.heading || docToBeUpdated?.heading || "",
-      body: documentObject?.heading || docToBeUpdated?.heading || "",
-      Status: documentObject?.Status || docToBeUpdated?.Status,
+      ...documentObject,
       DocumentMetadata: {
         update: {
-          documentType:
-            documentObject?.DocumentMetadata?.documentType ||
-            docToBeUpdated.DocumentMetadata.documentType,
-          bodyImageUrl:
-            documentObject?.DocumentMetadata?.bodyImageUrl ||
-            docToBeUpdated?.DocumentMetadata?.bodyImageUrl ||
-            "",
-          sourceUrl:
-            documentObject?.DocumentMetadata?.sourceUrl ||
-            docToBeUpdated?.DocumentMetadata?.sourceUrl ||
-            "",
+          ...documentObject.DocumentMetadata,
         },
       },
     };
@@ -181,7 +175,7 @@ export const update = async (documentObject) => {
 
     return await Document.update({
       where: {
-        id: docToBeUpdated.id,
+        id: documentObject.id,
       },
       data: updatedDocument,
     });

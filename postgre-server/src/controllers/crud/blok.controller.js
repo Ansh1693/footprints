@@ -72,12 +72,8 @@ export const update = async (req, res) => {
  */
 export const del = async (req, res) => {
   try {
-    const { blokId } = req.query;
+    const { blokObject } = req.body;
     const { profileId } = req.user;
-
-    const blokObject = {
-      id: blokId,
-    };
 
     await checkAccess(profileId, "blok", blokObject.id);
 

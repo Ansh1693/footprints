@@ -10,7 +10,7 @@ import S3 from "../../utils/api/cloudflare.js";
 export const uploadImage = async (file, profileId) => {
   try {
     if (
-      !["image/heic", "image/jpeg", "image/png"].some(
+      !["image/heic", "image/jpeg", "image/png", "image/jpg"].some(
         (type) => type === file.mimetype,
       )
     ) {
@@ -75,7 +75,7 @@ export const uploadAudio = async (file, profileId) => {
     console.log(h2);
 
     return {
-      url: `${process.env.CLOUDFLARE_URI}/${fileKey}`,
+      url: `${process.env.CLOUDFLARE_CDN}/${fileKey}`,
     };
   } catch (error) {
     throw error;

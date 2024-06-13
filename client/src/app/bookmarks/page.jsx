@@ -241,7 +241,7 @@ function Page() {
 				)}
 			</AnimatePresence>
 
-			<div className='sticky top-0 z-20 flex items-center gap-6 px-8 py-4 bg-white'>
+			<div className='sticky top-0 z-20 flex items-center gap-6 px-8 py-4'>
 				{/* search bar */}
 				<div className='flex items-center w-full px-2 h-10 text-[#9CB1DA] border rounded-lg'>
 					<MagnifyingGlass size={20} />

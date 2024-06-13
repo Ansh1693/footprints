@@ -12,9 +12,9 @@ import { checkAccess } from "../../functions/utility/check.function.js";
  */
 export const create = async (req, res) => {
   try {
-    const { tagObject, documentObject } = req.body;
+    const { tagObject } = req.body;
 
-    const data = await createTag(tagObject, documentObject);
+    const data = await createTag(tagObject);
 
     res.code(200).send(data);
   } catch (error) {
@@ -27,8 +27,16 @@ export const create = async (req, res) => {
  */
 export const read = async (req, res) => {
   try {
-    const { tagObject } = req.body;
-    const { profileId } = req.user;
+    const { tagId } = req.query;
+    const { userId } = req.user;
+
+    const tagObject = {};
+
+    if (tagId) {
+      tagObject.id = tagId;
+    } else {
+      tagObject.userId = userId;
+    }
 
     const data = await readTag(tagObject);
 

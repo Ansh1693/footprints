@@ -1,27 +1,23 @@
-import {
-  Tag,
-  TagsDocument,
-} from "../../utils/initializers/prisma.initializer.js";
+import { Tag } from "../../utils/initializers/prisma.initializer.js";
 
 /**
- * A function that will create a new tag
  *
  */
-export const create = async (tagObject, documentObject) => {
+export const create = async (tagObject) => {
   try {
     const createdTag = await Tag.create({
       data: {
         ...tagObject,
         TagsDocument: {
-          create: [
-            {
+          create: tagObject?.TagsDocument.map((doc) => {
+            return {
               Document: {
                 connect: {
-                  id: documentObject.id,
+                  id: doc.id,
                 },
               },
-            },
-          ],
+            };
+          }),
         },
       },
     });
@@ -37,11 +33,43 @@ export const create = async (tagObject, documentObject) => {
  */
 export const read = async (tagObject) => {
   try {
-    return await Tag.findUnique({
-      where: {
-        ...tagObject,
-      },
-    });
+    if (tagObject?.tagId) {
+      return await Tag.findUnique({
+        where: {
+          ...tagObject,
+        },
+        include: {
+          TagsDocument: {
+            include: {
+              Document: {
+                include: {
+                  DocumentMetadata: true,
+                  RedditData: true,
+                  PinterestData: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    } else {
+      return await Tag.findMany({
+        where: {
+          ...tagObject,
+        },
+        include: {
+          TagsDocument: {
+            include: {
+              Document: {
+                include: {
+                  DocumentMetadata: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    }
   } catch (error) {
     throw error;
   }
@@ -53,13 +81,29 @@ export const read = async (tagObject) => {
  */
 export const update = async (tagObject) => {
   try {
+    const updatedTag = {
+      ...tagObject,
+      TagsDocument: {
+        create: tagObject?.TagsDocument?.connect.map((doc) => {
+          return {
+            Document: {
+              connect: {
+                id: doc.id,
+              },
+            },
+          };
+        }),
+        deleteMany: tagObject?.TagsDocument?.disconnect.map((doc) => {
+          return { documentId: doc.id, tagId: tagObject.id };
+        }),
+      },
+    };
+
     return await Tag.update({
       where: {
-        ...tagObject,
+        id: tagObject.id,
       },
-      data: {
-        ...tagObject,
-      },
+      data: updatedTag,
     });
   } catch (error) {
     throw error;
@@ -69,10 +113,22 @@ export const update = async (tagObject) => {
 /**
  * A function that will delete a tag
  *
- * @param {import("../../../types/schema/tag.schema").tagDocument} tagObject
  */
 export const del = async (tagObject) => {
   try {
+    await Tag.update({
+      where: {
+        id: tagObject.id,
+      },
+      data: {
+        TagsDocument: {
+          deleteMany: {
+            tagId: tagObject.id,
+          },
+        },
+      },
+    });
+
     return await Tag.delete({
       where: {
         ...tagObject,

@@ -14,6 +14,7 @@ import {
 	Stop,
 	Check,
 	X,
+	PlusCircle,
 } from 'phosphor-react'
 import { getBookmarkList } from '@/redux/actions/bookmarkActions'
 import { AudioVisualizer, LiveAudioVisualizer } from 'react-audio-visualize'

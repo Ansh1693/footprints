@@ -36,6 +36,7 @@ import { toast } from 'react-hot-toast'
 import axios from 'axios'
 import handleUtil from '@/helpers/utils/utilUpload'
 import { getBoardList } from '@/redux/actions/boardActions'
+import SearchBar from '@/components/SearchBar'
 
 function Page() {
 	const bookmarks = useSelector((state) => state.bookmarks.bookmarks)
@@ -241,21 +242,7 @@ function Page() {
 				)}
 			</AnimatePresence>
 
-			<div className='sticky top-0 z-20 flex items-center gap-6 px-8 py-4'>
-				{/* search bar */}
-				<div className='flex items-center w-full px-2 h-10 text-[#9CB1DA] border rounded-lg'>
-					<MagnifyingGlass size={20} />
-					<Input
-						placeholder='Search...'
-						className='bg-transparent border-none focus:text-primary'
-					/>
-				</div>
-
-				<div className='flex gap-4'>
-					<FilterOptions />
-				</div>
-			</div>
-
+			<SearchBar />
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 				<ResponsiveMasonry
 					className='px-8 pb-4'

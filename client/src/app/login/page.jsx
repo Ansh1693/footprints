@@ -10,11 +10,15 @@ import Image from 'next/image'
 import { Button } from '../../components/ui/Button'
 import Logo from '../../../public/static/logo.png'
 import GoogleIcon from '../../assets/Icons/google.svg'
+import RedditIcon from '../../assets/Icons/reddit.svg'
+import TwitterIcon from '../../assets/Icons/twitter.svg'
+
 import Link from 'next/link'
 import { AnimatePresence, motion } from 'framer-motion'
 import OTPInput from 'react-otp-input'
 import ToastNotification from '@/components/ui/ToastNotification'
 import cn from 'mxcn'
+import { IoCloseCircleOutline } from 'react-icons/io5'
 
 const page = () => {
 	const setCookie = useSetCookie()
@@ -214,130 +218,244 @@ const page = () => {
 	}
 
 	return (
-		<div className='flex items-center justify-center w-full h-full'>
-			<div className='flex flex-col p-10 gap-9'>
-				<div className='fixed top-8'>
-					<Image src={Logo} className='w-12 h-12' />
-					<p className='font-semibold text-primary libre-font'>
-						bloks
-					</p>
-				</div>
+		// <div className='flex items-center justify-center w-full h-full'>
+		// 	<div className='flex flex-col p-10 gap-9'>
+		// 		{/* <div className='fixed top-8'>
+		// 			<Image src={Logo} className='w-12 h-12' />
+		// 			<p className='font-semibold text-primary libre-font'>
+		// 				bloks
+		// 			</p>
+		// 		</div> */}
 
-				<div className='pt-4 space-y-6'>
-					<div className='relative flex flex-col items-center'>
-						<p className='text-3xl font-semibold libre-font'>
-							Welcome back
-						</p>
-						<p className='text-sm font-medium text-[#6B6B6B]'>
-							Organise your bookmarks, favorite tutorials,
-							articles in one place{' '}
-						</p>
-						<p className='text-sm font-medium text-[#6B6B6B]'>
-							Already have an account?{' '}
-							<Link href={'/signup'} className='text-primary'>
-								Signup
-							</Link>
-						</p>
+		// 		<div className='pt-4 space-y-6'>
+		// 			{/* <div className='relative flex flex-col items-center'>
+		// 				<p className='text-3xl font-semibold libre-font'>
+		// 					Welcome back
+		// 				</p>
+		// 				<p className='text-sm font-medium text-[#6B6B6B]'>
+		// 					Organise your bookmarks, favorite tutorials,
+		// 					articles in one place{' '}
+		// 				</p>
+		// 				<p className='text-sm font-medium text-[#6B6B6B]'>
+		// 					Already have an account?{' '}
+		// 					<Link href={'/signup'} className='text-primary'>
+		// 						Signup
+		// 					</Link>
+		// 				</p>
+		// 			</div> */}
+
+		// 			<div animate={{ opacity: 1 }} className='space-y-6 h-60'>
+		// 				<div className='flex flex-col gap-2'>
+		// 					<label
+		// 						htmlFor='email'
+		// 						className='text-sm font-semibold'
+		// 					>
+		// 						Email
+		// 					</label>
+		// 					<input
+		// 						type='text'
+		// 						onChange={(e) => setEmail(e.target.value)}
+		// 						value={email}
+		// 						placeholder='enter email here'
+		// 						className='h-10 outline-none px-2 text-sm border-b-2 border-[#B8CBED] bg-secondary'
+		// 					/>
+		// 				</div>
+		// 				<AnimatePresence>
+		// 					{isOtpSent && (
+		// 						<motion.div
+		// 							initial={{ opacity: 0, y: 20 }}
+		// 							animate={{ opacity: 1, y: 0 }}
+		// 							exit={{ opacity: 0, y: 20 }}
+		// 							className='flex flex-col gap-2'
+		// 						>
+		// 							<label
+		// 								htmlFor='email'
+		// 								className='text-sm font-semibold'
+		// 							>
+		// 								OTP
+		// 							</label>
+		// 							{/* <input type="text" onChange={e => setOtp(e.target.value)} value={otp} placeholder='enter email here' className='h-10 outline-none px-2 text-sm border-b-2 border-[#B8CBED] bg-secondary' /> */}
+
+		// 							<OTPInput
+		// 								value={otp}
+		// 								onChange={setOtp}
+		// 								numInputs={4}
+		// 								containerStyle={{
+		// 									display: 'flex',
+		// 									gap: '12px',
+		// 								}}
+		// 								inputType='text'
+		// 								inputStyle={{
+		// 									width: '40px',
+		// 									height: '40px',
+		// 									borderBottom: '2px solid #B8CBED',
+		// 									background: '#EAF2FF',
+		// 									display: 'flex',
+		// 									justifyContent: 'center',
+		// 									outline: 'none',
+		// 								}}
+		// 								renderInput={(props) => (
+		// 									<input {...props} />
+		// 								)}
+		// 							/>
+		// 						</motion.div>
+		// 					)}
+		// 				</AnimatePresence>
+
+		// 				<div className='space-y-2'>
+		// 					<Button
+		// 						className='w-full h-10'
+		// 						onClick={handleButtonClick}
+		// 					>
+		// 						{isOtpSent ? 'Confirm OTP' : 'Send OTP'}
+		// 					</Button>
+
+		// 					<div
+		// 						className={`${
+		// 							isOtpSent ? 'hidden' : ''
+		// 						} space-y-2`}
+		// 					>
+		// 						<div className='flex items-center gap-2 text-[#9CB1DA]'>
+		// 							<hr className='w-full border-[#9CB1DA]' />
+		// 							<span>or</span>
+		// 							<hr className='w-full border-[#9CB1DA]' />
+		// 						</div>
+
+		// 						<Button
+		// 							onClick={handleGoogleLogin}
+		// 							variant={'outline'}
+		// 							disabled={isOtpSent}
+		// 							className={cn(
+		// 								'w-full h-10 text-primary border-primary',
+		// 								isOtpSent
+		// 									? 'opacity-0 cursor-default'
+		// 									: 'opacity-100'
+		// 							)}
+		// 						>
+		// 							<Image
+		// 								src={GoogleIcon}
+		// 								className='w-6 h-6'
+		// 							/>
+		// 							Sign in with Google
+		// 						</Button>
+		// 					</div>
+		// 				</div>
+		// 			</div>
+		// 		</div>
+		// 	</div>
+		// </div>
+		<div className='flex flex-col items-center justify-center min-h-screen py-2 '>
+			<div
+				className='w-full max-w-md p-8 space-y-4  relative'
+				animate={{ opacity: 1 }}
+			>
+				<div className=' '>
+					<label
+						htmlFor='email'
+						className='text-sm font-semibold text-gray-500'
+					>
+						Email
+					</label>
+					<div className='flex justify-end items-center'>
+						{' '}
+						<input
+							type='text'
+							onChange={(e) => setEmail(e.target.value)}
+							value={email}
+							placeholder='Enter Email'
+							className='w-full px-4   text-[#4F555A] bg-[#eaf0f78d] shadow-lg py-3 rounded-lg focus:outline-none'
+						/>
+						<IoCloseCircleOutline
+							className='absolute h-6 w-6 text-[#4f555a6e] cursor-pointer place-items-end mr-2'
+							onClick={() => {
+								!isOtpSent && setEmail('')
+							}}
+						/>
 					</div>
-
-					<div animate={{ opacity: 1 }} className='space-y-6 h-60'>
-						<div className='flex flex-col gap-2'>
+				</div>
+				<AnimatePresence>
+					//{' '}
+					{isOtpSent && (
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: 20 }}
+							className='flex flex-col gap-2'
+						>
 							<label
 								htmlFor='email'
-								className='text-sm font-semibold'
+								className='text-sm font-semibold text-gray-500'
 							>
-								Email
+								OTP
 							</label>
-							<input
-								type='text'
-								onChange={(e) => setEmail(e.target.value)}
-								value={email}
-								placeholder='enter email here'
-								className='h-10 outline-none px-2 text-sm border-b-2 border-[#B8CBED] bg-secondary'
+							{/* <input type="text" onChange={e => setOtp(e.target.value)} value={otp} placeholder='enter email here' className='h-10 outline-none px-2 text-sm border-b-2 border-[#B8CBED] bg-secondary' /> */}
+							<OTPInput
+								value={otp}
+								onChange={setOtp}
+								numInputs={4}
+								containerStyle={{
+									display: 'flex',
+									gap: '12px',
+								}}
+								inputType='text'
+								inputStyle={{
+									width: '40px',
+									height: '40px',
+									background: '#EAF2FF',
+									display: 'flex',
+									justifyContent: 'center',
+									outline: 'none',
+									borderRadius: '8px', // Added for rounded corners
+									boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Added for box shadow
+									color: '#4B5563', // Equivalent to text-tray-600 color
+								}}
+								renderInput={(props) => <input {...props} />}
 							/>
-						</div>
-						<AnimatePresence>
-							{isOtpSent && (
-								<motion.div
-									initial={{ opacity: 0, y: 20 }}
-									animate={{ opacity: 1, y: 0 }}
-									exit={{ opacity: 0, y: 20 }}
-									className='flex flex-col gap-2'
-								>
-									<label
-										htmlFor='email'
-										className='text-sm font-semibold'
-									>
-										OTP
-									</label>
-									{/* <input type="text" onChange={e => setOtp(e.target.value)} value={otp} placeholder='enter email here' className='h-10 outline-none px-2 text-sm border-b-2 border-[#B8CBED] bg-secondary' /> */}
+						</motion.div>
+					)}
+				</AnimatePresence>
 
-									<OTPInput
-										value={otp}
-										onChange={setOtp}
-										numInputs={4}
-										containerStyle={{
-											display: 'flex',
-											gap: '12px',
-										}}
-										inputType='text'
-										inputStyle={{
-											width: '40px',
-											height: '40px',
-											borderBottom: '2px solid #B8CBED',
-											background: '#EAF2FF',
-											display: 'flex',
-											justifyContent: 'center',
-											outline: 'none',
-										}}
-										renderInput={(props) => (
-											<input {...props} />
-										)}
-									/>
-								</motion.div>
-							)}
-						</AnimatePresence>
-
-						<div className='space-y-2'>
-							<Button
-								className='w-full h-10'
-								onClick={handleButtonClick}
-							>
-								{isOtpSent ? 'Confirm OTP' : 'Send OTP'}
-							</Button>
-
-							<div
-								className={`${
-									isOtpSent ? 'hidden' : ''
-								} space-y-2`}
-							>
-								<div className='flex items-center gap-2 text-[#9CB1DA]'>
-									<hr className='w-full border-[#9CB1DA]' />
-									<span>or</span>
-									<hr className='w-full border-[#9CB1DA]' />
-								</div>
-
-								<Button
-									onClick={handleGoogleLogin}
-									variant={'outline'}
-									disabled={isOtpSent}
-									className={cn(
-										'w-full h-10 text-primary border-primary',
-										isOtpSent
-											? 'opacity-0 cursor-default'
-											: 'opacity-100'
-									)}
-								>
-									<Image
-										src={GoogleIcon}
-										className='w-6 h-6'
-									/>
-									Sign in with Google
-								</Button>
-							</div>
-						</div>
-					</div>
+				<div className='flex justify-end'>
+					<a href='#' className='text-sm text-gray-400'>
+						Recover Password ?
+					</a>
 				</div>
+				<button
+					className='w-full py-3 p-4 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600'
+					onClick={handleButtonClick}
+				>
+					{isOtpSent ? 'Confirm OTP' : 'Send OTP'}
+				</button>
+				<div className='flex items-center justify-center my-4 space-x-2'>
+					<span className='block h-px bg-gray-300 w-14'></span>
+					<span className='text-sm text-gray-500'>
+						Or continue with
+					</span>
+					<span className='block h-px bg-gray-300 w-14'></span>
+				</div>
+				<div className='flex justify-center space-x-4'>
+					<Button
+						className='flex items-center justify-center w-20 h-12 text-lg text-gray-600 bg-white border border-gray-300 rounded-xl hover:bg-gray-100'
+						onClick={handleGoogleLogin}
+						disabled={isOtpSent}
+					>
+						<Image src={GoogleIcon} className='w-6 h-6' />
+					</Button>
+					<Button
+						className='flex items-center justify-center w-20 h-12 text-lg text-gray-600 bg-white border border-gray-300 rounded-xl hover:bg-gray-100'
+						disabled={isOtpSent}
+					>
+						<Image src={RedditIcon} className='w-6 h-6' />
+					</Button>
+					<Button
+						className='flex items-center justify-center w-20 h-12 text-lg text-gray-600 bg-white border border-gray-300 rounded-xl hover:bg-gray-100'
+						disabled={isOtpSent}
+					>
+						<Image src={TwitterIcon} className='w-6 h-6' />
+					</Button>
+				</div>
+				<div className='blurr absolute bottom-5 right-40'> </div>
+				{/* <div className='blurr absolute top-50 left-80'> </div> */}
 			</div>
 		</div>
 	)

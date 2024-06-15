@@ -39,7 +39,7 @@ function Profile() {
 					<img
 						src={image}
 						alt='User'
-						className='w-10 h-10 rounded-full cursor-pointer'
+						className='w-10 h-10 rounded-full shadow-xl  cursor-pointer'
 					/>
 				) : (
 					<UserCircle

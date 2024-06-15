@@ -12,6 +12,15 @@
   white-space: pre-line; /* Preserve line breaks (\n) and collapse multiple spaces */
   margin-bottom: 1em; /* Add spacing between paragraphs */
 }
+.blurr {
+  background: radial-gradient(#4461f24d 0%, transparent 70%);
+  height: 17rem;
+  width: 25rem;
+  z-index: -1;
+}
+.hel {
+  @apply flex justify-center items-center;
+}
 
 @layer base {
   :root {

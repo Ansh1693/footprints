@@ -18,7 +18,9 @@ export const sendOTP = async (email) => {
 
 		// await sendEmail(email, subject, template)
 
-		console.log(otp)
+		console.log(
+			'___________OOOOOOOOTTTTTTTTTTPPPPPPPPP______________' + otp
+		)
 
 		return { otp }
 	} catch (error) {

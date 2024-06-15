@@ -4,7 +4,7 @@ import { generateString } from '../utility/generate.function.js'
 import { sendOTP } from '../utility/send.function.js'
 import { checkEmail } from '../utility/check.function.js'
 import Snoowrap from 'snoowrap'
-import randomstring from "randomstring";
+import randomstring from 'randomstring'
 
 /**
  * A function that takes care of the email login method
@@ -14,17 +14,17 @@ import randomstring from "randomstring";
 export const emailLogin = async (userObject) => {
 	try {
 		const state = generateString()
-		let newUser = true;
-	
+		let newUser = true
+
 		const checkUser = await checkEmail(userObject.email)
 
-		if (checkUser.foundUser){
-			newUser = false;
+		if (checkUser.foundUser) {
+			newUser = false
 		}
 
 		const { otp } = await sendOTP(userObject.email)
-
-		return { otp, state , newUser }
+		console.log(otp)
+		return { otp, state, newUser }
 	} catch (error) {
 		throw error
 	}
@@ -48,20 +48,20 @@ export const googleLogin = () => {
 	return { state, url }
 }
 
-export const redditLogin = () =>{
+export const redditLogin = () => {
 	try {
-		const state = randomstring.generate(7);
-	
+		const state = randomstring.generate(7)
+
 		const url = Snoowrap.getAuthUrl({
-		  clientId: process.env.REDDIT_CLIENT_ID,
-		  redirectUri: `${process.env.REDDIT_HOST}`,
-		  state: state,
-		  permanent: true,
-		  scope: ["identity", "history", "read"],
-		});
-	
-		return { state, url };
-	  } catch (error) {
-		throw error;
-	  }
+			clientId: process.env.REDDIT_CLIENT_ID,
+			redirectUri: `${process.env.REDDIT_HOST}`,
+			state: state,
+			permanent: true,
+			scope: ['identity', 'history', 'read'],
+		})
+
+		return { state, url }
+	} catch (error) {
+		throw error
+	}
 }

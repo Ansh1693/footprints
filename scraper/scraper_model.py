@@ -8,8 +8,16 @@ from io import BytesIO
 from bs4 import BeautifulSoup
 from groq import Groq
 from urllib.parse import urljoin, urlparse
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
+
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 6.3; Win 64 ; x64) Apple WeKit /537.36(KHTML , like Gecko) Chrome/80.0.3987.162 Safari/537.36'}
+
+load_dotenv()
+summary_api = os.getenv("SUMMARY_API_KEY")
+tag_api = os.getenv("TAG_API_KEY")
 
 def rgb_to_hex(rgb):
     return '#{:02x}{:02x}{:02x}'.format(*rgb)
@@ -83,7 +91,7 @@ def extract_colors():
 
 # Set your OpenAI API key here
 client = Groq(
-    api_key="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",
+    api_key=f"{tag_api}",
 )
 
 
@@ -106,7 +114,7 @@ def generate_tags():
 
 def extract_text_from_url(url):
     try:
-        response = requests.get(url)
+        response = requests.get(url,headers=headers)
         response.raise_for_status()
         soup = BeautifulSoup(response.content, 'html.parser')
         paragraphs = soup.find_all('p')
@@ -171,6 +179,44 @@ def generate_relevant_tags(text, num_tags=5):
     except Exception as e:
         # logging.error(f"Error during tag generation: {e}")
         return []
+    
+# BELOW IS THE CODE FOR SUMMARIZER
+def generate_summary(text):
+    API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+    sum_headers = {"Authorization": f"Bearer {summary_api}"}
+
+    def query(payload):
+        response = requests.post(API_URL, headers=sum_headers, json=payload)
+        return response.json()
+        
+    output = query({
+        "inputs": text,
+        "parameter":{"min_length":len(text)/2,"max_length":800} ,
+    })
+
+    actual_summary = output[0]['summary_text']
+
+    return actual_summary
+
+@app.route('/generate_summary', methods=['POST'])
+def generate_summary_endpoint():
+    data = request.get_json()
+    url = data.get('url', '')
+    
+    if not url:
+        return jsonify({'error': 'No URL provided'}), 400
+    
+    text = extract_text_from_url(url)
+    
+    if not text:
+        return jsonify({'error': 'Unable to extract text from URL'}), 500
+    
+    tags = generate_relevant_tags(text)
+    summary = generate_summary(text)
+    
+    return jsonify({'Summary': summary,
+                    'Tags': tags,
+                })
 
 if __name__ == '__main__':
     app.run(port = 8000,debug=True)

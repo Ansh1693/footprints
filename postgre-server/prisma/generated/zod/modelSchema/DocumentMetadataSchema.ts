@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { JsonValueSchema } from '../inputTypeSchemas/JsonValueSchema'
 
 /////////////////////////////////////////
 // DOCUMENT METADATA SCHEMA
@@ -8,8 +9,7 @@ export const DocumentMetadataSchema = z.object({
   id: z.string().cuid(),
   documentId: z.string(),
   documentType: z.string(),
-  bodyImageUrl: z.string().nullable(),
-  sourceUrl: z.string().nullable(),
+  url: JsonValueSchema,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })

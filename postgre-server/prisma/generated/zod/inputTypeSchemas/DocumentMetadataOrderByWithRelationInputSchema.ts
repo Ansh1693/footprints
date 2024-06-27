@@ -9,8 +9,7 @@ export const DocumentMetadataOrderByWithRelationInputSchema: z.ZodType<Prisma.Do
   id: z.lazy(() => SortOrderSchema).optional(),
   documentId: z.lazy(() => SortOrderSchema).optional(),
   documentType: z.lazy(() => SortOrderSchema).optional(),
-  bodyImageUrl: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
-  sourceUrl: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
+  url: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   createdAt: z.lazy(() => SortOrderSchema).optional(),
   updatedAt: z.lazy(() => SortOrderSchema).optional(),
   Document: z.lazy(() => DocumentOrderByWithRelationInputSchema).optional()

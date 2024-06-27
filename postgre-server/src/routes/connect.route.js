@@ -1,5 +1,5 @@
-import callback from '../controllers/connect/callback.controller.js'
-import initialise from '../controllers/connect/initialise.controller.js'
+import callback from "../controllers/connect/callback.controller.js";
+import initialise from "../controllers/connect/initialise.controller.js";
 
 /**
  * A route that handles auth request including login and signup
@@ -9,36 +9,36 @@ import initialise from '../controllers/connect/initialise.controller.js'
  * @param {import("fastify").DoneFuncWithErrOrRes} done
  */
 const connect = (fastify, _options, done) => {
-	fastify.get(
-		'/initialize',
-		{
-			onRequest: [fastify.userAuth],
-		},
-		initialise
-	)
-	fastify.post(
-		'/initialize',
-		{
-			onRequest: [fastify.userAuth],
-		},
-		initialise
-	)
-	fastify.get(
-		'/callback/:platform',
-		{
-			onRequest: [fastify.callbackAuth],
-		},
-		callback
-	)
-	fastify.post(
-		'/callback/:platform',
-		{
-			onRequest: [fastify.callbackAuth, fastify.userAuth],
-		},
-		callback
-	)
+  fastify.get(
+    "/initialize",
+    {
+      onRequest: [fastify.userAuth],
+    },
+    initialise,
+  );
+  fastify.post(
+    "/initialize",
+    {
+      onRequest: [fastify.userAuth],
+    },
+    initialise,
+  );
+  fastify.get(
+    "/callback/:platform",
+    {
+      onRequest: [fastify.callbackAuth],
+    },
+    callback,
+  );
+  fastify.post(
+    "/callback/:platform",
+    {
+      onRequest: [fastify.callbackAuth, fastify.userAuth],
+    },
+    callback,
+  );
 
-	done()
-}
+  done();
+};
 
-export default connect
+export default connect;

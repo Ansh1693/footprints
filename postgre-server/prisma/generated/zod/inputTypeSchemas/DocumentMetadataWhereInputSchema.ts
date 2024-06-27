@@ -2,7 +2,7 @@ import type { Prisma } from '@prisma/client';
 
 import { z } from 'zod';
 import { StringFilterSchema } from './StringFilterSchema';
-import { StringNullableFilterSchema } from './StringNullableFilterSchema';
+import { JsonNullableFilterSchema } from './JsonNullableFilterSchema';
 import { DateTimeFilterSchema } from './DateTimeFilterSchema';
 import { DocumentRelationFilterSchema } from './DocumentRelationFilterSchema';
 import { DocumentWhereInputSchema } from './DocumentWhereInputSchema';
@@ -14,8 +14,7 @@ export const DocumentMetadataWhereInputSchema: z.ZodType<Prisma.DocumentMetadata
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   documentId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   documentType: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
-  bodyImageUrl: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
-  sourceUrl: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
+  url: z.lazy(() => JsonNullableFilterSchema).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   Document: z.union([ z.lazy(() => DocumentRelationFilterSchema),z.lazy(() => DocumentWhereInputSchema) ]).optional(),

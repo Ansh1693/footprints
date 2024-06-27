@@ -235,27 +235,7 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 			{/* header */}
 
 			<div className='sticky top-0 z-10 flex items-center justify-between w-full p-6 pb-2 bg-white'>
-				{/* title of bookmark */}
-				{bookmarkData && editTitle && (
-					<div
-						className='flex-1 overflow-hidden   rounded-lg text-[32px] w-full bg-white font-semibold libre-font outline-none focus:border-none'
-						ref={editTitleRef}
-						contentEditable={editTitle}
-						onInput={(e) => handleChangeTitle(e)}
-					></div>
-				)}
-				{bookmarkData && !editTitle && (
-					<div
-						onClick={(e) => {
-							if (!edit) return
-							handleClickEditTitle(e)
-						}}
-						className='flex-1 overflow-hidden   rounded-lg text-[32px] w-full bg-white font-semibold libre-font outline-none focus:border-none'
-						ref={editTitleRef}
-					>
-						{title}
-					</div>
-				)}
+				Logo
 				{/* full view controls */}
 				<div className='ml-3 flex gap-4'>
 					{/* open button */}
@@ -296,10 +276,32 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 				</div>
 			</div>
 
-			<div className='flex gap-12 px-6 h-full'>
+			<div className='flex gap-12 px-6 h-full '>
 				{/* content */}
+
 				{bookmarkData && (
-					<div className='w-3/4'>
+					<div className='w-3/4 bg-gray-50 shadow-lg mt-4 text-slate-700  rounded-xl px-8 py-4'>
+						{/* title of bookmark */}
+						{bookmarkData && editTitle && (
+							<div
+								className='flex-1 overflow-hidden     w-full text-[32px] outline-none focus:border-none'
+								ref={editTitleRef}
+								contentEditable={editTitle}
+								onInput={(e) => handleChangeTitle(e)}
+							></div>
+						)}
+						{bookmarkData && !editTitle && (
+							<div
+								onClick={(e) => {
+									if (!edit) return
+									handleClickEditTitle(e)
+								}}
+								className='flex-1 overflow-hidden   text-[32px] w-max py-2 font-semibold  outline-none focus:border-none'
+								ref={editTitleRef}
+							>
+								{title}
+							</div>
+						)}
 						{bookmarkData.documentMetadata &&
 							bookmarkData.documentMetadata.bodyImage_url && (
 								<img

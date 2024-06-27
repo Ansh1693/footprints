@@ -349,6 +349,7 @@ const page = () => {
 				className='w-full max-w-md p-8 space-y-4  relative'
 				animate={{ opacity: 1 }}
 			>
+				<div className='absolute top-2 left-2'>Logo </div>
 				<div className=' '>
 					<label
 						htmlFor='email'

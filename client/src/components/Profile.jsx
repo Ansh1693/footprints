@@ -19,17 +19,17 @@ function Profile() {
 	const handleLogout = () => {
 		dispatch(logout())
 		removeCookie('accessToken')
-		router.push('/login')
+		router.push('/signin')
 	}
 
 	React.useEffect(() => {
-		if (userInfo.userInfo?.userMetadata?.profile_image) {
-			setImage(userInfo.userInfo?.userMetadata?.profile_image)
+		if (userInfo.userInfo?.UserMetadata?.profileImage) {
+			setImage(userInfo.userInfo?.UserMetadata?.profileImage)
 		}
 	}, [userInfo])
 
 	const handleClick = () => {
-		router.push(`/profile/@${userInfo.userInfo?.username}`)
+		router.push(`/profile/${userInfo.userInfo?.profileId}`)
 	}
 
 	return (

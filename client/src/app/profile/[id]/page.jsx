@@ -9,26 +9,18 @@ import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeftIcon, PenIcon } from 'lucide-react'
-import FeedCard from '@/components/cards/FeedCard'
 import { ArrowLeft, Funnel, MagnifyingGlass, Plus } from 'phosphor-react'
 import axios from 'axios'
 import ToastNotification from '@/components/ui/ToastNotification'
 import useGetCookie from '@/components/cookies/useGetCookie'
-import handleUtil from '@/helpers/utils/apis/utilities/upload'
+import { uploadImage } from '@/helpers/utils/apis/utilities/upload'
 import { User } from 'phosphor-react'
 import { useSelector, useDispatch } from 'react-redux'
 import { login } from '@/redux/actions/userActions'
 import { toast } from 'react-hot-toast'
-
-const boardData = {
-	id: '1',
-	name: 'Mark Cunban',
-	title: 'title',
-	description: 'description',
-	imgUrl: 'https://images.unsplash.com/photo-1691036561870-e2badbd0fd22?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80',
-	category: 'reddit',
-	textOnly: false,
-}
+import { readProfile, readProfileBloks } from '@/helpers/utils/apis/query/User'
+import { updateUser } from '@/helpers/utils/apis/crud/User'
+import BlokCard from '@/components/cards/BlokCard'
 
 function Page() {
 	const router = useRouter()
@@ -41,14 +33,14 @@ function Page() {
 	const accessToken = getCookie('accessToken')
 	const [editable, setEditable] = useState(false)
 	const userInfo = useSelector((state) => state.userInfo)
+	const bloks = useSelector((state) => state.bloks.bloks)
 
 	let { id } = useParams()
-	id = id.slice(3)
 
 	useEffect(() => {
-		let header = 'Bearer '
+		let header
 		if (accessToken) {
-			if (!userInfo?.userInfo?._id) {
+			if (!userInfo?.userInfo?.id) {
 				dispatch(login({ accessToken }))
 			}
 			header += accessToken
@@ -56,40 +48,45 @@ function Page() {
 			header += process.env.NEXT_PUBLIC_CLIENT_TOKEN
 		}
 
-		axios
-			.get(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/query/user?query_type=readProfile&username=${id}`,
-				{
-					headers: {
-						Authorization: header,
-					},
-				}
-			)
-			.then((res) => {
-				if (res.status === 200) {
-					setUserData(res.data.data)
-					console.log(res.data.data)
-					if (
-						res.data.data.username === userInfo.userInfo.username &&
-						res.data.data._id === userInfo.userInfo._id
-					) {
-						setEditable(true)
+		if (userInfo?.userInfo?.id && userInfo?.userInfo?.username) {
+			if (userInfo.userInfo.profileId === id) {
+				setUserData(userInfo.userInfo)
+				setEditable(true)
+			}
+		} else {
+			readProfile({ accessToken: header, profileId: id })
+				.then((res) => {
+					if (res.status === 200) {
+						setUserData(res.data.data)
+						if (
+							res.data.data.username ===
+								userInfo.userInfo.username &&
+							res.data.data.id === userInfo.userInfo.id
+						) {
+							setEditable(true)
+						}
+						setProfileImage(
+							res.data.data.UserMetadata?.profileImage
+						)
+						setBannerImage(
+							res.data.data.UserMetadata?.profileBanner
+						)
+					} else {
+						ToastNotification({ message: 'Invalid Profile' })
+						if (accessToken) router.push('/documents')
+						else router.push('/signin')
 					}
-					setProfileImage(res.data.data.userMetadata?.profile_image)
-					setBannerImage(res.data.data.userMetadata?.profile_header)
-				} else {
+				})
+				.catch((err) => {
 					ToastNotification({ message: 'Invalid Profile' })
-				}
-			})
-			.catch((err) => {
-				console.log(err)
-				ToastNotification({ message: 'Invalid Profile' })
-				// router.push('/bookmarks')
-			})
+					if (accessToken) router.push('/documents')
+					else router.push('/signin')
+				})
+		}
 	}, [])
 
 	const fetchBloks = () => {
-		let header = 'Bearer '
+		let header
 		if (accessToken) {
 			if (!userInfo?.userInfo?._id) {
 				dispatch(login({ accessToken }))
@@ -98,28 +95,27 @@ function Page() {
 		} else {
 			header += process.env.NEXT_PUBLIC_CLIENT_TOKEN
 		}
-		axios
-			.get(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/query/user?query_type=readProfileBloks&profile_id=${userData.profile_id}`,
-				{
-					headers: {
-						Authorization: header,
-					},
-				}
-			)
-			.then((res) => {
-				console.log(res)
-				if (res.status === 200) {
-					setData(res.data.data.bloks)
-				} else {
+
+		if (userInfo?.userInfo?.id && userInfo?.userInfo?.username) {
+			if (userInfo.userInfo.profileId === id) {
+				setData(bloks)
+				setEditable(true)
+			}
+		} else {
+			readProfileBloks({ accessToken: header, profileId: id })
+				.then((res) => {
+					if (res.status === 200) {
+						setData(res.data.data.Blok)
+					} else {
+						ToastNotification({ message: 'Invalid Profile' })
+					}
+				})
+				.catch((err) => {
+					console.log(err)
 					ToastNotification({ message: 'Invalid Profile' })
-				}
-			})
-			.catch((err) => {
-				console.log(err)
-				ToastNotification({ message: 'Invalid Profile' })
-				// router.push('/bookmarks')
-			})
+					// router.push('/bookmarks')
+				})
+		}
 	}
 
 	useEffect(() => {
@@ -129,23 +125,23 @@ function Page() {
 	}, [userData])
 
 	useEffect(() => {
-		if (userInfo?.userInfo?._id && userData) {
+		if (userInfo?.userInfo?.id && userData) {
 			if (
 				userData.username === userInfo.userInfo.username &&
-				userData._id === userInfo.userInfo._id
+				userData.id === userInfo.userInfo.id
 			) {
 				setEditable(true)
 			}
 		}
-	}, [userInfo?.userInfo._id, userData])
+	}, [userData])
 
 	useEffect(() => {
 		if (!userData) return
-		if (userData?.userMetadata?.profile_image) {
-			setProfileImage(userData.userMetadata.profile_image)
+		if (userData?.UserMetadata?.profileImage) {
+			setProfileImage(userData.userMetadata.profileImage)
 		}
 
-		if (userData?.userMetadata?.profile_header) {
+		if (userData?.UserMetadata?.profileBanner) {
 			setBannerImage(userData.userMetadata.profile_header)
 		}
 	}, [userData])
@@ -161,16 +157,7 @@ function Page() {
 	const handleUpdate = async (userObject) => {
 		if (!accessToken || !editable) return toast.error('Unauthorised access')
 		try {
-			const response = await axios.patch(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/user/update`,
-				{ userObject },
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			)
+			const response = await updateUser({ userObject, accessToken })
 			if (response.status === 200) {
 				setUserData(userObject)
 				toast.success('Profile updated')
@@ -185,45 +172,48 @@ function Page() {
 	const handleProfile = async (e) => {
 		try {
 			const file = e.target.files[0]
-			const url = await handleUtil(
-				file,
-				getCookie('accessToken'),
-				'image'
-			)
+			const response = await uploadImage({ accessToken, file })
+
+			if (response.status !== 200)
+				return toast.error('Something went wrong')
+
+			const url = response.data.data.url
 
 			const userObject = {
 				...userData,
-				userMetadata: {
-					...userData.userMetadata,
-					profile_image: url,
+				UserMetadata: {
+					...userData.UserMetadata,
+					profileImage: url,
 				},
 			}
 
 			handleUpdate(userObject)
 		} catch (error) {
-			console.log(error)
+			return toast.error('Something went wrong')
 		}
 	}
 
 	const handleBanner = async (e) => {
 		try {
 			const file = e.target.files[0]
-			const url = await handleUtil(
-				file,
-				getCookie('accessToken'),
-				'image'
-			)
+			const response = await uploadImage({ accessToken, file })
+
+			if (response.status !== 200)
+				return toast.error('Something went wrong')
+
+			const url = response.data.data.url
+
 			const userObject = {
 				...userData,
-				userMetadata: {
-					...userData.userMetadata,
-					profile_header: url,
+				UserMetadata: {
+					...userData.UserMetadata,
+					profileBanner: url,
 				},
 			}
 
 			handleUpdate(userObject)
 		} catch (error) {
-			console.log('baner')
+			toast.error('Something went wrong')
 		}
 	}
 
@@ -317,7 +307,7 @@ function Page() {
 					{/* username */}
 					<div className='flex items-center gap-1 text-gray-500'>
 						<p className='text-sm font-medium'>
-							{userData?.username}@footprints
+							@{userData?.username}
 						</p>
 						<Image
 							alt='share'
@@ -340,13 +330,12 @@ function Page() {
 						placeholder='Search...'
 						className='bg-transparent border-none focus:text-slate-500 font-normal text-base my-2 text-slate-300'
 					/>
-					
 				</div>
 
 				<div className='flex gap-4'>
 					{editable && (
 						<Button
-							onClick={() => router.push('/boards/new')}
+							onClick={() => router.push('/bloks/new')}
 							variant={'secondary'}
 							size={'icon'}
 						>
@@ -362,8 +351,8 @@ function Page() {
 			{/* Boards */}
 			<div className='px-8 py-8 flex space-x-12 space-y-6'>
 				{data?.map((item) => (
-					<FeedCard
-						key={item._id}
+					<BlokCard
+						key={item.id}
 						data={item}
 						profile={userData}
 						editable={editable}

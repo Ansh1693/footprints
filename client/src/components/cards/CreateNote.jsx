@@ -20,6 +20,8 @@ import { getBookmarkList } from '@/redux/actions/bookmarkActions'
 import { AudioVisualizer, LiveAudioVisualizer } from 'react-audio-visualize'
 import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder'
 import { toast } from 'react-hot-toast'
+import { createDocument } from '@/helpers/utils/apis/crud/Document'
+import { uploadAudio } from '@/helpers/utils/apis/utilities/upload'
 
 function CreateNote() {
 	// const [note, setNote] = useState('')
@@ -129,16 +131,10 @@ function CreateNote() {
 		file.append('file', blob)
 
 		try {
-			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/utility/upload?query_type=audio`,
-				file,
-				{
-					headers: {
-						'Content-Type': 'multipart/form-data',
-						Authorization: `Bearer ${userInfo.accessToken}`,
-					},
-				}
-			)
+			const response = await uploadAudio({
+				accessToken: userInfo.accessToken,
+				file: blob,
+			})
 			if (response.status === 200) {
 				toast.success('audio saved')
 				setAudioFile(response.data.data.url)
@@ -190,8 +186,6 @@ function CreateNote() {
 
 	const acceptAudio = () => {
 		toast.success('audio accepted')
-		const newBlob = new Blob([blob], { type: 'audio/mpeg' })
-		handleAudioChange(newBlob)
 	}
 
 	const discardAudio = () => {
@@ -210,46 +204,49 @@ function CreateNote() {
 			toast.success('Empty Note')
 		}
 		const documentObject = {
-			profile_id: userInfo.profile_id,
-			user_id: userInfo._id,
-			status: {
-				public: false,
-				deleted: false,
-				pinned: false,
-				comments: false,
-			},
+			profileId: userInfo.profileId,
+			userId: userInfo.Id,
+			public: false,
+			deleted: false,
+			pinned: false,
+			comments: false,
 			heading: new Date().toDateString().slice(4),
 			body: note,
 		}
 
-		if (audioFile) {
-			documentObject.documentMetadata = {
-				document_type: 'audio',
-				source_url: audioFile,
-			}
-			setIsRecordingComplete(false)
-			setIsRecordingStarted(false)
-			setIsVoiceNote(false)
-			setVideoDuration('')
+		if (isVoiceNote) {
+			const newBlob = new Blob([blob], { type: 'audio/mpeg' })
+			handleAudioChange(newBlob)
+				.then(() => {
+					documentObject.DocumentMetadata = {
+						documentType: 'audio',
+						url: {
+							audio: audioFile,
+						},
+					}
+					setIsRecordingComplete(false)
+					setIsRecordingStarted(false)
+					setIsVoiceNote(false)
+					setVideoDuration('')
+				})
+				.catch((err) => {
+					toast.error('Error Saving Audio')
+					discardAudio()
+					return
+				})
 		} else {
-			documentObject.documentMetadata = {
-				document_type: 'note',
+			documentObject.DocumentMetadata = {
+				documentType: 'note',
 			}
 		}
 		try {
-			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/document/create`,
-				{ documentObject },
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${userInfo.accessToken}`,
-					},
-				}
-			)
+			const response = await createDocument({
+				accessToken: userInfo.accessToken,
+				documentObject,
+			})
 			if (response.status === 200) {
 				setNote('')
-				toast.success('note saved')
+				toast.success('Document saved')
 				setAudioFile('')
 
 				//dispatch action to get updated bookmarks

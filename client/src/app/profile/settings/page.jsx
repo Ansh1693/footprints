@@ -30,7 +30,7 @@ function Page() {
 	}
 
 	useEffect(() => {
-		if (!userInfo?.userInfo?._id) {
+		if (!userInfo?.userInfo?.id) {
 			dispatch(login({ accessToken }))
 		}
 	}, [accessToken])
@@ -51,7 +51,7 @@ function Page() {
 					<Image
 						alt='profile'
 						src={
-							userInfo?.userInfo?.userMetadata?.profile_image ||
+							userInfo?.userInfo?.UserMetadata?.profileImage ||
 							ProfileImg
 						}
 						width={112}

@@ -22,7 +22,7 @@ function Navbar({ activeTab }) {
 		const accessToken = getCookie('accessToken')
 		if (!accessToken) {
 			router.push('/login')
-		} else if (!userLogin?.userInfo._id) {
+		} else if (!userLogin?.userInfo.id) {
 			dispatch(login({ accessToken }))
 		}
 	}, [])
@@ -30,8 +30,8 @@ function Navbar({ activeTab }) {
 	React.useEffect(() => {
 		if (userLogin?.error) {
 			removeCookie('accessToken')
-			ToastNotification({ message: 'Please Login Again' })
-			router.push('/login')
+			ToastNotification({ message: 'Please Signin Again' })
+			router.push('/signin')
 		}
 	}, [userLogin])
 
@@ -92,7 +92,6 @@ function Navbar({ activeTab }) {
 				</div>
 			</div>
 		</nav>
-		
 	)
 }
 

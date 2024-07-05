@@ -17,11 +17,12 @@ import PinterestCard from '@/components/cards/PinterestCard'
 import ImdbCard from '@/components/cards/ImdbCard'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-	getBookmarkList,
-	deleteBookmark,
-	createBookmark,
-} from '@/redux/actions/bookmarkActions'
-import BookmarkWrapper from '@/components/wrappers/BookmarkWrapper'
+	getDocumentList,
+	deleteDocument,
+	createDocument,
+	updateDocument,
+} from '@/redux/actions/documentActions'
+import DocumentWrapper from '@/components/wrappers/DocumentWrapper'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import useSetCookie from '@/components/cookies/useSetCookie'
 import useRemoveCookie from '@/components/cookies/useRemoveCookies'
@@ -33,15 +34,15 @@ import FullView from '@/components/FullView'
 import AudioCard from '@/components/cards/AudioCard'
 import useGetCookie from '@/components/cookies/useGetCookie'
 import { toast } from 'react-hot-toast'
-import axios from 'axios'
-import handleUtil from '@/helpers/utils/apis/utilities/upload'
-import { getBoardList } from '@/redux/actions/boardActions'
+import { uploadAudio, uploadImage } from '@/helpers/utils/apis/utilities/upload'
+import { getBLokList } from '@/redux/actions/blokActions'
 import SearchBar from '@/components/SearchBar'
+import { readDocument } from '@/helpers/utils/apis/query/Document'
 
 function Page() {
-	const bookmarks = useSelector((state) => state.bookmarks.bookmarks)
+	const documents = useSelector((state) => state.documents.documents)
 	const userInfo = useSelector((state) => state.userInfo.userInfo)
-	const boards = useSelector((state) => state.boards.boards)
+	const bloks = useSelector((state) => state.bloks.bloks)
 	const dropZoneRef = useRef(null)
 	const dispatch = useDispatch()
 
@@ -59,90 +60,82 @@ function Page() {
 	const [isFullView, setIsFullView] = useState(
 		searchParams.get('full') === null ? false : true
 	)
-	const [bookmarkId, setBookmarkId] = useState(
-		searchParams.get('bookmark_id') === null
+	const [documentId, setDocumentId] = useState(
+		searchParams.get('documentId') === null
 			? null
-			: searchParams.get('bookmark_id')
+			: searchParams.get('documentId')
 	)
-	const [activeBookmark, setActiveBookmark] = useState({})
+	const [activeDocument, setActiveDocument] = useState({})
 
-	const getSingleBookmark = (bookmarkId) => {
-		let header = 'Bearer '
-		if (accessToken) header += accessToken
-		else header += process.env.NEXT_PUBLIC_CLIENT_TOKEN
+	const getSingleDocument = (documentId) => {
+		let header
+		if (accessToken) header = accessToken
+		else header = process.env.NEXT_PUBLIC_CLIENT_TOKEN
 
-		axios
-			.get(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/query/document?queryType=readDocument&documentId=${bookmarkId}`,
-				{
-					headers: {
-						Authorization: header,
-					},
-				}
-			)
+		readDocument({ documentId, accessToken: header })
 			.then((res) => {
 				if (res.status === 200) {
-					setActiveBookmark(res.data.data)
+					setActiveDocument(res.data.data)
 				} else {
-					toast.error('You dont have access to this bookmark')
+					toast.error('You dont have access to this document')
 					handleBackgroundClick()
 				}
 			})
 			.catch((err) => {
-				toast.error('You dont have access to this bookmark')
+				toast.error('You dont have access to this document')
 				handleBackgroundClick()
 			})
 	}
 
 	const handleBackgroundClick = () => {
-		router.push('/bookmarks')
-		setActiveBookmark({})
+		router.push('/documents')
+		setActiveDocument({})
 		setIsPeakOpen(false)
 		setIsFullView(false)
 	}
-	// sets bookmark data to be displayed in PeakView
-	const handleCardClick = (bookMarkData) => {
-		setBookmarkId(bookMarkData._id)
+	// sets document data to be displayed in PeakView
+	const handleCardClick = (documentData) => {
+		setDocumentId(documentData.id)
 		setIsPeakOpen(true)
 		setIsFullView(false)
-		router.push(`/bookmarks?bookmark_id=${bookMarkData._id}&peak=true`)
+		router.push(`/documents?documentId=${documentData.id}&peak=true`)
 	}
 
 	const switchFullView = () => {
-		router.push(`/bookmarks?bookmark_id=${bookmarkId}&full=true`)
+		router.push(`/documents?documentId=${documentId}&full=true`)
 		setIsPeakOpen(false)
 		setIsFullView(true)
 	}
 
 	const switchPeakView = () => {
-		router.push(`/bookmarks?bookmark_id=${bookmarkId}&peak=true`)
+		router.push(`/documents?documentId=${documentId}&peak=true`)
 		setIsFullView(false)
 		setIsPeakOpen(true)
 	}
 
-	const handleDelete = (bookMarkData) => {
+	const handleDelete = (documentData) => {
 		dispatch(
-			deleteBookmark({
-				bookmarkId: bookMarkData.id,
+			deleteDocument({
+				documentObject: { id: documentData.id },
 				accessToken: userInfo.accessToken,
 			})
 		)
 	}
 
-	const handleUpdate = (bookMarkData) => {
+	const handleUpdate = (documentData) => {
 		dispatch(
-			updateBookmark({
-				updatedData: bookMarkData,
+			updateDocument({
+				documentObject: documentData,
 				accessToken: userInfo.accessToken,
 			})
 		)
 	}
 	useEffect(() => {
 		if (userInfo.accessToken) {
-			dispatch(getBookmarkList({ accessToken: userInfo.accessToken }))
+			dispatch(getDocumentList({ accessToken: userInfo.accessToken }))
 		}
 		if (userInfo.accessToken) {
-			dispatch(getBoardList({ accessToken: userInfo.accessToken }))
+			dispatch(getBLokList({ accessToken: userInfo.accessToken }))
 		}
 	}, [userInfo.accessToken])
 
@@ -152,19 +145,19 @@ function Page() {
 	}, [isFullView, router])
 
 	useEffect(() => {
-		if (searchParams.get('bookmark_id')) {
-			setBookmarkId(searchParams.get('bookmark_id'))
+		if (searchParams.get('documentId')) {
+			setDocumentId(searchParams.get('documentId'))
 			setIsPeakOpen(searchParams.get('peak') === null ? false : true)
 			setIsFullView(searchParams.get('full') === null ? false : true)
-			if (bookmarkId) {
-				getSingleBookmark(bookmarkId)
+			if (documentId) {
+				getSingleDocument(documentId)
 			}
 		}
 	}, [searchParams])
 
-	// when peakview and fullview is closed, set active bookmark data to null
+	// when peakview and fullview is closed, set active document data to null
 	useEffect(() => {
-		if (!isPeakOpen && !isFullView) setActiveBookmark(null)
+		if (!isPeakOpen && !isFullView) setActiveDocument(null)
 	}, [isPeakOpen, isFullView])
 
 	const handleDrop = async (e) => {
@@ -184,32 +177,29 @@ function Page() {
 			return
 		}
 
-		const url = await handleUtil(files[0], userInfo.accessToken, 'image')
-
-		if (url) {
+		const response = await uploadImage(files[0], userInfo.accessToken)
+		if (response.status === 200) {
+			const url = response.data.data.url
 			const date = new Date().toDateString()
-			const data = {
+			const documentObject = {
 				heading: date.slice(4),
-				profile_id: userInfo.profile_id,
-				user_id: userInfo._id,
-				status: {
-					public: false,
-					deleted: false,
-					pinned: false,
-					comments: false,
-				},
-				documentMetadata: {
-					document_type: 'image',
-					bodyImage_url: url,
-				},
-				status: {
-					pinned: false,
+				profileId: userInfo.profileId,
+				userId: userInfo.id,
+				public: false,
+				deleted: false,
+				pinned: false,
+				comment: false,
+				DocumentMetadata: {
+					documentType: 'image',
+					url: {
+						images: [url],
+					},
 				},
 			}
 
 			dispatch(
-				createBookmark({
-					bookmarkData: data,
+				createDocument({
+					documentObject,
 					accessToken: userInfo.accessToken,
 				})
 			)
@@ -231,7 +221,7 @@ function Page() {
 		>
 			{/* disables background content interaction when  */}
 			<AnimatePresence>
-				{activeBookmark?._id && isPeakOpen && (
+				{activeDocument?.id && isPeakOpen && (
 					<motion.div
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 0.5 }}
@@ -251,161 +241,161 @@ function Page() {
 					<Masonry gutter='24px' className='mt-2'>
 						<CreateNote />
 
-						{bookmarks &&
-							bookmarks.map((item) => {
-								switch (item.documentMetadata.document_type) {
+						{documents &&
+							documents.map((item) => {
+								switch (item.DocumentMetadata.documentType) {
 									case 'reddit':
 										return (
-											<BookmarkWrapper
+											<DocumentWrapper
 												data={item}
-												key={item._id}
-												pinned={item.status.pinned}
+												key={item.id}
+												pinned={item.pinned}
 												contextMenu={true}
-												boards={boards}
+												bloks={bloks}
 											>
 												<RedditCard
 													data={item}
 													onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'twitter':
 										return (
-											<BookmarkWrapper
+											<DocumentWrapper
 												data={item}
-												key={item._id}
-												pinned={item.status.pinned}
+												key={item.id}
+												pinned={item.pinned}
 												contextMenu={true}
-												boards={boards}
+												bloks={bloks}
 											>
 												<TwitterCard
 													data={item}
 													onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'youtube':
 										return (
-											<BookmarkWrapper
+											<DocumentWrapper
 												data={item}
-												key={item._id}
-												pinned={item.status.pinned}
+												key={item.id}
+												pinned={item.pinned}
 												contextMenu={true}
-												boards={boards}
+												bloks={bloks}
 											>
 												<YoutubeCard
 													data={item}
 													onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'article':
 										return (
-											<BookmarkWrapper
+											<DocumentWrapper
 												data={item}
-												key={item._id}
-												pinned={item.status.pinned}
+												key={item.id}
+												pinned={item.pinned}
 												contextMenu={true}
-												boards={boards}
+												bloks={bloks}
 											>
 												<ArticleCard
 													data={item}
 													onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'shopping':
 										return (
-											<BookmarkWrapper
+											<DocumentWrapper
 												data={item}
-												key={item._id}
-												pinned={item.status.pinned}
+												key={item.id}
+												pinned={item.pinned}
 												contextMenu={true}
-												boards={boards}
+												bloks={bloks}
 											>
 												<ShoppingCard
 													data={item}
 													onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'pinterest':
 										return (
-											<BookmarkWrapper
+											<DocumentWrapper
 												data={item}
-												key={item._id}
-												pinned={item.status.pinned}
+												key={item.id}
+												pinned={item.pinned}
 												contextMenu={true}
-												boards={boards}
+												bloks={bloks}
 											>
 												<PinterestCard
 													data={item}
 													onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'imdb':
 										return (
-											<BookmarkWrapper
+											<DocumentWrapper
 												data={item}
-												key={item._id}
-												pinned={item.status.pinned}
+												key={item.id}
+												pinned={item.pinned}
 												contextMenu={true}
-												boards={boards}
+												bloks={bloks}
 											>
 												<ImdbCard
 													data={item}
 													onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 
 									case 'audio':
 										return (
-											<BookmarkWrapper
+											<DocumentWrapper
 												data={item}
-												key={item._id}
-												pinned={item.status.pinned}
+												key={item.id}
+												pinned={item.pinned}
 												contextMenu={true}
-												boards={boards}
+												bloks={bloks}
 											>
 												<AudioCard
 													data={item}
 													onClick={handleCardClick}
 													profile={userInfo}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'note':
 										return (
-											<BookmarkWrapper
+											<DocumentWrapper
 												data={item}
-												key={item._id}
-												pinned={item.status.pinned}
+												key={item.id}
+												pinned={item.pinned}
 												contextMenu={true}
-												boards={boards}
+												bloks={bloks}
 											>
 												<NoteCard
 													data={item}
 													onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									default:
 										return (
-											<BookmarkWrapper
+											<DocumentWrapper
 												data={item}
-												key={item._id}
-												pinned={item.status.pinned}
+												key={item.id}
+												pinned={item.pinned}
 												contextMenu={true}
-												boards={boards}
+												bloks={bloks}
 											>
 												<DefaultCard
-													key={item._id}
+													key={item.id}
 													data={item}
 													onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 								}
 							})}
@@ -415,7 +405,7 @@ function Page() {
 
 			{/* peak view */}
 			<AnimatePresence>
-				{activeBookmark?._id && isPeakOpen && !isFullView && (
+				{activeDocument?.id && isPeakOpen && !isFullView && (
 					<motion.div
 						initial={{ translateX: '100%' }}
 						animate={{ translateX: 0 }}
@@ -424,7 +414,7 @@ function Page() {
 						className='fixed flex flex-col gap-6 right-0 top-0 p-6 h-full w-[600px] overflow-y-scroll bg-white z-[100]'
 					>
 						<PeakView
-							data={activeBookmark}
+							data={activeDocument}
 							handleClose={handleBackgroundClick}
 							setIsFullView={switchFullView}
 						/>
@@ -434,7 +424,7 @@ function Page() {
 
 			{/* full view */}
 			<AnimatePresence>
-				{activeBookmark?._id && isFullView && !isPeakOpen && (
+				{activeDocument?.id && isFullView && !isPeakOpen && (
 					<motion.div
 						initial={{ translateX: '100%' }}
 						animate={{ translateX: 0 }}
@@ -443,7 +433,7 @@ function Page() {
 						className='fixed flex flex-col gap-6 right-0 top-0 h-full w-full overflow-y-scroll bg-white pb-10 z-[100]'
 					>
 						<FullView
-							data={activeBookmark}
+							data={activeDocument}
 							peakView={switchPeakView}
 							handleClose={handleBackgroundClick}
 							accessToken={userInfo.accessToken}

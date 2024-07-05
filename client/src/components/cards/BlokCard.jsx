@@ -10,8 +10,9 @@ import { useSelector } from 'react-redux'
 import useGetCookie from '../cookies/useGetCookie'
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
+import { unfollowBlok } from '@/helpers/utils/apis/query/Blok'
 
-function FeedCard({
+function BlokCard({
 	data,
 	profile,
 	editable,
@@ -25,23 +26,26 @@ function FeedCard({
 	const [follow, setFollow] = useState(false)
 
 	useEffect(() => {
-		if (userInfo?._id) {
-			if (data?.followers.includes(userInfo?._id)) {
+		if (userInfo?.id) {
+			if (
+				data?.BlokFollowers.filter((x) => x.userId === userInfo?.id)
+					.length > 0
+			) {
 				setFollow(true)
 			}
 		}
 	}, [])
 
 	const redirectBoard = () => {
-		router.push(`/board/${data?._id}`)
+		router.push(`/blok/${data?.id}`)
 	}
 
 	const redirectProfile = () => {
-		router.push(`/profile/@${profile?.profile_id}`)
+		router.push(`/profile/${profile?.profileId}`)
 	}
 
 	const handleFollow = () => {
-		if (!accessToken && !userInfo?._id) {
+		if (!accessToken && !userInfo?.id) {
 			toast.error('Please login to follow')
 			return
 		}
@@ -50,19 +54,15 @@ function FeedCard({
 			toast.error('You cannot follow your own board')
 			return
 		}
-		const header = 'Bearer ' + accessToken
+
 		if (follow) {
-			axios
-				.patch(
-					`${process.env.NEXT_PUBLIC_SERVER_URL}/query/blok?blok_id=${data._id}&query_type=unfollowBlok`,
-					{ blokObject: { _id: data?._id } },
-					{
-						headers: {
-							'Content-Type': 'application/json',
-							Authorization: header,
-						},
-					}
-				)
+			unfollowBlok({
+				accessToken,
+				blokObject: {
+					id: data.id,
+					userId: data.userId,
+				},
+			})
 				.then((res) => {
 					if (res.status === 200) {
 						setFollow(false)
@@ -72,21 +72,16 @@ function FeedCard({
 					}
 				})
 				.catch((err) => {
-					console.log(err)
 					toast.error('Something went wrong')
 				})
 		} else {
-			axios
-				.patch(
-					`${process.env.NEXT_PUBLIC_SERVER_URL}/query/blok?blok_id=${data._id}&query_type=followBlok`,
-					{ blokObject: { _id: data._id } },
-					{
-						headers: {
-							'Content-Type': 'application/json',
-							Authorization: header,
-						},
-					}
-				)
+			followBlok({
+				accessToken,
+				blokObject: {
+					id: data.id,
+					userId: data.userId,
+				},
+			})
 				.then((res) => {
 					if (res.status === 200) {
 						setFollow(true)
@@ -111,12 +106,12 @@ function FeedCard({
 			<div className='p-4 space-y-5 '>
 				<div className='flex items-start justify-between'>
 					<div className='flex items-center gap-[12px]'>
-						<Link href={`/profile/@${profile?.username}`}>
-							{profile?.userMetadata?.profile_image ? (
+						<Link href={`/profile/${profile?.profileId}`}>
+							{profile?.UserMetadata?.profileImage ? (
 								<Image
 									alt='profile'
 									onClick={() => redirectProfile()}
-									src={profile.userMetadata?.profile_image}
+									src={profile.UserMetadata?.profileImage}
 									alt={profile?.name}
 									width={50}
 									height={50}
@@ -127,13 +122,13 @@ function FeedCard({
 							)}
 						</Link>
 						<div className=''>
-							<Link href={`/board/${data?._id}`}>
+							<Link href={`/blok/${data?.id}`}>
 								<h1 className='text-[20px] font-semibold'>
-									{data?.blok_name}
+									{data?.blokName}
 								</h1>
 							</Link>
 							<Link
-								href={`/profile/@${profile?.username}`}
+								href={`/profile/${profile?.profileId}`}
 								className='text-sm text-gray-400'
 							>
 								by {profile?.name}
@@ -148,7 +143,7 @@ function FeedCard({
 							/>
 						)}
 						<p className='text-sm text-gray-400'>
-							{data?.followers?.length} followers
+							{data?.BlokFollowers?.length} followers
 						</p>
 					</div>
 				</div>
@@ -166,8 +161,8 @@ function FeedCard({
 				<Link href={`/board/${data?._id}`}>
 					<Image
 						src={
-							data?.blokMetadata?.blok_header
-								? data?.blokMetadata?.blok_header
+							data?.BlokMetadata?.blokHeader
+								? data?.BlokMetadata?.blokHeader
 								: BannerImg
 						}
 						alt='huberman'
@@ -182,4 +177,4 @@ function FeedCard({
 	)
 }
 
-export default React.memo(FeedCard)
+export default React.memo(BlokCard)

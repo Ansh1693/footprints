@@ -66,6 +66,7 @@ export const readBloks = async (profileId) => {
       },
       include: {
         BlokMetadata: true,
+        BlokFollowers: true,
       },
     });
   } catch (error) {

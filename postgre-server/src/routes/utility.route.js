@@ -1,6 +1,6 @@
-import check from '../controllers/utility/check.controller.js'
-import email from '../controllers/utility/email.controller.js'
-import upload from '../controllers/utility/upload.controller.js'
+import check from "../controllers/utility/check.controller.js";
+import email from "../controllers/utility/email.controller.js";
+import upload from "../controllers/utility/upload.controller.js";
 
 /**
  * A route handler for utility requests
@@ -10,29 +10,22 @@ import upload from '../controllers/utility/upload.controller.js'
  * @param {import("fastify").DoneFuncWithErrOrRes} done
  */
 const utility = (fastify, _options, done) => {
-	fastify.post(
-		'/check',
-		{
-			onRequest: [fastify.clientAuth],
-		},
-		check
-	)
-	fastify.post(
-		'/upload',
-		{
-			onRequest: [fastify.userAuth],
-		},
-		upload
-	)
-	fastify.post(
-		'/email',
-		{
-			onRequest: [fastify.clientAuth],
-		},
-		email
-	)
+  fastify.post(
+    "/check",
+    {
+      onRequest: [fastify.clientAuth],
+    },
+    check
+  );
+  fastify.post(
+    "/upload",
+    {
+      onRequest: [fastify.userAuth],
+    },
+    upload
+  );
 
-	done()
-}
+  done();
+};
 
-export default utility
+export default utility;

@@ -51,7 +51,7 @@ export default function Home() {
 	// throw new Error('Something bad happened.');
 	return (
 		<main>
-			<h1 className='text-primary'>Hello world</h1>
+			<h1 className='text-primary'>Hello Ansh</h1>
 		</main>
 	)
 }

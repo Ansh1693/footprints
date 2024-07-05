@@ -56,7 +56,7 @@ const page = () => {
 		try {
 			let newUser = false
 			const res = await axios.post(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/utility/check?query_type=email`,
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/utility/check?queryType=email`,
 				{
 					userObject: { email: data.email },
 				},
@@ -72,7 +72,7 @@ const page = () => {
 			}
 
 			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/initialize?query_type=email`,
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/initialize?queryType=email`,
 				{ userObject: { email: data.email } },
 				{
 					headers: {
@@ -138,11 +138,12 @@ const page = () => {
 		const userObject = {
 			email: data.email,
 			otp: data.otp,
+			state: loginState.state
 		}
 
 		try {
 			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback/email?state=${loginState.state}`,
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback/email?state=${loginState.state}&code=${userObject.otp}`,
 				{
 					userObject: {
 						...userObject,
@@ -374,7 +375,6 @@ const page = () => {
 					</div>
 				</div>
 				<AnimatePresence>
-					//{' '}
 					{isOtpSent && (
 						<motion.div
 							initial={{ opacity: 0, y: 20 }}
@@ -415,11 +415,6 @@ const page = () => {
 					)}
 				</AnimatePresence>
 
-				<div className='flex justify-end'>
-					<a href='#' className='text-sm text-gray-400'>
-						Recover Password ?
-					</a>
-				</div>
 				<button
 					className='w-full py-3 p-4 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600'
 					onClick={handleButtonClick}

@@ -1,7 +1,7 @@
 import {
-	uploadAudio,
-	uploadImage,
-} from '../../functions/utility/upload.function.js'
+  uploadAudio,
+  uploadImage,
+} from "../../functions/utility/upload.function.js";
 
 /**
  * A controller to handle the upload request for a client
@@ -10,26 +10,26 @@ import {
  * @param {import("fastify").FastifyReply} res
  */
 const upload = async (req, res) => {
-	try {
-		const { query_type } = req.query
-		const { profile_id } = req.user
+  try {
+    const { queryType } = req.query;
+    const { profileId } = req.user;
 
-		if (!profile_id) {
-			throw new Error('Unauthorized user.')
-		}
+    if (!profileId) {
+      throw new Error("Unauthorized user.");
+    }
 
-		let data
+    let data;
 
-		if (query_type === 'image') {
-			data = await uploadImage(await req.file(), profile_id)
-		} else if (query_type === 'audio') {
-			data = await uploadAudio(await req.file(), profile_id)
-		}
+    if (queryType === "image") {
+      data = await uploadImage(await req.file(), profileId);
+    } else if (queryType === "audio") {
+      data = await uploadAudio(await req.file(), profileId);
+    }
 
-		res.code(200).send({ data })
-	} catch (error) {
-		throw error
-	}
-}
+    res.code(200).send({ data });
+  } catch (error) {
+    throw error;
+  }
+};
 
-export default upload
+export default upload;

@@ -108,7 +108,7 @@ export const checkAccess = async (profileId, modelType, modelId) => {
         },
       });
 
-      if (profileId !== blok.User.profileId) {
+      if (profileId !== blok.profileId) {
         throw new Error(
           "User doesn't have permissions to make modifications to this blok.",
         );

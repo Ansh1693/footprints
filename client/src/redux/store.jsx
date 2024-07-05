@@ -6,19 +6,19 @@ import {
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { userReducer } from './reducers/userReducer'
-import { bookmarksReducer } from './reducers/bookmarkReducers'
-import { boardsReducer } from './reducers/boardReducers'
+import { documentReducer } from './reducers/documentReducers'
+import { bloksReducer } from './reducers/blokReducers'
 
 const initialState = {
 	userInfo: { userInfo: {} },
-	bookmarks: { bookmarks: [] },
-	boards: { boards: [] },
+	documents: { documents: [] },
+	bloks: { bloks: [] },
 }
 
 const reducer = combineReducers({
 	userInfo: userReducer,
-	bookmarks: bookmarksReducer,
-	boards: boardsReducer,
+	documents: documentReducer,
+	bloks: bloksReducer,
 })
 
 const middleware = [thunk]

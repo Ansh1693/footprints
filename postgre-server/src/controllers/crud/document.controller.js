@@ -14,6 +14,14 @@ export const create = async (req, res) => {
   try {
     const { documentObject, blokObject } = req.body;
 
+    if (!documentObject.profileId) {
+      documentObject.profileId = req.user.profileId;
+    }
+
+    if (req.user.profileId !== documentObject.profileId) {
+      throw new Error("Profile Id don't match.");
+    }
+
     const data = await createDocument(documentObject, blokObject);
 
     res.code(200).send(data);
@@ -54,6 +62,10 @@ export const update = async (req, res) => {
     const { documentObject } = req.body;
     const { profileId } = req.user;
 
+    if (documentObject?.profileId && profileId !== documentObject.profileId) {
+      throw new Error("Profile Id don't match.");
+    }
+
     await checkAccess(profileId, "document", documentObject.id);
 
     const data = await updateDocument(documentObject);
@@ -71,6 +83,10 @@ export const del = async (req, res) => {
   try {
     const { documentObject } = req.body;
     const { profileId } = req.user;
+
+    if (documentObject?.profileId && profileId !== documentObject.profileId) {
+      throw new Error("Profile Id don't match.");
+    }
 
     await checkAccess(profileId, "document", documentObject.id);
 

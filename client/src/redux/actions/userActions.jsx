@@ -11,7 +11,11 @@ import {
 	USER_UPDATE_FAIL,
 } from '../constants/userConstants'
 
-import axios from 'axios'
+import {
+	readUser as read,
+	deleteUser,
+	updateUser as update,
+} from '@/helpers/utils/apis/crud/User'
 
 // LOGIN ACTION
 export const login =
@@ -33,7 +37,7 @@ export const login =
 				dispatch({
 					type: USER_LOGIN_SUCCESS,
 					payload: {
-						...response.data[0],
+						...response.data,
 						accessToken: accessToken,
 					},
 				})

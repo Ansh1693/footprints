@@ -3,11 +3,11 @@ import { User } from "../../utils/initializers/prisma.initializer.js";
  * A function that will return a profile
  *
  */
-export const readProfile = async (username) => {
+export const readProfile = async (profileId) => {
   try {
     return await User.findUnique({
       where: {
-        username,
+        profileId,
       },
       include: {
         UserMetadata: true,
@@ -29,7 +29,7 @@ export const readProfileDocuments = async (profileId) => {
         profileId,
       },
       include: {
-        Documents: {
+        Document: {
           include: {
             DocumentMetadata: true,
           },
@@ -53,12 +53,14 @@ export const readProfileFollowing = async (profileId) => {
       },
       include: {
         BlokFollowers: {
-          Blok: {
-            include: {
-              BlokMetadata: true,
-              User: {
-                include: {
-                  UserMetadata: true,
+          include: {
+            Blok: {
+              include: {
+                BlokMetadata: true,
+                User: {
+                  include: {
+                    UserMetadata: true,
+                  },
                 },
               },
             },
@@ -84,7 +86,7 @@ export const readProfileBloks = async (profileId, user) => {
           profileId,
         },
         include: {
-          Bloks: {
+          Blok: {
             include: {
               BlokMetadata: true,
               User: {
@@ -97,28 +99,12 @@ export const readProfileBloks = async (profileId, user) => {
         },
       });
     } else {
-      // bloks = await User.findOne({ profile_id: profile_id })
-      //   .select(["bloks"])
-      //   .populate({
-      //     path: "bloks",
-      //     match: { "status.public": true },
-      //     populate: {
-      //       path: "user_id",
-      //       populate: { path: "userMetadata" },
-      //     },
-      //     populate: {
-      //       path: "blokMetadata",
-      //     },
-      //   })
-      //   .lean()
-      //   .exec();
-
       bloks = await User.findUnique({
         where: {
           profileId,
         },
         include: {
-          Bloks: {
+          Blok: {
             where: {
               public: true,
             },

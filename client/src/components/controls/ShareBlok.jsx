@@ -9,7 +9,7 @@ import {
 import { CopyIcon } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-function ShareBoard({ editable, publicCheck, handlePublic, id }) {
+function ShareBlok({ editable, publicCheck, handlePublic, id }) {
 	return (
 		<Menubar>
 			<MenubarMenu>
@@ -43,7 +43,7 @@ function ShareBoard({ editable, publicCheck, handlePublic, id }) {
 							className='cursor-pointer'
 							onClick={() => {
 								navigator.clipboard.writeText(
-									`http://localhost:5000/board/${id}`
+									`http://localhost:5000/blok/${id}`
 								)
 								toast.success('Link copied to clipboard')
 							}}
@@ -55,4 +55,4 @@ function ShareBoard({ editable, publicCheck, handlePublic, id }) {
 	)
 }
 
-export default ShareBoard
+export default ShareBlok

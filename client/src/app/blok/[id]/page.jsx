@@ -16,7 +16,7 @@ import PinterestCard from '@/components/cards/PinterestCard'
 import ImdbCard from '@/components/cards/ImdbCard'
 import DefaultCard from '@/components/cards/DefaultCard'
 import React, { useState } from 'react'
-import ShareBoard from '@/components/controls/ShareBoard'
+import ShareBlok from '@/components/controls/ShareBlok'
 import FilterOptions from '@/components/controls/FilterOptions'
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
@@ -24,16 +24,21 @@ import useGetCookie from '@/components/cookies/useGetCookie'
 import axios from 'axios'
 import NoteCard from '@/components/cards/NoteCard'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
-import BookmarkWrapper from '@/components/wrappers/BookmarkWrapper'
+import DocumentWrapper from '@/components/wrappers/DocumentWrapper'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '@/redux/actions/userActions'
 import { toast } from 'react-hot-toast'
-import handleUtil from '@/helpers/utils/utilUpload'
-import { updateBoard } from '@/redux/actions/boardActions'
+import { uploadImage } from '@/helpers/utils/apis/utilities/upload'
+import { updateBlok } from '@/redux/actions/blokActions'
 import { AnimatePresence, motion } from 'framer-motion'
 import FullView from '@/components/FullView'
 import PeakView from '@/components/PeakView'
 import AudioCard from '@/components/cards/AudioCard'
+import {
+	followBlok,
+	readBlok,
+	unfollowBlok,
+} from '@/helpers/utils/apis/query/Blok'
 
 function Page() {
 	const router = useRouter()
@@ -52,82 +57,75 @@ function Page() {
 	const [isFullView, setIsFullView] = useState(
 		searchParams.get('false') === null ? false : true
 	)
-	const [bookmarkId, setBookmarkId] = useState(
-		searchParams.get('bookmark_id')
-	)
-	const [bookMarkData, setBookMarkData] = useState({})
+	const [documentId, setDocumentId] = useState(searchParams.get('documentId'))
+	const [documentData, setDocumentData] = useState({})
 	const [publicCheck, setPublicCheck] = useState(false)
-	//get board
-	const fetchBoard = () => {
-		let header = 'Bearer '
+	//get blok
+	const fetchBlok = () => {
+		let header
 		if (accessToken) {
-			header = header + accessToken
-			if (!userInfo?._id) {
+			header = accessToken
+			if (!userInfo?.id) {
 				dispatch(login({ accessToken }))
 			}
 		} else {
-			header += process.env.NEXT_PUBLIC_CLIENT_TOKEN
+			header = process.env.NEXT_PUBLIC_CLIENT_TOKEN
 		}
-		axios
-			.get(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/query/blok?blok_id=${id}&query_type=readBlok`,
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: header,
-					},
-				}
-			)
+		// read Blok using id
+		readBlok({ accessToken: header, blokId: id })
 			.then((res) => {
 				if (res.status === 200) {
 					setBlokData(res.data.data)
 					setPublicCheck(res.data.data.status.public)
 				} else {
-					router.push('/bookmarks')
+					router.push('/documents')
 				}
 			})
 			.catch((err) => {
 				console.log(err)
-				router.push('/bookmarks')
+				router.push('/documents')
 			})
 	}
-	//get board on render
+	//get blok on render
 	useEffect(() => {
-		fetchBoard()
+		fetchBlok()
 	}, [])
 	//for editable and follow
 	useEffect(() => {
-		if (blokData && userInfo?._id) {
+		if (blokData && userInfo?.id) {
 			if (
-				blokData?.user_id?._id === userInfo._id &&
-				blokData?.profile_id === userInfo.profile_id
+				blokData?.userId === userInfo.id &&
+				blokData?.profileId === userInfo.profileId
 			) {
 				setEditable(true)
 			}
 
-			if (blokData?.followers.includes(userInfo._id)) {
+			if (
+				blokData?.BlokFollowers?.filter(
+					(item) => item.userId === userInfo.id
+				).length >= 1
+			) {
 				setFollow(true)
 			}
 		}
-		if (bookmarkId && blokData?.documents && !bookMarkData) {
-			const bookmark = blokData?.documents?.find(
-				(item) => item._id === bookmarkId
+		if (documentId && blokData?.BloksDocument && !documentData) {
+			const document = blokData?.BloksDocument?.find(
+				(item) => item.documentId === documentId
 			)
-			setBookMarkData(bookmark)
+			setDocumentData(document.Document)
 		}
 	}, [blokData, userInfo])
 
 	useEffect(() => {
-		if (searchParams.get('bookmark_id')) {
-			console.log('yoyo')
-			setBookmarkId(searchParams.get('bookmark_id'))
+		if (searchParams.get('documentId')) {
+			setDocumentId(searchParams.get('documentId'))
 			setIsPeakOpen(searchParams.get('peak') === null ? false : true)
 			setIsFullView(searchParams.get('full') === null ? false : true)
-			if (bookmarkId && blokData?.documents && !bookMarkData?._id) {
-				const bookmark = blokData?.documents?.find(
-					(item) => item._id === bookmarkId
+			if (documentId && blokData?.BloksDocument && !documentData) {
+				const document = blokData?.BloksDocument?.find(
+					(item) => item.documentId === documentId
 				)
-				setBookMarkData(bookmark)
+				setDocumentData(document.Document)
 			}
 		}
 	}, [searchParams])
@@ -143,18 +141,20 @@ function Page() {
 			bannerPicker()
 		}
 		try {
-			const url = await handleUtil(file, accessToken, 'image')
+			const response = await uploadImage({ accessToken, file })
+
+			const url = response.data.data.url
 
 			if (url) {
 				const blokObject = {
 					...blokData,
-					blokMetadata: {
-						...blokData?.blokMetadata,
-						blok_header: url,
+					BlokMetadata: {
+						...blokData?.BlokMetadata,
+						blokHeader: url,
 					},
 				}
 				setBlokData(blokObject)
-				dispatch(updateBoard({ blokObject, accessToken }))
+				dispatch(updateBlok({ blokObject, accessToken }))
 			}
 		} catch (error) {
 			toast.error('Something went wrong')
@@ -162,7 +162,7 @@ function Page() {
 	}
 	//handle follow
 	const handleFollow = () => {
-		if (!accessToken && !userInfo?._id) {
+		if (!accessToken && !userInfo?.id) {
 			toast.error('Please login to follow')
 			return
 		}
@@ -171,24 +171,20 @@ function Page() {
 			toast.error('You cannot follow your own board')
 			return
 		}
-		const header = 'Bearer ' + accessToken
+
 		if (follow) {
-			axios
-				.patch(
-					`${process.env.NEXT_PUBLIC_SERVER_URL}/query/blok?blok_id=${id}&query_type=unfollowBlok`,
-					{ blokObject: { _id: blokData._id } },
-					{
-						headers: {
-							'Content-Type': 'application/json',
-							Authorization: header,
-						},
-					}
-				)
+			unfollowBlok({
+				accessToken,
+				blokObject: {
+					id: blokData.id,
+					userId: blokData.userId,
+				},
+			})
 				.then((res) => {
 					if (res.status === 200) {
 						setFollow(false)
 						toast.success('Unfollowed')
-						fetchBoard()
+						fetchBlok()
 					}
 				})
 				.catch((err) => {
@@ -196,22 +192,18 @@ function Page() {
 					toast.error('Something went wrong')
 				})
 		} else {
-			axios
-				.patch(
-					`${process.env.NEXT_PUBLIC_SERVER_URL}/query/blok?blok_id=${id}&query_type=followBlok`,
-					{ blokObject: { _id: blokData._id } },
-					{
-						headers: {
-							'Content-Type': 'application/json',
-							Authorization: header,
-						},
-					}
-				)
+			followBlok({
+				accessToken,
+				blokObject: {
+					id: blokData.id,
+					userId: blokData.userId,
+				},
+			})
 				.then((res) => {
 					if (res.status === 200) {
 						setFollow(true)
 						toast.success('Followed')
-						fetchBoard()
+						fetchBlok()
 					}
 				})
 				.catch((err) => {
@@ -225,51 +217,40 @@ function Page() {
 		document.getElementById('banner-picker').click()
 	}
 
-	const handleCardClick = (bookMarkData) => {
+	const handleCardClick = (documentData) => {
 		setIsPeakOpen(true)
-		setBookmarkId(bookMarkData._id)
+		setDocumentId(documentData._id)
 		setIsFullView(false)
-		router.push(`/board/${id}?bookmark_id=${bookmarkId}&peak=true`)
+		router.push(`/blok/${id}?documentId=${documentId}&peak=true`)
 	}
 
 	const handleBackgroundClick = () => {
-		router.push(`/board/${id}`)
-		setBookMarkData({})
+		router.push(`/blok/${id}`)
+		setDocumentData({})
 		setIsPeakOpen(false)
 		setIsFullView(false)
 	}
 
 	const switchFullView = () => {
-		router.push(`/board/${id}?bookmark_id=${bookmarkId}&full=true`)
+		router.push(`/blok/${id}?documentId=${documentId}&full=true`)
 		setIsPeakOpen(false)
 		setIsFullView(true)
 	}
 
 	const switchPeakView = () => {
-		router.push(`/board/${id}?bookmark_id=${bookmarkId}&peak=true`)
+		router.push(`/blok/${id}?documentId=${documentId}&peak=true`)
 		setIsFullView(false)
 		setIsPeakOpen(true)
 	}
 
 	const handlePublic = () => {
-		axios
-			.patch(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/blok/update`,
-				{
-					blokObject: {
-						...blokData,
-						status: {
-							...blokData.status,
-							public: !publicCheck,
-						},
-					},
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			)
+		updateBlok({
+			accessToken,
+			blokObject: {
+				...blokData,
+				public: !publicCheck,
+			},
+		})
 			.then((res) => {
 				if (res.status === 200) {
 					toast.success(
@@ -279,10 +260,7 @@ function Page() {
 					)
 					setBlokData({
 						...blokData,
-						status: {
-							...blokData.status,
-							public: !publicCheck,
-						},
+						public: !publicCheck,
 					})
 					setPublicCheck(!publicCheck)
 				}
@@ -296,7 +274,7 @@ function Page() {
 		<>
 			{/* disables background content interaction when  */}
 			<AnimatePresence>
-				{bookMarkData?._id && isPeakOpen && (
+				{documentData?._id && isPeakOpen && (
 					<motion.div
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 0.5 }}
@@ -310,8 +288,8 @@ function Page() {
 				<div className='relative w-screen h-48 overflow-hidden group'>
 					<Image
 						src={
-							blokData?.blokMetadata?.blok_header
-								? blokData?.blokMetadata?.blok_header
+							blokData?.BlokMetadata?.blokHeader
+								? blokData?.BlokMetadata?.blokHeader
 								: BannerImg
 						}
 						alt='banner'
@@ -348,15 +326,15 @@ function Page() {
 					</Button>
 				</div>
 
-				{/* board content */}
+				{/* blok content */}
 				<div className='p-8'>
 					<div className='space-y-3'>
 						<div className='flex items-start justify-between'>
 							<div className='flex items-center gap-[12px]'>
 								<h1 className='text-4xl font-semibold capitalize libre-font'>
-									{blokData?.blok_name
-										? blokData.blok_name
-										: 'Board Name'}
+									{blokData?.blokName
+										? blokData.blokName
+										: 'Blok Name'}
 								</h1>
 								{!editable && (
 									<FollowButton
@@ -366,7 +344,7 @@ function Page() {
 								)}
 							</div>
 							<div className='flex gap-4'>
-								<ShareBoard
+								<ShareBlok
 									editable={editable}
 									publicCheck={publicCheck}
 									handlePublic={handlePublic}
@@ -379,10 +357,9 @@ function Page() {
 						<div className='flex items-center gap-2'>
 							<Image
 								src={
-									blokData?.user_id?.userMetadata
-										?.profile_image
-										? blokData?.user_id?.userMetadata
-												?.profile_image
+									blokData?.User?.UserMetadata?.profileImage
+										? blokData?.User?.UserMetadata
+												?.profileImage
 										: ProfileImg
 								}
 								alt='profile'
@@ -394,7 +371,7 @@ function Page() {
 								by {blokData?.user_id?.name}
 								<span className='text-gray-200'>|</span>
 								<span className=' text-[#9CB1DA]'>
-									{blokData?.followers.length} followers
+									{blokData?.BlokFollowers.length} followers
 								</span>
 							</p>
 						</div>
@@ -411,45 +388,46 @@ function Page() {
 						columnsCountBreakPoints={{ 350: 2, 750: 3, 900: 4 }}
 					>
 						<Masonry gutter='24px' className='mt-2'>
-							{blokData?.documents &&
-								blokData.documents.map((item) => {
+							{blokData?.BloksDocument &&
+								blokData.BloksDocument.map((item) => {
 									switch (
-										item.documentMetadata.document_type
+										item.Document.DocumentMetadata
+											.documentType
 									) {
 										case 'reddit':
 											return (
-												<BookmarkWrapper
-													key={item._id}
+												<DocumentWrapper
+													key={item.documentId}
 													pinned={false}
 													contextMenu={false}
 												>
 													<RedditCard
-														data={item}
+														data={item.Document}
 														onClick={
 															handleCardClick
 														}
 													/>
-												</BookmarkWrapper>
+												</DocumentWrapper>
 											)
 										case 'twitter':
 											return (
-												<BookmarkWrapper
-													key={item._id}
+												<DocumentWrapper
+													key={item.documentId}
 													pinned={false}
 													contextMenu={false}
 												>
 													<TwitterCard
-														data={item}
+														data={item.Document}
 														onClick={
 															handleCardClick
 														}
 													/>
-												</BookmarkWrapper>
+												</DocumentWrapper>
 											)
 										case 'youtube':
 											return (
-												<BookmarkWrapper
-													key={item._id}
+												<DocumentWrapper
+													key={item.documentId}
 													pinned={false}
 													contextMenu={false}
 												>
@@ -459,104 +437,104 @@ function Page() {
 															handleCardClick
 														}
 													/>
-												</BookmarkWrapper>
+												</DocumentWrapper>
 											)
 										case 'article':
 											return (
-												<BookmarkWrapper
-													key={item._id}
+												<DocumentWrapper
+													key={item.documentId}
 													pinned={false}
 													contextMenu={false}
 												>
 													<ArticleCard
-														data={item}
+														data={item.Document}
 														onClick={
 															handleCardClick
 														}
 													/>
-												</BookmarkWrapper>
+												</DocumentWrapper>
 											)
 										case 'shopping':
 											return (
-												<BookmarkWrapper
-													key={item._id}
+												<DocumentWrapper
+													key={item.documentId}
 													pinned={false}
 													contextMenu={false}
 												>
 													<ShoppingCard
-														data={item}
+														data={item.Document}
 														onClick={
 															handleCardClick
 														}
 													/>
-												</BookmarkWrapper>
+												</DocumentWrapper>
 											)
 										case 'pinterest':
 											return (
-												<BookmarkWrapper
-													key={item._id}
+												<DocumentWrapper
+													key={item.documentId}
 													pinned={false}
 													contextMenu={false}
 												>
 													<PinterestCard
-														data={item}
+														data={item.Document}
 														onClick={
 															handleCardClick
 														}
 													/>
-												</BookmarkWrapper>
+												</DocumentWrapper>
 											)
 										case 'imdb':
 											return (
-												<BookmarkWrapper
-													key={item._id}
+												<DocumentWrapper
+													key={item.documentId}
 													pinned={false}
 													contextMenu={false}
 												>
 													<ImdbCard
-														data={item}
+														data={item.Document}
 														onClick={
 															handleCardClick
 														}
 													/>
-												</BookmarkWrapper>
+												</DocumentWrapper>
 											)
 
 										case 'audio':
 											return (
-												<BookmarkWrapper
-													key={item._id}
+												<DocumentWrapper
+													key={item.documentId}
 													pinned={false}
 													contextMenu={false}
 												>
 													<AudioCard
-														data={item}
+														data={item.Document}
 														onClick={
 															handleCardClick
 														}
 													/>
-												</BookmarkWrapper>
+												</DocumentWrapper>
 											)
 										case 'note':
 											return (
-												<BookmarkWrapper
-													key={item._id}
+												<DocumentWrapper
+													key={item.documentId}
 													pinned={false}
 													contextMenu={false}
 												>
 													<NoteCard
-														data={item}
+														data={item.Document}
 														onClick={
 															handleCardClick
 														}
 													/>
-												</BookmarkWrapper>
+												</DocumentWrapper>
 											)
 										default:
 											return (
 												<DefaultCard
-													key={item._id}
-													data={item}
+													key={item.documentId}
+													data={item.Document}
 													onClick={handleCardClick}
 												/>
 											)
@@ -568,7 +546,7 @@ function Page() {
 			</div>
 			{/* peak view */}
 			<AnimatePresence>
-				{bookMarkData?._id && isPeakOpen && !isFullView && (
+				{documentData?.id && isPeakOpen && !isFullView && (
 					<motion.div
 						initial={{ translateX: '100%' }}
 						animate={{ translateX: 0 }}
@@ -577,7 +555,7 @@ function Page() {
 						className='fixed flex flex-col gap-6 right-0 top-0 p-6 h-full w-[600px] overflow-y-scroll bg-white z-[100]'
 					>
 						<PeakView
-							data={bookMarkData}
+							data={documentData}
 							handleClose={handleBackgroundClick}
 							setIsFullView={switchFullView}
 						/>
@@ -587,7 +565,7 @@ function Page() {
 
 			{/* full view */}
 			<AnimatePresence>
-				{bookMarkData?._id && isFullView && !isPeakOpen && (
+				{documentData?.id && isFullView && !isPeakOpen && (
 					<motion.div
 						initial={{ translateX: '100%' }}
 						animate={{ translateX: 0 }}
@@ -596,7 +574,7 @@ function Page() {
 						className='fixed flex flex-col gap-6 right-0 top-0 h-full w-full overflow-y-scroll bg-white pb-10 z-[100]'
 					>
 						<FullView
-							data={bookMarkData}
+							data={documentData}
 							peakView={switchPeakView}
 							handleClose={handleBackgroundClick}
 							accessToken={userInfo.accessToken}

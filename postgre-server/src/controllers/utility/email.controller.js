@@ -1,4 +1,4 @@
-import { sendOTP } from '../../functions/utility/send.function.js'
+import { sendOTP } from "../../functions/utility/send.function.js";
 
 /**
  * A controller to handle the email request for a client
@@ -7,23 +7,23 @@ import { sendOTP } from '../../functions/utility/send.function.js'
  * @param {import("fastify").FastifyReply} res
  */
 const email = async (req, res) => {
-	try {
-		const { query_type } = req.query
+  try {
+    const { query_type } = req.query;
 
-		let data
+    let data;
 
-		if (!req.body.userObject) {
-			throw new Error('User object missing.')
-		}
+    if (!req.body.userObject) {
+      throw new Error("User object missing.");
+    }
 
-		if (query_type === 'otp') {
-			data = await sendOTP(req.body.userObject.email)
-		}
+    if (query_type === "otp") {
+      data = await sendOTP(req.body.userObject.email);
+    }
 
-		res.code(200).send({ data })
-	} catch (error) {
-		throw error
-	}
-}
+    res.code(200).send({ data });
+  } catch (error) {
+    throw error;
+  }
+};
 
-export default email
+export default email;

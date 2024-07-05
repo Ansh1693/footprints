@@ -13,6 +13,8 @@ const callbackConnect = async (req, res) => {
     const { platform } = req.params;
     const { state, code } = req.query;
 
+    console.log(req.headers);
+
     const authParams = cache.get(state);
 
     if (!authParams) {
@@ -24,7 +26,7 @@ const callbackConnect = async (req, res) => {
         authParams.profileId,
         authParams.state,
         state,
-        code,
+        code
       );
 
       res.status(200).send(user);

@@ -8,20 +8,19 @@ import { ArrowLeftIcon, PlusIcon } from '@heroicons/react/24/outline'
 import ShareIcon from '../../../assets/Icons/share2.svg'
 import FilterIcon from '../../../assets/Icons/filter.svg'
 import { AnimatePresence, motion } from 'framer-motion'
-import ShowBookmarks from '@/components/ShowBookmarks'
 import GoBack from '@/components/ui/GoBack'
 import useGetCookie from '@/components/cookies/useGetCookie'
 import useRemoveCookie from '@/components/cookies/useRemoveCookies'
 import ToastNotification from '@/components/ui/ToastNotification'
 import { login } from '@/redux/actions/userActions'
 import { useDispatch, useSelector } from 'react-redux'
-import { getBookmarkList } from '@/redux/actions/bookmarkActions'
+import { getDocumentList } from '@/redux/actions/documentActions'
 import useDebounce from '@/components/hooks/useDebounce'
 import axios from 'axios'
 import Metadata from '@/components/seo/MetaHead'
 import toast from 'react-hot-toast'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
-import BookmarkWrapper from '@/components/wrappers/BookmarkWrapper'
+import DocumentWrapper from '@/components/wrappers/DocumentWrapper'
 import RedditCard from '@/components/cards/RedditCard'
 import TwitterCard from '@/components/cards/TwitterCard'
 import YoutubeCard from '@/components/cards/YoutubeCard'
@@ -32,29 +31,30 @@ import ImdbCard from '@/components/cards/ImdbCard'
 import NoteCard from '@/components/cards/NoteCard'
 import DefaultCard from '@/components/cards/DefaultCard'
 import AudioCard from '@/components/cards/AudioCard'
+import { updateBlok } from '@/redux/actions/blokActions'
+import { createBlok } from '@/helpers/utils/apis/crud/Blok'
+import ShowDocuments from '@/components/ShowDocuments'
 
 // export const metadata = Metadata({
 // 	title: 'Boards | Bloks.Social',
 // 	description:
-// 		'Organise your bookmarks, favorite tutorials, articles in one place.',
+// 		'Organise your documents, favorite tutorials, articles in one place.',
 // 	image: '/favicon.ico',
 // })
 
 function Page() {
 	let router = useRouter()
-	const [showBookmarks, setShowBookmarks] = useState(false)
+	const [showDocuments, setShowDocuments] = useState(false)
 	const [blokObject, setBlokObject] = useState({
-		profile_id: '',
-		user_id: '',
-		blok_name: '',
+		profileId: '',
+		userId: '',
+		blokName: '',
 		description: '',
-		documents: [],
-		status: {
-			public: false,
-			deleted: false,
-		},
+		BloksDocument: [],
+		public: false,
+		deleted: false,
 	})
-	const [selectedBookmarks, setSelectedBookmarks] = useState([])
+	const [selectedDocuments, setSelectedDocuments] = useState([])
 	const dispatch = useDispatch()
 	const userLogin = useSelector((state) => state.userInfo)
 	const getCookie = useGetCookie()
@@ -62,18 +62,11 @@ function Page() {
 	const debouncedValue = useDebounce(blokObject, 1000)
 
 	useEffect(() => {
-		console.log(blokObject)
-		if (debouncedValue?._id) {
-			axios
-				.patch(
-					`${process.env.NEXT_PUBLIC_SERVER_URL}/blok/update`,
-					{ blokObject },
-					{
-						headers: {
-							Authorization: `Bearer ${userLogin.userInfo.accessToken}`,
-						},
-					}
-				)
+		if (debouncedValue?.id) {
+			updateBlok({
+				blokObject,
+				accessToken: userInfo?.userInfo?.accessToken,
+			})
 				.then((res) => {
 					if (res.status === 200) {
 						toast.success('Blok Updated')
@@ -83,33 +76,26 @@ function Page() {
 					toast.error({ message: 'Something went wrong' })
 				})
 		} else {
-			if (debouncedValue?.blok_name) {
-				axios
-					.post(
-						`${process.env.NEXT_PUBLIC_SERVER_URL}/blok/create`,
-						{ blokObject },
-						{
-							headers: {
-								Authorization: `Bearer ${userLogin.userInfo.accessToken}`,
-							},
-						}
-					)
+			if (debouncedValue?.blokName) {
+				createBlok({
+					accessToken: userLogin.userInfo.accessToken,
+					blokObject,
+				})
 					.then((res) => {
 						if (res.status === 200) {
 							toast.success('Blok Created')
-							console.log(res)
 							setBlokObject({
 								...blokObject,
-								_id: res.data._id,
+								id: res.data.id,
 							})
 						} else {
 							toast.error('Something went wrong')
-							router.push('/bookmarks')
+							router.push('/documents')
 						}
 					})
 					.catch((err) => {
 						toast.error('Something went wrong')
-						router.push('/bookmarks')
+						router.push('/documents')
 					})
 			}
 		}
@@ -119,7 +105,7 @@ function Page() {
 		const accessToken = getCookie('accessToken')
 		if (!accessToken) {
 			router.push('/login')
-		} else if (!userLogin?.userInfo._id) {
+		} else if (!userLogin?.userInfo.id) {
 			dispatch(login({ accessToken }))
 		}
 	}, [])
@@ -128,7 +114,7 @@ function Page() {
 		if (userLogin?.error) {
 			removeCookie('accessToken')
 			ToastNotification({ message: 'Please Login Again' })
-			router.push('/login')
+			router.push('/signin')
 		}
 	}, [userLogin])
 
@@ -136,14 +122,14 @@ function Page() {
 		if (userLogin.userInfo.accessToken) {
 			setBlokObject({
 				...blokObject,
-				profile_id: userLogin.userInfo.profile_id,
-				user_id: userLogin.userInfo._id,
+				profileId: userLogin.userInfo.profileId,
+				userId: userLogin.userInfo.id,
 			})
 			dispatch(
-				getBookmarkList({ accessToken: userLogin.userInfo.accessToken })
+				getDocumentList({ accessToken: userLogin.userInfo.accessToken })
 			)
 
-			setShowBookmarks(true)
+			setShowDocuments(true)
 		}
 	}, [userLogin.userInfo.accessToken])
 
@@ -151,12 +137,12 @@ function Page() {
 		<div className='relative px-8 py-8'>
 			{/* disables background content interaction when  */}
 			<AnimatePresence>
-				{showBookmarks && (
+				{showDocuments && (
 					<motion.div
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 0.5 }}
 						exit={{ opacity: 0 }}
-						onClick={() => setShowBookmarks(false)}
+						onClick={() => setShowDocuments(false)}
 						className='fixed inset-0 z-50 bg-black opacity-50'
 					></motion.div>
 				)}
@@ -169,11 +155,11 @@ function Page() {
 					<input
 						placeholder='Add title'
 						className='w-full text-3xl font-semibold text-black outline-none libre-font placeholder:text-black/80'
-						value={blokObject.blok_name}
+						value={blokObject.blokName}
 						onChange={(e) =>
 							setBlokObject({
 								...blokObject,
-								blok_name: e.target.value,
+								blokName: e.target.value,
 							})
 						}
 					/>
@@ -206,7 +192,7 @@ function Page() {
 						/>
 					</Button>
 					<Button
-						onClick={() => setShowBookmarks(true)}
+						onClick={() => setShowDocuments(true)}
 						variant={'secondary'}
 						size={'icon'}
 					>
@@ -221,13 +207,13 @@ function Page() {
 					columnsCountBreakPoints={{ 350: 2, 750: 3, 900: 4 }}
 				>
 					<Masonry gutter='24px' className='mt-2'>
-						{selectedBookmarks &&
-							selectedBookmarks.map((item) => {
-								switch (item.documentMetadata.document_type) {
+						{selectedDocuments &&
+							setSelectedDocuments.map((item) => {
+								switch (item.DocumentMetadata.documentType) {
 									case 'reddit':
 										return (
-											<BookmarkWrapper
-												key={item._id}
+											<DocumentWrapper
+												key={item.id}
 												pinned={false}
 												contextMenu={false}
 											>
@@ -235,12 +221,12 @@ function Page() {
 													data={item}
 													// onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'twitter':
 										return (
-											<BookmarkWrapper
-												key={item._id}
+											<DocumentWrapper
+												key={item.id}
 												pinned={false}
 												contextMenu={false}
 											>
@@ -248,12 +234,12 @@ function Page() {
 													data={item}
 													// onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'youtube':
 										return (
-											<BookmarkWrapper
-												key={item._id}
+											<DocumentWrapper
+												key={item.id}
 												pinned={false}
 												contextMenu={false}
 											>
@@ -261,12 +247,12 @@ function Page() {
 													data={item}
 													// onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'article':
 										return (
-											<BookmarkWrapper
-												key={item._id}
+											<DocumentWrapper
+												key={item.id}
 												pinned={false}
 												contextMenu={false}
 											>
@@ -274,12 +260,12 @@ function Page() {
 													data={item}
 													// onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'shopping':
 										return (
-											<BookmarkWrapper
-												key={item._id}
+											<DocumentWrapper
+												key={item.id}
 												pinned={false}
 												contextMenu={false}
 											>
@@ -287,12 +273,12 @@ function Page() {
 													data={item}
 													// onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'pinterest':
 										return (
-											<BookmarkWrapper
-												key={item._id}
+											<DocumentWrapper
+												key={item.id}
 												pinned={false}
 												contextMenu={false}
 											>
@@ -300,12 +286,12 @@ function Page() {
 													data={item}
 													// onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'imdb':
 										return (
-											<BookmarkWrapper
-												key={item._id}
+											<DocumentWrapper
+												key={item.id}
 												pinned={false}
 												contextMenu={false}
 											>
@@ -313,13 +299,13 @@ function Page() {
 													data={item}
 													// onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 
 									case 'audio':
 										return (
-											<BookmarkWrapper
-												key={item._id}
+											<DocumentWrapper
+												key={item.id}
 												pinned={false}
 												contextMenu={false}
 											>
@@ -327,12 +313,12 @@ function Page() {
 													data={item}
 													// onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									case 'note':
 										return (
-											<BookmarkWrapper
-												key={item._id}
+											<DocumentWrapper
+												key={item.id}
 												pinned={false}
 												contextMenu={false}
 											>
@@ -340,21 +326,21 @@ function Page() {
 													data={item}
 													// onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 									default:
 										return (
-											<BookmarkWrapper
-												key={item._id}
+											<DocumentWrapper
+												key={item.id}
 												pinned={false}
 												contextMenu={false}
 											>
 												<DefaultCard
-													key={item._id}
+													key={item}
 													data={item}
 													// onClick={handleCardClick}
 												/>
-											</BookmarkWrapper>
+											</DocumentWrapper>
 										)
 								}
 							})}
@@ -364,7 +350,7 @@ function Page() {
 
 			{/* peak view */}
 			<AnimatePresence>
-				{showBookmarks && (
+				{showDocuments && (
 					<motion.div
 						initial={{ translateX: '100%' }}
 						animate={{ translateX: 0 }}
@@ -372,22 +358,22 @@ function Page() {
 						transition={{ duration: 0.3, ease: 'easeOut' }}
 						className='fixed flex flex-col gap-6 right-0 top-0 p-6 h-full w-[600px] overflow-y-scroll bg-white z-[100]'
 					>
-						<ShowBookmarks
-							// data={activeBookmark}
+						<ShowDocuments
+							// data={activeDocument}
 							handleClose={() => {
 								if (blokObject.documents.length > 0) {
-									setShowBookmarks(false)
+									setShowDocuments(false)
 								} else {
 									ToastNotification({
 										message:
-											'Please select atleast one bookmark',
+											'Please select atleast one Document',
 									})
 								}
 							}}
 							blok={blokObject}
 							setBlok={setBlokObject}
-							selectedBookmarks={selectedBookmarks}
-							setSelectedBookmarks={setSelectedBookmarks}
+							selectedDocuments={selectedDocuments}
+							selectedDocuments={selectedDocuments}
 						/>
 					</motion.div>
 				)}

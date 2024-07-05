@@ -7,7 +7,7 @@ import {
  * A function that will send return a specific document
  *
  */
-export const readDocument = async (documentId, profileId = undefined) => {
+export const readDocument = async (documentId, userId = undefined) => {
   try {
     const foundDocument = await Document.findUnique({
       where: {
@@ -38,7 +38,7 @@ export const readDocument = async (documentId, profileId = undefined) => {
     });
 
     if (foundDocument.public === false) {
-      if (profileId !== foundDocument.userId) {
+      if (userId !== foundDocument.userId) {
         throw new Error("Document is not public.");
       }
     }
@@ -46,6 +46,36 @@ export const readDocument = async (documentId, profileId = undefined) => {
     return foundDocument;
   } catch (error) {
     throw error;
+  }
+};
+
+/**
+ * A function that will send return a specific documents for a profile
+ *
+ */
+
+export const readDocuments = async (profileId) => {
+  try {
+    const foundDocuments = await Document.findMany({
+      where: {
+        profileId: profileId,
+        public: true,
+      },
+      include: {
+        DocumentMetadata: true,
+        RedditData: true,
+        PinterestData: true,
+        TagsDocument: {
+          include: {
+            Tag: true,
+          },
+        },
+      },
+    });
+
+    return foundDocuments;
+  } catch (err) {
+    throw err;
   }
 };
 

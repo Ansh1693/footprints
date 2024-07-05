@@ -13,44 +13,43 @@ import PinIcon from '../../assets/Icons/pin.svg'
 import Image from 'next/image'
 import useGetCookie from '../cookies/useGetCookie'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteBookmark, updateBookmark } from '@/redux/actions/bookmarkActions'
-import { updateBoard } from '@/redux/actions/boardActions'
+import { deleteDocument, updateDocument } from '@/redux/actions/documentActions'
+import { updateBlok } from '@/redux/actions/blokActions'
 
-function BookmarkWrapper({
+function DocumentWrapper({
 	children,
 	pinned,
 	data = null,
-	bookmarkId,
+	documentId,
 	onDelete,
-	boards,
-	onAddToBoards,
+	bloks,
+	onAddToBloks,
 	contextMenu = true,
 }) {
 	const dispatch = useDispatch()
 	const getCookie = useGetCookie()
 	const accessToken = getCookie('accessToken')
 	const handlePinnedChange = () => {
-		const bookmarkData = {
+		const documentObject = {
 			...data,
-			status: {
-				...data.status,
-				pinned: !pinned,
-			},
+			pinned: !pinned,
 		}
 
-		dispatch(updateBookmark({ updatedData: bookmarkData, accessToken }))
+		dispatch(updateDocument({ documentObject, accessToken }))
 	}
 
-	const handleAddToBoards = (blokData) => {
+	const handleAddToBloks = (blokData) => {
 		const blokObject = {
 			...blokData,
-			documents: [...blokData.documents, data._id],
+			BloksDocument: [...blokData?.BloksDocument, { id: data.id }],
 		}
-		dispatch(updateBoard({ blokObject, accessToken }))
+		dispatch(updateBlok({ blokObject, accessToken }))
 	}
 
 	const handleDelete = () => {
-		dispatch(deleteBookmark({ bookmarkId: data._id, accessToken }))
+		dispatch(
+			deleteDocument({ documentObject: { id: data.id }, accessToken })
+		)
 	}
 	return (
 		<div className='relative'>
@@ -74,22 +73,24 @@ function BookmarkWrapper({
 						</ContextMenuItem>
 						<ContextMenuSub>
 							<ContextMenuSubTrigger>
-								Add to boards
+								Add to Bloks
 							</ContextMenuSubTrigger>
 							<ContextMenuSubContent>
-								{boards.length > 0 &&
-									boards.map((board) => {
+								{bloks.length > 0 &&
+									bloks.map((blok) => {
 										if (
-											!board?.documents.includes(data._id)
+											!blok?.BloksDocument.filter(
+												(item) => item.id === data.id
+											).length > 0
 										) {
 											return (
 												<ContextMenuItem
-													key={board?._id}
+													key={blok?.id}
 													onClick={() =>
-														handleAddToBoards(board)
+														handleAddToBloks(blok)
 													}
 												>
-													{board?.blok_name}
+													{blok?.blokName}
 												</ContextMenuItem>
 											)
 										}
@@ -112,4 +113,4 @@ function BookmarkWrapper({
 	)
 }
 
-export default BookmarkWrapper
+export default DocumentWrapper

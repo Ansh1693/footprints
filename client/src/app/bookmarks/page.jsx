@@ -34,7 +34,7 @@ import AudioCard from '@/components/cards/AudioCard'
 import useGetCookie from '@/components/cookies/useGetCookie'
 import { toast } from 'react-hot-toast'
 import axios from 'axios'
-import handleUtil from '@/helpers/utils/utilUpload'
+import handleUtil from '@/helpers/utils/apis/utilities/upload'
 import { getBoardList } from '@/redux/actions/boardActions'
 import SearchBar from '@/components/SearchBar'
 
@@ -73,7 +73,7 @@ function Page() {
 
 		axios
 			.get(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/query/document?query_type=readDocument&document_id=${bookmarkId}`,
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/query/document?queryType=readDocument&documentId=${bookmarkId}`,
 				{
 					headers: {
 						Authorization: header,
@@ -123,7 +123,7 @@ function Page() {
 	const handleDelete = (bookMarkData) => {
 		dispatch(
 			deleteBookmark({
-				bookmarkId: bookMarkData._id,
+				bookmarkId: bookMarkData.id,
 				accessToken: userInfo.accessToken,
 			})
 		)

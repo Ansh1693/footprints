@@ -19,16 +19,16 @@ import NoteCard from './cards/NoteCard'
 import AudioCard from './cards/AudioCard'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 
-function ShowBookmarks({
+function ShowDocuments({
 	handleClose,
 	setIsFullView,
 	blok,
 	setBlok,
-	selectedBookmarks,
-	setSelectedBookmarks,
+	selectedDocuments,
+	setSelectedDocuments,
 }) {
-	const bookmarks = useSelector((state) => state.bookmarks)
-	const handleCardClick = () => {}
+	const documents = useSelector((state) => state.documents)
+	// const handleCardClick = () => {}
 	return (
 		<div className='space-y-4'>
 			{/* peak view controls */}
@@ -51,226 +51,226 @@ function ShowBookmarks({
 					columnsCountBreakPoints={{ 350: 2 }}
 				>
 					<Masonry gutter='12px' className='mt-2'>
-						{bookmarks.bookmarks.map((item) => {
-							switch (item.documentMetadata.document_type) {
+						{documents?.documents.map((item) => {
+							switch (item.DocumentMetadata.documentType) {
 								case 'reddit':
 									return (
 										<CardWrapper
-											key={item._id}
+											key={item.id}
 											selectionMode
-											id={item._id}
+											id={item.id}
 											blok={blok}
 											setBlok={setBlok}
-											selectedBookmarks={
-												selectedBookmarks
+											selectedDocuments={
+												selectedDocuments
 											}
-											setSelectedBookmarks={
-												setSelectedBookmarks
+											setSelectedDocuments={
+												setSelectedDocuments
 											}
 											data={item}
 										>
 											<RedditCard
 												data={item}
-												onClick={handleCardClick}
+												// onClick={handleCardClick}
 											/>
 										</CardWrapper>
 									)
 								case 'twitter':
 									return (
 										<CardWrapper
-											key={item._id}
+											key={item.id}
 											selectionMode
-											id={item._id}
+											id={item.id}
 											blok={blok}
 											setBlok={setBlok}
-											selectedBookmarks={
-												selectedBookmarks
+											selectedDocuments={
+												selectedDocuments
 											}
-											setSelectedBookmarks={
-												setSelectedBookmarks
+											setSelectedDocuments={
+												setSelectedDocuments
 											}
 											data={item}
 										>
 											<TwitterCard
 												data={item}
-												onClick={handleCardClick}
+												// onClick={handleCardClick}
 											/>
 										</CardWrapper>
 									)
 								case 'youtube':
 									return (
 										<CardWrapper
-											key={item._id}
+											key={item.id}
 											selectionMode
-											id={item._id}
+											id={item.id}
 											blok={blok}
 											setBlok={setBlok}
-											selectedBookmarks={
-												selectedBookmarks
+											selectedDocuments={
+												selectedDocuments
 											}
-											setSelectedBookmarks={
-												setSelectedBookmarks
+											setSelectedDocuments={
+												setSelectedDocuments
 											}
 											data={item}
 										>
 											<YoutubeCard
 												data={item}
-												onClick={handleCardClick}
+												// onClick={handleCardClick}
 											/>
 										</CardWrapper>
 									)
 								case 'article':
 									return (
 										<CardWrapper
-											key={item._id}
+											key={item.id}
 											selectionMode
-											id={item._id}
+											id={item.id}
 											blok={blok}
 											setBlok={setBlok}
-											selectedBookmarks={
-												selectedBookmarks
+											selectedDocuments={
+												selectedDocuments
 											}
-											setSelectedBookmarks={
-												setSelectedBookmarks
+											setSelectedDocuments={
+												setSelectedDocuments
 											}
 											data={item}
 										>
 											<ArticleCard
 												data={item}
-												onClick={handleCardClick}
+												// onClick={handleCardClick}
 											/>
 										</CardWrapper>
 									)
 								case 'audio':
 									return (
 										<CardWrapper
-											key={item._id}
+											key={item.id}
 											selectionMode
-											id={item._id}
+											id={item.id}
 											blok={blok}
 											setBlok={setBlok}
-											selectedBookmarks={
-												selectedBookmarks
+											selectedDocuments={
+												selectedDocuments
 											}
-											setSelectedBookmarks={
-												setSelectedBookmarks
+											setSelectedDocuments={
+												setSelectedDocuments
 											}
 											data={item}
 										>
 											<AudioCard
 												data={item}
-												onClick={handleCardClick}
+												// onClick={handleCardClick}
 											/>
 										</CardWrapper>
 									)
 								case 'note':
 									return (
 										<CardWrapper
-											key={item._id}
+											key={item.id}
 											selectionMode
-											id={item._id}
+											id={item.id}
 											blok={blok}
 											setBlok={setBlok}
-											selectedBookmarks={
-												selectedBookmarks
+											selectedDocuments={
+												selectedDocuments
 											}
-											setSelectedBookmarks={
-												setSelectedBookmarks
+											setSelectedDocuments={
+												setSelectedDocuments
 											}
 											data={item}
 										>
 											<NoteCard
 												data={item}
-												onClick={handleCardClick}
+												// onClick={handleCardClick}
 											/>
 										</CardWrapper>
 									)
 								case 'shopping':
 									return (
 										<CardWrapper
-											key={item._id}
+											key={item.id}
 											selectionMode
-											id={item._id}
+											id={item.id}
 											blok={blok}
 											setBlok={setBlok}
-											selectedBookmarks={
-												selectedBookmarks
+											selectedDocuments={
+												selectedDocuments
 											}
-											setSelectedBookmarks={
-												setSelectedBookmarks
+											setSelectedDocuments={
+												setSelectedDocuments
 											}
 											data={item}
 										>
 											<ShoppingCard
 												data={item}
-												onClick={handleCardClick}
+												// onClick={handleCardClick}
 											/>
 										</CardWrapper>
 									)
 								case 'pinterest':
 									return (
 										<CardWrapper
-											key={item._id}
+											key={item.id}
 											selectionMode
-											id={item._id}
+											id={item.id}
 											blok={blok}
 											setBlok={setBlok}
-											selectedBookmarks={
-												selectedBookmarks
+											selectedDocuments={
+												selectedDocuments
 											}
-											setSelectedBookmarks={
-												setSelectedBookmarks
+											setSelectedDocuments={
+												setSelectedDocuments
 											}
 											data={item}
 										>
 											<PinterestCard
 												data={item}
-												onClick={handleCardClick}
+												// onClick={handleCardClick}
 											/>
 										</CardWrapper>
 									)
 								case 'imdb':
 									return (
 										<CardWrapper
-											key={item._id}
+											key={item.id}
 											selectionMode
-											id={item._id}
+											id={item.id}
 											blok={blok}
 											setBlok={setBlok}
-											selectedBookmarks={
-												selectedBookmarks
+											selectedDocuments={
+												selectedDocuments
 											}
-											setSelectedBookmarks={
-												setSelectedBookmarks
+											setSelectedDocuments={
+												setSelectedDocuments
 											}
 											data={item}
 										>
 											<ImdbCard
 												data={item}
-												onClick={handleCardClick}
+												// onClick={handleCardClick}
 											/>
 										</CardWrapper>
 									)
 								default:
 									return (
 										<CardWrapper
-											key={item._id}
+											key={item.id}
 											selectionMode
-											id={item._id}
+											id={item.id}
 											blok={blok}
 											setBlok={setBlok}
-											selectedBookmarks={
-												selectedBookmarks
+											selectedDocuments={
+												selectedDocuments
 											}
-											setSelectedBookmarks={
-												setSelectedBookmarks
+											setSelectedDocuments={
+												setSelectedDocuments
 											}
 											data={item}
 										>
 											<DefaultCard
-												key={item._id}
+												key={item.id}
 												data={item}
-												onClick={handleCardClick}
+												// onClick={handleCardClick}
 											/>
 										</CardWrapper>
 									)
@@ -283,4 +283,4 @@ function ShowBookmarks({
 	)
 }
 
-export default ShowBookmarks
+export default ShowDocuments

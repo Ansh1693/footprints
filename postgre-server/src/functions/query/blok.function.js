@@ -16,6 +16,11 @@ export const readBlok = async (blokId, userId = undefined) => {
       },
       include: {
         BlokMetadata: true,
+        User: {
+          include: {
+            UserMetadata: true,
+          },
+        },
         BloksDocument: {
           include: {
             Document: {
@@ -52,11 +57,11 @@ export const readBlok = async (blokId, userId = undefined) => {
  * A function that will return the public bloks of a particular user
  *
  */
-export const readBloks = async (userId) => {
+export const readBloks = async (profileId) => {
   try {
     return await Blok.findMany({
       where: {
-        userId,
+        profileId: profileId,
         public: true,
       },
       include: {

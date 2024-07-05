@@ -41,7 +41,7 @@ function Page() {
 			const userObject = { username }
 			axios
 				.post(
-					`${process.env.NEXT_PUBLIC_SERVER_URL}/utility/check?query_type=username`,
+					`${process.env.NEXT_PUBLIC_SERVER_URL}/utility/check?queryType=username`,
 					{ userObject },
 					{
 						headers: {
@@ -86,7 +86,7 @@ function Page() {
 		try {
 			let newUser = false
 			const res = await axios.post(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/utility/check?query_type=email`,
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/utility/check?queryType=email`,
 				{
 					userObject: { email: data.email },
 				},
@@ -102,7 +102,7 @@ function Page() {
 			}
 
 			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/initialize?query_type=email`,
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/initialize?queryType=email`,
 				{ userObject: { email: data.email } },
 				{
 					headers: {
@@ -158,7 +158,7 @@ function Page() {
 
 		try {
 			const response = await axios.post(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback/email?state=${loginState.state}`,
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/callback/email?state=${loginState.state}&code=${userObject.otp}`,
 				{
 					userObject: {
 						...userObject,
@@ -235,7 +235,7 @@ function Page() {
 	const handleGoogleLogin = async () => {
 		try {
 			//     const response= await axios.get(
-			//         `${process.env.SERVER_URL}/auth/initialize?query_type=google`,
+			//         `${process.env.SERVER_URL}/auth/initialize?queryType=google`,
 			//         {
 			//             headers: {
 			//                 'Content-Type': 'application/json',
@@ -252,7 +252,7 @@ function Page() {
 			//   }
 
 			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/initialize?query_type=google`,
+				`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/initialize?queryType=google`,
 				{
 					method: 'GET',
 					headers: {
@@ -278,7 +278,7 @@ function Page() {
 		<div className='flex items-center justify-center w-full h-full'>
 			<div className='flex flex-col p-10 gap-9'>
 				<div className='fixed top-8'>
-					<Image src={Logo} className='w-12 h-12' />
+					<Image src={Logo} className='w-12 h-12' alt='Logo' />
 					<p className='font-semibold text-primary libre-font'>
 						bloks
 					</p>

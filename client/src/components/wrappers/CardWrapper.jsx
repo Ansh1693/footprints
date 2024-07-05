@@ -11,8 +11,8 @@ function CardWrapper({
 	blok,
 	setBlok,
 	id = null,
-	selectedBookmarks,
-	setSelectedBookmarks,
+	selectedDocuments,
+	setSelectedDocuments,
 	data,
 }) {
 	const [isSelected, setIsSelected] = useState(
@@ -24,20 +24,22 @@ function CardWrapper({
 
 		if (isSelected) {
 			// remove from selected
-			const newSelected = blok.documents.filter((item) => item !== id)
-			setBlok({ ...blok, documents: newSelected })
-			const newBookmarks = selectedBookmarks.filter(
-				(item) => item._id !== id
+			const newSelected = blok.BloksDocument.filter(
+				(item) => item.id !== id
+			)
+			setBlok({ ...blok, BloksDocument: newSelected })
+			const newDocuments = selectedDocuments.filter(
+				(item) => item.id !== id
 			)
 
-			setSelectedBookmarks(newBookmarks)
+			setSelectedDocuments(newDocuments)
 		} else {
 			// add to selected
-			const newSelected = [...blok.documents, id]
-			setBlok({ ...blok, documents: newSelected })
+			const newSelected = [...blok.BloksDocument, { id }]
+			setBlok({ ...blok, BloksDocument: newSelected })
 
-			const newBookmarks = [...selectedBookmarks, data]
-			setSelectedBookmarks(newBookmarks)
+			const newDocuments = [...selectedDocuments, data]
+			setSelectedDocuments(newDocuments)
 		}
 		setIsSelected(!isSelected)
 	}

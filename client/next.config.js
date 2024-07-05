@@ -8,7 +8,12 @@ const nextConfig = {
 		},
 	],
 	images: {
-		domains: ['images.unsplash.com', 'lh3.googleusercontent.com', '*'],
+		domains: [
+			'images.unsplash.com',
+			'lh3.googleusercontent.com',
+			'*',
+			'pub-5ba5a56444584236a01501588efde794.r2.dev',
+		],
 	},
 	webpack: (config, { isServer }) => {
 		// Add a rule for handling .mp3 files

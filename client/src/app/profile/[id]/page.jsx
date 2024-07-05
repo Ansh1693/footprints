@@ -264,7 +264,7 @@ function Page() {
 					</div>
 
 					{/* profile image */}
-					<div className='absolute group z-10 bottom-0 translate-y-1/2 w-32 h-32 rounded-full overflow-hidden border-[8px] border-white'>
+					<div className='absolute group z-10 bottom-0 translate-y-1/2  rounded-full overflow-hidden border-[8px] border-white shadow-xl '>
 						{/* edit indicator */}
 						{editable && (
 							<div
@@ -295,9 +295,9 @@ function Page() {
 							<Image
 								alt='profile'
 								src={profileImage || ProfileImg}
-								width={128}
-								height={128}
-								className='object-cover'
+								width={124}
+								height={124}
+								className='object-cover shadow-xl'
 							/>
 						)}
 						{!profileImage && (
@@ -309,15 +309,15 @@ function Page() {
 				</div>
 
 				{/* profile data */}
-				<div className='flex flex-col items-center gap-1 mt-16'>
+				<div className='flex flex-col items-center gap-1 mt-24'>
 					{/* name */}
-					<h1 className='text-xl font-medium libre-font'>
+					<h1 className='text-xl font-medium capitalize'>
 						{userData?.name}
 					</h1>
 					{/* username */}
 					<div className='flex items-center gap-1 text-gray-500'>
-						<p className='text-xs font-medium'>
-							@{userData?.username}
+						<p className='text-sm font-medium'>
+							{userData?.username}@footprints
 						</p>
 						<Image
 							alt='share'
@@ -334,12 +334,13 @@ function Page() {
 			{/* search */}
 			<div className='flex items-center gap-6 px-8 pt-8'>
 				{/* search bar */}
-				<div className='flex items-center w-full gap-1 px-2 text-[#9CB1DA] border rounded-lg'>
-					<MagnifyingGlass className='w-5 h-5' />
+				<div className='flex   items-center  w-full px-2  text-slate-300 border border-slate-100 rounded-full shadow-xl'>
+					<MagnifyingGlass size={20} className='ml-2' />
 					<Input
 						placeholder='Search...'
-						className='bg-transparent focus:text-primary placeholder:text-[#9CB1DA] border-none'
+						className='bg-transparent border-none focus:text-slate-500 font-normal text-base my-2 text-slate-300'
 					/>
+					
 				</div>
 
 				<div className='flex gap-4'>
@@ -359,7 +360,7 @@ function Page() {
 			</div>
 
 			{/* Boards */}
-			<div className='px-8 py-8 space-y-6'>
+			<div className='px-8 py-8 flex space-x-12 space-y-6'>
 				{data?.map((item) => (
 					<FeedCard
 						key={item._id}

@@ -49,9 +49,9 @@ function PeakView({ data, handleClose, setIsFullView }) {
 		setImageDimensions({ width: naturalWidth, height: naturalHeight })
 	}
 	return (
-		<div className='space-y-4'>
+		<div className='space-y-4 bg-gray-50 h-full rounded-xl shadow-sm py-4 px-8'>
 			{/* peak view controls */}
-			<div className='flex items-center gap-4'>
+			<div className='w-full flex-end flex items-center gap-4'>
 				{/* collapse button */}
 				<Button
 					variant={'secondary'}
@@ -73,12 +73,12 @@ function PeakView({ data, handleClose, setIsFullView }) {
 
 			{data && (
 				<>
-					<div className='text-[32px] uppercase font-bold libre-font'>
+					<div className='text-[26px] uppercase font-semibold  font-sans'>
 						{data?.heading
 							? data?.heading
 							: data?.body.slice(0, 1).toUpperCase() +
-							  data?.body.slice(1, 5) +
-							  '...'}
+								data?.body.slice(1, 5) +
+								'...'}
 					</div>
 					{data.documentMetadata.document_type === 'audio' && (
 						<div className='space-y-6'>
@@ -145,7 +145,7 @@ function PeakView({ data, handleClose, setIsFullView }) {
 								className={`rounded-md shadow-lg`}
 							/>
 						)}
-					<div className='font-normal text-base text-[#9CB1DA] font-inter max-w-[600px]'>
+					<div className='font-normal text-base text-slate-600 mt-1 font-inter max-w-[600px]'>
 						{data?.body}
 					</div>
 				</>

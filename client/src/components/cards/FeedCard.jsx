@@ -104,11 +104,11 @@ function FeedCard({
 
 	return (
 		<div
-			className='flex justify-between border rounded-lg cursor-pointer overflow-hidden shadow-md h-[156px]'
+			className='flex flex-col-reverse w-96  justify-between border rounded-lg cursor-pointer overflow-hidden shadow-md '
 			// onClick={() => redirectBoard()}
 		>
 			{/* profile data */}
-			<div className='p-4 space-y-5 min-w-[50%]'>
+			<div className='p-4 space-y-5 '>
 				<div className='flex items-start justify-between'>
 					<div className='flex items-center gap-[12px]'>
 						<Link href={`/profile/@${profile?.username}`}>
@@ -162,7 +162,7 @@ function FeedCard({
 			</div>
 
 			{/* banner */}
-			<div className='w-[925px] h-full overflow-hidden'>
+			<div className=' h-full overflow-hidden'>
 				<Link href={`/board/${data?._id}`}>
 					<Image
 						src={

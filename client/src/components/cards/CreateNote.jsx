@@ -263,10 +263,10 @@ function CreateNote() {
 	}
 
 	return (
-		<div className='flex flex-col border rounded-lg h-60 border-primary'>
+		<div className='flex flex-col border rounded-lg h-60 border-primary  shadow-xl'>
 			<div className='flex items-center gap-2 px-4 py-2 border-b'>
-				<Image src={NoteIcon} className='w-6 h-6' />
-				<p className='text-sm text-gray-400'>Create new</p>
+				<Image src={NoteIcon} className='w-6 h-6' alt='' />
+				<p className='text-sm text-gray-400'>New Note</p>
 			</div>
 
 			<div className='relative h-full px-4 py-2'>

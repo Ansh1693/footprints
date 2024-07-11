@@ -10,6 +10,7 @@ import { BloksDocumentCreateNestedManyWithoutDocumentInputSchema } from './Bloks
 
 export const DocumentCreateWithoutPinterestDataInputSchema: z.ZodType<Prisma.DocumentCreateWithoutPinterestDataInput> = z.object({
   id: z.string().cuid().optional(),
+  profileId: z.string(),
   heading: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
   public: z.boolean().optional(),

@@ -12,6 +12,7 @@ export const DocumentScalarWhereInputSchema: z.ZodType<Prisma.DocumentScalarWher
   NOT: z.union([ z.lazy(() => DocumentScalarWhereInputSchema),z.lazy(() => DocumentScalarWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  profileId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   heading: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   body: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   public: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),

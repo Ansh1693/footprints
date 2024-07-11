@@ -5,6 +5,7 @@ import { z } from 'zod';
 export const BlokCreateManyInputSchema: z.ZodType<Prisma.BlokCreateManyInput> = z.object({
   id: z.string().cuid().optional(),
   userId: z.string(),
+  profileId: z.string(),
   blokName: z.string(),
   description: z.string().optional().nullable(),
   public: z.boolean().optional(),

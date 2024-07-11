@@ -6,8 +6,8 @@ import { z } from 'zod';
 
 export const RedditDataSchema = z.object({
   id: z.string().cuid(),
-  username: z.string().nullable(),
-  postId: z.string().nullable(),
+  username: z.string(),
+  postId: z.string(),
   documentId: z.string(),
 })
 

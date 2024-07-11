@@ -16,7 +16,7 @@ import { toast } from 'react-hot-toast'
 import {
 	readDocument as read,
 	createDocument as create,
-	deleteDocument,
+	deleteDocument as deleteDocumentApi,
 	updateDocument as update,
 } from '@/helpers/utils/apis/crud/Document'
 
@@ -84,7 +84,7 @@ export const deleteDocument =
 		try {
 			dispatch({ type: DOCUMENT_DELETE_REQUEST })
 
-			const response = await deleteDocument({
+			const response = await deleteDocumentApi({
 				accessToken,
 				documentObject,
 			})

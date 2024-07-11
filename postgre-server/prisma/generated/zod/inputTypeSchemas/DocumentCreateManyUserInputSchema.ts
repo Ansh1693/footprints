@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 export const DocumentCreateManyUserInputSchema: z.ZodType<Prisma.DocumentCreateManyUserInput> = z.object({
   id: z.string().cuid().optional(),
+  profileId: z.string(),
   heading: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
   public: z.boolean().optional(),

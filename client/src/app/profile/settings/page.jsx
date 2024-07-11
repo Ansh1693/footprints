@@ -26,7 +26,7 @@ function Page() {
 	const dispatch = useDispatch()
 
 	if (!accessToken) {
-		router.push('/login')
+		router.push('/signin')
 	}
 
 	useEffect(() => {

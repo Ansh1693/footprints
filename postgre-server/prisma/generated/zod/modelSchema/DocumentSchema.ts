@@ -7,6 +7,7 @@ import { z } from 'zod';
 export const DocumentSchema = z.object({
   id: z.string().cuid(),
   userId: z.string(),
+  profileId: z.string(),
   heading: z.string().nullable(),
   body: z.string().nullable(),
   public: z.boolean(),

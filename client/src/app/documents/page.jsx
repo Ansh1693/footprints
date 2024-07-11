@@ -35,7 +35,7 @@ import AudioCard from '@/components/cards/AudioCard'
 import useGetCookie from '@/components/cookies/useGetCookie'
 import { toast } from 'react-hot-toast'
 import { uploadAudio, uploadImage } from '@/helpers/utils/apis/utilities/upload'
-import { getBLokList } from '@/redux/actions/blokActions'
+// import { getBLokList } from '@/redux/actions/blokActions'
 import SearchBar from '@/components/SearchBar'
 import { readDocument } from '@/helpers/utils/apis/query/Document'
 
@@ -45,7 +45,6 @@ function Page() {
 	const bloks = useSelector((state) => state.bloks.bloks)
 	const dropZoneRef = useRef(null)
 	const dispatch = useDispatch()
-
 	const setCookie = useSetCookie()
 	const removeCookie = useRemoveCookie()
 	const getCookie = useGetCookie()
@@ -131,13 +130,14 @@ function Page() {
 		)
 	}
 	useEffect(() => {
-		if (userInfo.accessToken) {
+		if (userInfo?.accessToken) {
+			console.log(userInfo.accessToken)
 			dispatch(getDocumentList({ accessToken: userInfo.accessToken }))
 		}
-		if (userInfo.accessToken) {
-			dispatch(getBLokList({ accessToken: userInfo.accessToken }))
+		if (userInfo?.accessToken) {
+			// dispatch(getBLokList({ accessToken: userInfo.accessToken }))
 		}
-	}, [userInfo.accessToken])
+	}, [userInfo])
 
 	// handles query params
 	useEffect(() => {

@@ -7,6 +7,7 @@ import { z } from 'zod';
 export const BlokSchema = z.object({
   id: z.string().cuid(),
   userId: z.string(),
+  profileId: z.string(),
   blokName: z.string(),
   description: z.string().nullable(),
   public: z.boolean(),

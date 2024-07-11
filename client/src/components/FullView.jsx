@@ -15,16 +15,16 @@ import { toast } from 'react-hot-toast'
 import ContentEditable from 'react-contenteditable'
 import { convert } from 'html-to-text'
 import { useDispatch } from 'react-redux'
-import { setUpdateBookmark } from '@/redux/actions/bookmarkActions'
 import { AudioVisualizer } from 'react-audio-visualize'
 import SettingOptions from './controls/SettingOptions'
+import { updateDocument as update } from '@/helpers/utils/apis/crud/Document'
 
 function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 	const imageRef = React.useRef(null)
 	const [editTitle, setEditTitle] = React.useState(false)
 	const [editBody, setEditBody] = React.useState(false)
 	const dispatch = useDispatch()
-	const [bookmarkData, setBookmarkData] = React.useState({ ...data })
+	const [documentData, setDocumentData] = React.useState({ ...data })
 	const [title, setTitle] = React.useState(
 		data?.heading
 			? data?.heading
@@ -62,8 +62,8 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 	}, [isPlaying])
 
 	useEffect(() => {
-		if (data?.documentMetadata?.source_url) {
-			fetch(data?.documentMetadata?.source_url)
+		if (data?.DocumentMetadata?.url?.audio) {
+			fetch(data?.DocumentMetadata?.url?.audio)
 				.then((res) => {
 					return res.blob()
 				})
@@ -76,11 +76,11 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 		}
 	}, [])
 
-	// const debouncedValue = useDebounce(bookmarkData, 1000)
+	// const debouncedValue = useDebounce(documentData, 1000)
 
 	// React.useEffect(() => {
 	// 	if (debouncedValue) {
-	// 		updateBookmark(bookmarkData)
+	// 		updateDocument(documentData)
 	// 	}
 	// }, [debouncedValue])
 
@@ -153,44 +153,33 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 
 	React.useEffect(() => {
 		if (
-			data?.body !== bookmarkData?.body ||
-			data?.heading !== bookmarkData?.heading
+			data?.body !== documentData?.body ||
+			data?.heading !== documentData?.heading
 		) {
-			dispatch(setUpdateBookmark(bookmarkData))
+			dispatch(setUpdateBookmark(documentData))
 		}
-	}, [bookmarkData])
+	}, [documentData])
 
 	useAutosave({
-		data: bookmarkData,
-		onSave: (bookData) => {
+		data: documentData,
+		onSave: (docData) => {
 			if (
-				data?.heading !== bookData?.heading ||
-				data.body !== bookData.body
+				data?.heading !== docData?.heading ||
+				data.body !== docData.body
 			)
-				updateBookmark(bookData)
+				updateDocument(docData)
 		},
 	})
 
-	const updateBookmark = (data) => {
-		axios
-			.patch(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/document/update`,
-				{ documentObject: { ...data } },
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			)
-			.then((response) => {
-				if (response.status === 200) {
-					toast.success('Bookmark updated successfully')
-				} else {
-				}
-			})
+	const updateDocument = (data) => {
+		update({ accessToken, documentObject: data }).then((response) => {
+			if (response.status === 200) {
+				toast.success('Bookmark updated successfully')
+			} else {
+			}
+		})
 	}
-	// useAutosave({ data: bookmarkData, onSave: updateBookmark })
+	// useAutosave({ data: documentData, onSave: updateDocument })
 	const handleClickEditTitle = (e) => {
 		setEditTitle(true)
 		if (editTitleRef.current) {
@@ -202,7 +191,7 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 		// if (editBody) {
 		// 	setEditBody(false)
 		// } else {
-		if (!bookmarkData?.body || htmlText === 'Start Typing..') {
+		if (!documentData?.body || htmlText === 'Start Typing..') {
 			setHtmlText('')
 		}
 		setEditBody(true)
@@ -212,7 +201,7 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 	const handleChangeTitle = (e) => {
 		setTitle(e.target.innerText)
 		editTitleRef.current.textContent = e.target.innerText
-		setBookmarkData({ ...bookmarkData, heading: e.target.innerText })
+		setDocumentData({ ...documentData, heading: e.target.innerText })
 	}
 
 	const handleChangeBody = (e) => {
@@ -222,7 +211,7 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 			// singleNewLineParagraphs: true,
 		})
 
-		setBookmarkData({ ...bookmarkData, body: text1 })
+		setDocumentData({ ...documentData, body: text1 })
 		setHtmlText(text1.replace(/\n/g, '<br />'))
 	}
 
@@ -279,10 +268,10 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 			<div className='flex gap-12 px-6 h-full '>
 				{/* content */}
 
-				{bookmarkData && (
+				{documentData && (
 					<div className='w-3/4 bg-gray-50 shadow-lg mt-4 text-slate-700  rounded-xl px-8 py-4'>
 						{/* title of bookmark */}
-						{bookmarkData && editTitle && (
+						{documentData && editTitle && (
 							<div
 								className='flex-1 overflow-hidden     w-full text-[32px] outline-none focus:border-none'
 								ref={editTitleRef}
@@ -290,7 +279,7 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 								onInput={(e) => handleChangeTitle(e)}
 							></div>
 						)}
-						{bookmarkData && !editTitle && (
+						{documentData && !editTitle && (
 							<div
 								onClick={(e) => {
 									if (!edit) return
@@ -302,12 +291,12 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 								{title}
 							</div>
 						)}
-						{bookmarkData.documentMetadata &&
-							bookmarkData.documentMetadata.bodyImage_url && (
+						{/* {documentData.documentMetadata &&
+							documentData.documentMetadata.bodyImage_url && (
 								<img
 									ref={imageRef}
 									src={
-										bookmarkData.documentMetadata
+										documentData.documentMetadata
 											.bodyImage_url
 									}
 									onLoad={handleImageLoad}
@@ -321,9 +310,9 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 									}}
 									className={`rounded-md shadow-lg`}
 								/>
-							)}
+							)} */}
 
-						{bookmarkData.documentMetadata.document_type ===
+						{documentData?.DocumentMetadata.documentType ===
 							'audio' && (
 							<div className='flex items-center gap-4'>
 								<button
@@ -373,16 +362,16 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 
 						{/* <div className='py-2 -space-y-1'>
 							<p className='text-lg font-medium'>
-								{bookmarkData?.title
-									? bookmarkData?.title
-									: bookmarkData?.body.slice(0, 1).toUpperCase() +
-									  bookmarkData?.body.slice(1, 5) +
+								{documentData?.title
+								? documentData?.title
+								: documentData?.body.slice(0, 1).toUpperCase() +
+						  documentData?.body.slice(1, 5) +
 									  '...'}
 							</p>
 							<p className='text-xs text-gray-500'>by Test</p>
 						</div> */}
 
-						{/* <p>{bookmarkData.body}</p> */}
+						{/* <p>{documentData.body}</p> */}
 						{!editBody && (
 							<div
 								className='w-full mt-4  flex-shrink-0'
@@ -449,7 +438,7 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 									src={ProfileImg}
 									width={32}
 									height={32}
-									alt={bookmarkData.name}
+									alt={documentData.name}
 									className='rounded-full'
 								/>
 								<div className='p-[1px] rounded-[6px] gradient-border h-[31px]'>

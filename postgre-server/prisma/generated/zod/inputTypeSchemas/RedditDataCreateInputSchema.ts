@@ -5,8 +5,8 @@ import { DocumentCreateNestedOneWithoutRedditDataInputSchema } from './DocumentC
 
 export const RedditDataCreateInputSchema: z.ZodType<Prisma.RedditDataCreateInput> = z.object({
   id: z.string().cuid().optional(),
-  username: z.string().optional().nullable(),
-  postId: z.string().optional().nullable(),
+  username: z.string(),
+  postId: z.string(),
   Document: z.lazy(() => DocumentCreateNestedOneWithoutRedditDataInputSchema)
 }).strict();
 

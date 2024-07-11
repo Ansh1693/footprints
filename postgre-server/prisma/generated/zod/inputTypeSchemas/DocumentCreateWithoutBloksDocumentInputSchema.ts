@@ -10,6 +10,7 @@ import { TagsDocumentCreateNestedManyWithoutDocumentInputSchema } from './TagsDo
 
 export const DocumentCreateWithoutBloksDocumentInputSchema: z.ZodType<Prisma.DocumentCreateWithoutBloksDocumentInput> = z.object({
   id: z.string().cuid().optional(),
+  profileId: z.string(),
   heading: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
   public: z.boolean().optional(),

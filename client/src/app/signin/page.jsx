@@ -34,7 +34,7 @@ const page = () => {
 		const accessToken = getCookie('accessToken')
 		let loginState = getCookie('loginState')
 		if (accessToken) {
-			router.push('/bookmarks')
+			router.push('/documents')
 		}
 		if (loginState) {
 			loginState = JSON.parse(loginState)
@@ -138,7 +138,7 @@ const page = () => {
 		const userObject = {
 			email: data.email,
 			otp: data.otp,
-			state: loginState.state
+			state: loginState.state,
 		}
 
 		try {

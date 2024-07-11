@@ -17,11 +17,11 @@ function Navbar({ activeTab }) {
 	const userLogin = useSelector((state) => state.userInfo)
 	const getCookie = useGetCookie()
 	const removeCookie = useRemoveCookie()
+	const accessToken = getCookie('accessToken')
 
 	React.useEffect(() => {
-		const accessToken = getCookie('accessToken')
 		if (!accessToken) {
-			router.push('/login')
+			router.push('/signin')
 		} else if (!userLogin?.userInfo.id) {
 			dispatch(login({ accessToken }))
 		}

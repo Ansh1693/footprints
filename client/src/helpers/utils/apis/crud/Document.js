@@ -2,20 +2,16 @@ import axios from 'axios'
 
 export const readDocument = async ({ accessToken, documentId = undefined }) => {
 	try {
-		const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/document/read`
+		let url = `${process.env.NEXT_PUBLIC_SERVER_URL}/document/read`
 		if (documentId !== undefined) {
 			url += `?documentId=${documentId}`
 		}
-		const response = await axios.get(
-			`${process.env.NEXT_PUBLIC_SERVER_URL}/document/read`,
-			url,
-			{
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${accessToken}`,
-				},
-			}
-		)
+		const response = await axios.get(url, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${accessToken}`,
+			},
+		})
 
 		return response
 	} catch (error) {

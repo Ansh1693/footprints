@@ -20,7 +20,7 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
     id: z.string().cuid(),
     email: z.string(),
     username: z.string(),
-    profileId: z.string()
+    profileId: z.string().cuid()
   }),
   z.object({
     id: z.string().cuid(),
@@ -30,7 +30,7 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
   z.object({
     id: z.string().cuid(),
     email: z.string(),
-    profileId: z.string(),
+    profileId: z.string().cuid(),
   }),
   z.object({
     id: z.string().cuid(),
@@ -39,7 +39,7 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
   z.object({
     id: z.string().cuid(),
     username: z.string(),
-    profileId: z.string(),
+    profileId: z.string().cuid(),
   }),
   z.object({
     id: z.string().cuid(),
@@ -47,7 +47,7 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
   }),
   z.object({
     id: z.string().cuid(),
-    profileId: z.string(),
+    profileId: z.string().cuid(),
   }),
   z.object({
     id: z.string().cuid(),
@@ -55,7 +55,7 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
   z.object({
     email: z.string(),
     username: z.string(),
-    profileId: z.string(),
+    profileId: z.string().cuid(),
   }),
   z.object({
     email: z.string(),
@@ -63,27 +63,27 @@ export const UserWhereUniqueInputSchema: z.ZodType<Prisma.UserWhereUniqueInput> 
   }),
   z.object({
     email: z.string(),
-    profileId: z.string(),
+    profileId: z.string().cuid(),
   }),
   z.object({
     email: z.string(),
   }),
   z.object({
     username: z.string(),
-    profileId: z.string(),
+    profileId: z.string().cuid(),
   }),
   z.object({
     username: z.string(),
   }),
   z.object({
-    profileId: z.string(),
+    profileId: z.string().cuid(),
   }),
 ])
 .and(z.object({
   id: z.string().cuid().optional(),
   email: z.string().optional(),
   username: z.string().optional(),
-  profileId: z.string().optional(),
+  profileId: z.string().cuid().optional(),
   AND: z.union([ z.lazy(() => UserWhereInputSchema),z.lazy(() => UserWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => UserWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => UserWhereInputSchema),z.lazy(() => UserWhereInputSchema).array() ]).optional(),

@@ -7,6 +7,7 @@ import { BlokFollowersUncheckedCreateNestedManyWithoutBlokInputSchema } from './
 export const BlokUncheckedCreateWithoutBlokMetadataInputSchema: z.ZodType<Prisma.BlokUncheckedCreateWithoutBlokMetadataInput> = z.object({
   id: z.string().cuid().optional(),
   userId: z.string(),
+  profileId: z.string(),
   blokName: z.string(),
   description: z.string().optional().nullable(),
   public: z.boolean().optional(),

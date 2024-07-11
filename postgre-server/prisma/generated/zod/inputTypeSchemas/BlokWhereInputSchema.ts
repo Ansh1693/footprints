@@ -18,6 +18,7 @@ export const BlokWhereInputSchema: z.ZodType<Prisma.BlokWhereInput> = z.object({
   NOT: z.union([ z.lazy(() => BlokWhereInputSchema),z.lazy(() => BlokWhereInputSchema).array() ]).optional(),
   id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   userId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
+  profileId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   blokName: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   description: z.union([ z.lazy(() => StringNullableFilterSchema),z.string() ]).optional().nullable(),
   public: z.union([ z.lazy(() => BoolFilterSchema),z.boolean() ]).optional(),

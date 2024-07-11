@@ -15,6 +15,7 @@ import {
 	readUser as read,
 	deleteUser,
 	updateUser as update,
+	readUser,
 } from '@/helpers/utils/apis/crud/User'
 
 // LOGIN ACTION
@@ -23,15 +24,7 @@ export const login =
 	async (dispatch, getState) => {
 		try {
 			dispatch({ type: USER_LOGIN_REQUEST })
-			const response = await axios.get(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}/user/read`,
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			)
+			const response = await read({ accessToken })
 
 			if (response.status === 200) {
 				dispatch({

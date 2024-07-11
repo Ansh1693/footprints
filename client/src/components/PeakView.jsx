@@ -31,8 +31,8 @@ function PeakView({ data, handleClose, setIsFullView }) {
 	}, [isPlaying])
 
 	useEffect(() => {
-		if (data?.documentMetadata?.source_url) {
-			fetch(data?.documentMetadata?.source_url)
+		if (data?.DocumentMetadata?.url?.audio) {
+			fetch(data?.DocumentMetadata?.url?.audio)
 				.then((res) => {
 					return res.blob()
 				})
@@ -77,10 +77,10 @@ function PeakView({ data, handleClose, setIsFullView }) {
 						{data?.heading
 							? data?.heading
 							: data?.body.slice(0, 1).toUpperCase() +
-								data?.body.slice(1, 5) +
-								'...'}
+							  data?.body.slice(1, 5) +
+							  '...'}
 					</div>
-					{data.documentMetadata.document_type === 'audio' && (
+					{data.DocumentMetadata.documentType === 'audio' && (
 						<div className='space-y-6'>
 							<div className='flex items-center gap-4'>
 								<button
@@ -128,7 +128,7 @@ function PeakView({ data, handleClose, setIsFullView }) {
 							</div>
 						</div>
 					)}
-					{data.documentMetadata &&
+					{/* {data.documentMetadata &&
 						data.documentMetadata.bodyImage_url && (
 							<img
 								ref={imageRef}
@@ -144,7 +144,7 @@ function PeakView({ data, handleClose, setIsFullView }) {
 								}}
 								className={`rounded-md shadow-lg`}
 							/>
-						)}
+						)} */}
 					<div className='font-normal text-base text-slate-600 mt-1 font-inter max-w-[600px]'>
 						{data?.body}
 					</div>

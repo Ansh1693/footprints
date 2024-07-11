@@ -104,7 +104,7 @@ function Page() {
 	useEffect(() => {
 		const accessToken = getCookie('accessToken')
 		if (!accessToken) {
-			router.push('/login')
+			router.push('/signin')
 		} else if (!userLogin?.userInfo.id) {
 			dispatch(login({ accessToken }))
 		}

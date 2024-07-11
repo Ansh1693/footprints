@@ -14,7 +14,7 @@ const page = () => {
 			const code = searchParams.get('session_token')
 			if (code) {
 				setCookie('accessToken', code, { expires: 30 })
-				router.push('/bookmarks')
+				// router.push('/documents')
 			}
 		}
 	}, [searchParams])

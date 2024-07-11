@@ -10,7 +10,7 @@ export const UserSchema = z.object({
   name: z.string(),
   description: z.string().nullable(),
   username: z.string(),
-  profileId: z.string(),
+  profileId: z.string().cuid(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })

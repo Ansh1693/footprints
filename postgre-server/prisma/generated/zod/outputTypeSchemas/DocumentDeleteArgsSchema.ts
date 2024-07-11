@@ -16,6 +16,7 @@ import { DocumentCountOutputTypeArgsSchema } from "../outputTypeSchemas/Document
 export const DocumentSelectSchema: z.ZodType<Prisma.DocumentSelect> = z.object({
   id: z.boolean().optional(),
   userId: z.boolean().optional(),
+  profileId: z.boolean().optional(),
   heading: z.boolean().optional(),
   body: z.boolean().optional(),
   public: z.boolean().optional(),

@@ -16,12 +16,12 @@ import {
 	X,
 	PlusCircle,
 } from 'phosphor-react'
-import { getBookmarkList } from '@/redux/actions/bookmarkActions'
 import { AudioVisualizer, LiveAudioVisualizer } from 'react-audio-visualize'
 import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder'
 import { toast } from 'react-hot-toast'
 import { createDocument } from '@/helpers/utils/apis/crud/Document'
 import { uploadAudio } from '@/helpers/utils/apis/utilities/upload'
+import { getDocumentList } from '@/redux/actions/documentActions'
 
 function CreateNote() {
 	// const [note, setNote] = useState('')
@@ -205,11 +205,11 @@ function CreateNote() {
 		}
 		const documentObject = {
 			profileId: userInfo.profileId,
-			userId: userInfo.Id,
+			userId: userInfo.id,
 			public: false,
 			deleted: false,
 			pinned: false,
-			comments: false,
+			comment: false,
 			heading: new Date().toDateString().slice(4),
 			body: note,
 		}
@@ -250,7 +250,7 @@ function CreateNote() {
 				setAudioFile('')
 
 				//dispatch action to get updated bookmarks
-				dispatch(getBookmarkList({ accessToken: userInfo.accessToken }))
+				dispatch(getDocumentList({ accessToken: userInfo.accessToken }))
 			} else {
 				toast.error('Error Saving Note')
 			}

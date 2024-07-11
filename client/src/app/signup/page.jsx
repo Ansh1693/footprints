@@ -71,7 +71,7 @@ function Page() {
 			loginState = JSON.parse(loginState)
 			if (new Date(loginState.expires) > new Date()) {
 				if (loginState.newUser) {
-					router.push('/login')
+					router.push('/signin')
 				} else {
 					setIsOtpSent(true)
 					setEmail(loginState.email)
@@ -135,7 +135,7 @@ function Page() {
 					)
 				)
 				if (newUser) {
-					router.push('/login')
+					router.push('/signin')
 				} else {
 					setIsOtpSent(true)
 				}

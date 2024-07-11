@@ -10,6 +10,7 @@ import { BloksDocumentUncheckedCreateNestedManyWithoutDocumentInputSchema } from
 
 export const DocumentUncheckedCreateWithoutUserInputSchema: z.ZodType<Prisma.DocumentUncheckedCreateWithoutUserInput> = z.object({
   id: z.string().cuid().optional(),
+  profileId: z.string(),
   heading: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
   public: z.boolean().optional(),

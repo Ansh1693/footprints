@@ -138,11 +138,11 @@ function Page() {
 	useEffect(() => {
 		if (!userData) return
 		if (userData?.UserMetadata?.profileImage) {
-			setProfileImage(userData.userMetadata.profileImage)
+			setProfileImage(userData.UserMetadata.profileImage)
 		}
 
 		if (userData?.UserMetadata?.profileBanner) {
-			setBannerImage(userData.userMetadata.profile_header)
+			setBannerImage(userData.UserMetadata.profile_header)
 		}
 	}, [userData])
 

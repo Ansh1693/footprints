@@ -4,8 +4,8 @@ import { z } from 'zod';
 
 export const RedditDataUncheckedCreateInputSchema: z.ZodType<Prisma.RedditDataUncheckedCreateInput> = z.object({
   id: z.string().cuid().optional(),
-  username: z.string().optional().nullable(),
-  postId: z.string().optional().nullable(),
+  username: z.string(),
+  postId: z.string(),
   documentId: z.string()
 }).strict();
 

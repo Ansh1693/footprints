@@ -16,12 +16,12 @@ import {
 import {
 	readBlok as read,
 	createBlok as create,
-	deleteBlok,
+	deleteBlok as deleteBlokApi,
 	updateBlok as update,
-} from '@/helpers/utils/apis/crud/Board'
+} from '@/helpers/utils/apis/crud/Blok'
 
 // BLOK LIST
-export const getBlokList =
+const getBlokList =
 	({ accessToken }) =>
 	async (dispatch, getState) => {
 		try {
@@ -48,7 +48,7 @@ export const getBlokList =
 	}
 
 // CREATE Blok
-export const createBlok =
+const createBlok =
 	({ blokObject, accessToken }) =>
 	async (dispatch, getState) => {
 		try {
@@ -64,14 +64,13 @@ export const createBlok =
 		}
 	}
 
-// DELETE Blok
-export const deleteBlok =
+const deleteBlok =
 	({ blokObject, accessToken }) =>
 	async (dispatch, getState) => {
 		try {
 			dispatch({ type: BLOK_DELETE_REQUEST })
 
-			const response = await deleteBlok({ accessToken, blokObject })
+			const response = await deleteBlokApi({ accessToken, blokObject })
 
 			if (response.status === 200) {
 				dispatch({
@@ -92,7 +91,7 @@ export const deleteBlok =
 	}
 
 // UPDATE Blok
-export const updateBlok =
+const updateBlok =
 	({ blokObject, accessToken }) =>
 	async (dispatch, getState) => {
 		try {
@@ -117,3 +116,5 @@ export const updateBlok =
 			dispatch({ type: BLOK_UPDATE_FAIL, payload: error })
 		}
 	}
+
+export { getBlokList, createBlok, deleteBlok, updateBlok }

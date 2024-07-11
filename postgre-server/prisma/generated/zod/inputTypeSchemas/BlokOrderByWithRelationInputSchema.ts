@@ -11,6 +11,7 @@ import { BlokFollowersOrderByRelationAggregateInputSchema } from './BlokFollower
 export const BlokOrderByWithRelationInputSchema: z.ZodType<Prisma.BlokOrderByWithRelationInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   userId: z.lazy(() => SortOrderSchema).optional(),
+  profileId: z.lazy(() => SortOrderSchema).optional(),
   blokName: z.lazy(() => SortOrderSchema).optional(),
   description: z.union([ z.lazy(() => SortOrderSchema),z.lazy(() => SortOrderInputSchema) ]).optional(),
   public: z.lazy(() => SortOrderSchema).optional(),

@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 export const BlokCreateManyUserInputSchema: z.ZodType<Prisma.BlokCreateManyUserInput> = z.object({
   id: z.string().cuid().optional(),
+  profileId: z.string(),
   blokName: z.string(),
   description: z.string().optional().nullable(),
   public: z.boolean().optional(),

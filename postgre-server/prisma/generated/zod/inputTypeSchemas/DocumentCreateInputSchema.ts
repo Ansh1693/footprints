@@ -11,6 +11,7 @@ import { BloksDocumentCreateNestedManyWithoutDocumentInputSchema } from './Bloks
 
 export const DocumentCreateInputSchema: z.ZodType<Prisma.DocumentCreateInput> = z.object({
   id: z.string().cuid().optional(),
+  profileId: z.string(),
   heading: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
   public: z.boolean().optional(),

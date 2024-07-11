@@ -17,6 +17,7 @@ import { BlokCountOutputTypeArgsSchema } from "../outputTypeSchemas/BlokCountOut
 export const BlokSelectSchema: z.ZodType<Prisma.BlokSelect> = z.object({
   id: z.boolean().optional(),
   userId: z.boolean().optional(),
+  profileId: z.boolean().optional(),
   blokName: z.boolean().optional(),
   description: z.boolean().optional(),
   public: z.boolean().optional(),

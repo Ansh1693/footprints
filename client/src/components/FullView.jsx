@@ -6,7 +6,13 @@ import { Badge } from './ui/Badge'
 import { Input } from './ui/Input'
 import ProfileImg from '../../public/static/profile.jpeg'
 import Comment from './Comment'
-import { ArrowSquareOut, ArrowsInSimple, X, Play, Pause } from 'phosphor-react'
+import {
+	ArrowSquareOut,
+	ArrowsInSimple,
+	X,
+	Play,
+	Pause,
+} from '@phosphor-icons/react'
 import { Settings } from 'lucide-react'
 import { useAutosave } from 'react-autosave'
 // import useDebounce from './hooks/useDebounce'

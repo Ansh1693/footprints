@@ -44,7 +44,7 @@ export const documentReducer = (state = documentsInitialState, action) => {
 			return {
 				...state,
 				loading: false,
-				bookmarks: state.documents.filter(
+				documents: state.documents.filter(
 					(document) => document.id !== action.payload
 				),
 				error: null,

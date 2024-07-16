@@ -15,7 +15,7 @@ import useRemoveCookie from '@/components/cookies/useRemoveCookies'
 import { useRouter } from 'next/navigation'
 import ToastNotification from '@/components/ui/ToastNotification'
 import useDebounce from '@/components/hooks/useDebounce'
-import { Check, CheckCircle, XCircle } from 'phosphor-react'
+import { Check, CheckCircle, XCircle } from '@phosphor-icons/react'
 import cn from 'mxcn'
 
 function Page() {

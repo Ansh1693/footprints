@@ -84,6 +84,8 @@ export const del = async (req, res) => {
     const { documentObject } = req.body;
     const { profileId } = req.user;
 
+    console.log(req.body);
+
     if (documentObject?.profileId && profileId !== documentObject.profileId) {
       throw new Error("Profile Id don't match.");
     }

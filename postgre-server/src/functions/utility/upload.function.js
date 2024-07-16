@@ -17,7 +17,7 @@ export const uploadImage = async (file, profileId) => {
       throw new Error("Unsupported file type.");
     }
 
-    const fileKey = `${profileId}_${file.filename.replace(/\s/g, "_")}`;
+    const fileKey = `${profileId}_${file.filename.replace(/\s/g, "_")}_${Date.now()}`;
 
     const h2 = await S3.send(
       new PutObjectCommand({
@@ -56,7 +56,7 @@ export const uploadAudio = async (file, profileId) => {
       throw new Error("Unsupported audio file type.");
     }
 
-    const fileKey = `${profileId}_${file.filename.replace(/\s/g, "_")}`;
+    const fileKey = `${profileId}_${file.filename.replace(/\s/g, "_")}_${Date.now()}`;
 
     const h2 = await S3.send(
       new PutObjectCommand({

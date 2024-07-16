@@ -38,23 +38,24 @@ export const createDocument = async ({ accessToken, documentObject }) => {
 	}
 }
 
-export const deleteDocument = async ({ accessToken, document }) => {
+export const deleteDocument = async ({ accessToken, documentObject }) => {
 	try {
 		const response = await axios.delete(
 			`${process.env.NEXT_PUBLIC_SERVER_URL}/document/delete`,
 			{
-				documentObject,
-			},
-			{
 				headers: {
 					'Content-Type': 'application/json',
 					Authorization: `Bearer ${accessToken}`,
+				},
+				data: {
+					documentObject,
 				},
 			}
 		)
 
 		return response
 	} catch (err) {
+		console.log(err)
 		throw err
 	}
 }

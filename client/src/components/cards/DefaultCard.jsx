@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 function DefaultCard({ data, onClick }) {
 	const [hover, setHover] = useState(false)
+	const images = data?.DocumentMetadata?.url?.images || []
 	return (
 		<div
 			onClick={() => onClick(data)}
@@ -17,11 +18,10 @@ function DefaultCard({ data, onClick }) {
 		>
 			{/* replaced with optimized image component */}
 			<ImageComponent
-				key={data._id}
+				key={data.id}
 				src={
-					data?.documentMetadata?.bodyImage_url
-						? data?.documentMetadata?.bodyImage_url
-						: 'https://images.unsplash.com/photo-1682686578456-69ae00b0ecbd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80'
+					images[0] ||
+					'https://images.unsplash.com/photo-1682686578456-69ae00b0ecbd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80'
 				}
 				alt={data.heading.slice(0, 5)}
 			/>
@@ -42,8 +42,8 @@ function DefaultCard({ data, onClick }) {
 								{data?.heading
 									? data?.heading
 									: data?.body.slice(0, 1).toUpperCase() +
-									  data?.body.slice(1, 5) +
-									  '...'}
+										data?.body.slice(1, 5) +
+										'...'}
 							</span>
 							{/* <YoutubeSvg /> */}
 						</div>
@@ -51,7 +51,7 @@ function DefaultCard({ data, onClick }) {
 							{data?.body}
 						</div>
 						<div className='text-sm italic font-medium text-white'>
-							By test
+							By {data?.User?.username}
 						</div>
 					</motion.div>
 				)}

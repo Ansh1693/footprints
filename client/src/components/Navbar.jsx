@@ -36,7 +36,7 @@ function Navbar({ activeTab }) {
 	}, [userLogin])
 
 	return (
-		<nav className='px-24 hel w-screen relative mb-8 py-1  mx-auto shadow-xl rounded-b-2xl font-publica '>
+		<nav className='px-24 hel w-screen max-w-[1440px] relative mb-8 py-1  mx-auto shadow-xl rounded-b-2xl font-publica '>
 			<div className='flex w-full justify-between py-3'>
 				<div className='hel space-x-2 font-publica'>
 					{/* image and name */}
@@ -81,7 +81,7 @@ function Navbar({ activeTab }) {
 							Feed
 						</Link>
 					</ul>
-					{/* 				
+					{/*
 					<Link
 						href='/login'
 						className='text-blue-500 px-6 py-2 shadow-2xl rounded-xl'

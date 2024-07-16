@@ -1,4 +1,4 @@
-import { ShareNetwork, ToggleLeft, ToggleRight } from 'phosphor-react'
+import { ShareNetwork, ToggleLeft, ToggleRight } from '@phosphor-icons/react'
 import {
 	Menubar,
 	MenubarContent,

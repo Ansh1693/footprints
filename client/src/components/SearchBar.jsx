@@ -1,4 +1,4 @@
-import { MagnifyingGlass } from 'phosphor-react'
+import { MagnifyingGlass } from '@phosphor-icons/react'
 import React from 'react'
 import { Input } from './ui/Input'
 import FilterOptions from './controls/FilterOptions'

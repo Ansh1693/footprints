@@ -26,7 +26,7 @@ import DocumentWrapper from '@/components/wrappers/DocumentWrapper'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import useSetCookie from '@/components/cookies/useSetCookie'
 import useRemoveCookie from '@/components/cookies/useRemoveCookies'
-import { Funnel, FunnelSimple, MagnifyingGlass } from 'phosphor-react'
+import { Funnel, FunnelSimple, MagnifyingGlass } from '@phosphor-icons/react'
 import NoteCard from '@/components/cards/NoteCard'
 import FilterOptions from '@/components/controls/FilterOptions'
 import PeakView from '@/components/PeakView'
@@ -65,6 +65,8 @@ function Page() {
 			: searchParams.get('documentId')
 	)
 	const [activeDocument, setActiveDocument] = useState({})
+
+	const [images, setImages] = useState([])
 
 	const getSingleDocument = (documentId) => {
 		let header
@@ -160,7 +162,7 @@ function Page() {
 		if (!isPeakOpen && !isFullView) setActiveDocument(null)
 	}, [isPeakOpen, isFullView])
 
-	const handleDrop = async (e) => {
+	const handleDrop = (e) => {
 		e.preventDefault()
 		const files = e.dataTransfer.files
 		if (files.length > 1) {
@@ -177,35 +179,41 @@ function Page() {
 			return
 		}
 
-		const response = await uploadImage(files[0], userInfo.accessToken)
-		if (response.status === 200) {
-			const url = response.data.data.url
-			const date = new Date().toDateString()
-			const documentObject = {
-				heading: date.slice(4),
-				profileId: userInfo.profileId,
-				userId: userInfo.id,
-				public: false,
-				deleted: false,
-				pinned: false,
-				comment: false,
-				DocumentMetadata: {
-					documentType: 'image',
-					url: {
-						images: [url],
-					},
-				},
-			}
+		setImages([files[0]])
+		toast.success('Image added to Note')
 
-			dispatch(
-				createDocument({
-					documentObject,
-					accessToken: userInfo.accessToken,
-				})
-			)
-		} else {
-			toast.error('Something went wrong')
-		}
+		// const response = await uploadImage({
+		// 	file: files[0],
+		// 	accessToken: userInfo.accessToken || accessToken,
+		// })
+		// if (response.status === 200) {
+		// 	const url = response.data.data.url
+		// 	const date = new Date().toDateString()
+		// 	const documentObject = {
+		// 		heading: date.slice(4),
+		// 		profileId: userInfo.profileId,
+		// 		userId: userInfo.id,
+		// 		public: false,
+		// 		deleted: false,
+		// 		pinned: false,
+		// 		comment: false,
+		// 		DocumentMetadata: {
+		// 			documentType: 'image',
+		// 			url: {
+		// 				images: [url],
+		// 			},
+		// 		},
+		// 	}
+
+		// 	dispatch(
+		// 		createDocument({
+		// 			documentObject,
+		// 			accessToken: userInfo.accessToken,
+		// 		})
+		// 	)
+		// } else {
+		// 	toast.error('Something went wrong')
+		// }
 	}
 
 	const handleDragOver = (e) => {
@@ -239,7 +247,7 @@ function Page() {
 					columnsCountBreakPoints={{ 350: 2, 750: 3, 900: 4 }}
 				>
 					<Masonry gutter='24px' className='mt-2'>
-						<CreateNote />
+						<CreateNote images={images} setImages={setImages} />
 
 						{documents &&
 							documents.map((item) => {

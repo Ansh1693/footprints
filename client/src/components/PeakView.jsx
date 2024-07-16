@@ -3,7 +3,12 @@ import Image from 'next/image'
 import { Button } from './ui/Button'
 import { ChevronDoubleRightIcon } from '@heroicons/react/24/outline'
 import ExpandIcon from '../assets/Icons/expand.svg'
-import { ArrowsOutSimple, CaretDoubleRight, Pause, Play } from 'phosphor-react'
+import {
+	ArrowsOutSimple,
+	CaretDoubleRight,
+	Pause,
+	Play,
+} from '@phosphor-icons/react'
 import { AudioVisualizer } from 'react-audio-visualize'
 
 function PeakView({ data, handleClose, setIsFullView }) {
@@ -77,8 +82,8 @@ function PeakView({ data, handleClose, setIsFullView }) {
 						{data?.heading
 							? data?.heading
 							: data?.body.slice(0, 1).toUpperCase() +
-							  data?.body.slice(1, 5) +
-							  '...'}
+								data?.body.slice(1, 5) +
+								'...'}
 					</div>
 					{data.DocumentMetadata.documentType === 'audio' && (
 						<div className='space-y-6'>

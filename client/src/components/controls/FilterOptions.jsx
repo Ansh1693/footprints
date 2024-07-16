@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from '../ui/Button'
-import { Funnel } from 'phosphor-react'
+import { Funnel } from '@phosphor-icons/react'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/Popover'
 import Link from 'next/link'
 import {

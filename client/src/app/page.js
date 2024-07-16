@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import React from 'react'
 // import mixpanel from '@/components/mixpanel'
-import logtail from '../components/Logtail'
+// import logtail from '../components/Logtail'
 import useSetCookie from '../components/cookies/useSetCookie'
 import useGetCookie from '../components/cookies/useGetCookie'
 import { useDispatch, useSelector } from 'react-redux'

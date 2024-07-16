@@ -1,11 +1,10 @@
 FROM node:21
 
-WORKDIR /app
+WORKDIR /footprints/server
 
 COPY package*.json ./
 
 RUN npm install
-
 
 COPY . .
 

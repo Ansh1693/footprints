@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../redux/actions/userActions'
 import useRemoveCookie from './cookies/useRemoveCookies'
-import { UserCircle } from 'phosphor-react'
+import { UserCircle } from '@phosphor-icons/react'
 import { MenubarSeparator } from './ui/Menubar'
 
 function Profile() {

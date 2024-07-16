@@ -15,15 +15,17 @@ import {
 	Check,
 	X,
 	PlusCircle,
-} from 'phosphor-react'
+	MicrophoneSlash,
+	ImageBroken,
+} from '@phosphor-icons/react'
 import { AudioVisualizer, LiveAudioVisualizer } from 'react-audio-visualize'
 import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder'
 import { toast } from 'react-hot-toast'
 import { createDocument } from '@/helpers/utils/apis/crud/Document'
-import { uploadAudio } from '@/helpers/utils/apis/utilities/upload'
+import { uploadAudio, uploadImage } from '@/helpers/utils/apis/utilities/upload'
 import { getDocumentList } from '@/redux/actions/documentActions'
 
-function CreateNote() {
+function CreateNote({ images, setImages }) {
 	// const [note, setNote] = useState('')
 	// const userInfo = useSelector((state) => state.userInfo.userInfo)
 	// const dispatch = useDispatch()
@@ -118,6 +120,7 @@ function CreateNote() {
 	const [isRecordingComplete, setIsRecordingComplete] = useState(false)
 	const [videoDuration, setVideoDuration] = useState('')
 	const [audioFile, setAudioFile] = useState(null)
+	const [audioSaved, setAudioSaved] = useState(false)
 
 	const [blob, setBlob] = useState(null)
 	const recorder = useAudioRecorder({
@@ -136,8 +139,8 @@ function CreateNote() {
 				file: blob,
 			})
 			if (response.status === 200) {
-				toast.success('audio saved')
 				setAudioFile(response.data.data.url)
+				toast.success('audio saved')
 			} else {
 				toast.error('Error Saving Audio response error')
 			}
@@ -147,19 +150,70 @@ function CreateNote() {
 	}
 
 	// handle card button click
-	const handleClick = () => {
-		if (note.trim().length > 0 || audioFile) {
-			// save note
-			handleSubmit()
-		} else if (isVoiceNote) {
-			setIsRecordingComplete(false)
-			setIsRecordingStarted(false)
-			setIsVoiceNote(false)
-			setVideoDuration('')
-			setBlob(null)
-			setAudioFile(null)
-		} else {
-			setIsVoiceNote(true)
+	const handleClick = (option) => {
+		// if (note.trim().length > 0 || audioFile) {
+		// 	// save note
+		// 	handleSubmit()
+		// } else if (isVoiceNote) {
+		// 	setIsRecordingComplete(false)
+		// 	setIsRecordingStarted(false)
+		// 	setIsVoiceNote(false)
+		// 	setVideoDuration('')
+		// 	setBlob(null)
+		// 	setAudioFile(null)
+		// } else {
+		// 	setIsVoiceNote(true)
+		// }
+		//
+
+		switch (option) {
+			case 'audioSaved': {
+				setAudioSaved(false)
+				setAudioFile(null)
+				setIsVoiceNote(false)
+				setIsRecordingStarted(false)
+				setIsRecordingComplete(false)
+				setVideoDuration('')
+				setBlob(null)
+				toast.success('Audio Removed')
+				break
+			}
+
+			case 'startRecording': {
+				setIsVoiceNote(true)
+				startRecording()
+				break
+			}
+
+			case 'submit': {
+				if (note.trim().length > 0 || audioFile || images.length > 0) {
+					// save note
+					handleSubmit()
+				}
+
+				break
+			}
+
+			case 'discard': {
+				setIsVoiceNote(false)
+				setIsRecordingComplete(false)
+				setIsRecordingStarted(false)
+				setIsVoiceNote(false)
+				setVideoDuration('')
+				setBlob(null)
+				toast.success('Audio Discarded')
+				break
+			}
+
+			case 'removeImage': {
+				setImages([])
+				toast.success('Image Removed')
+				break
+			}
+
+			default:
+				console.log(option)
+				break
 		}
 	}
 
@@ -185,7 +239,10 @@ function CreateNote() {
 	}
 
 	const acceptAudio = () => {
+		const newBlob = new Blob([blob], { type: 'audio/mpeg' })
+		handleAudioChange(newBlob)
 		toast.success('audio accepted')
+		setAudioSaved(true)
 	}
 
 	const discardAudio = () => {
@@ -200,7 +257,11 @@ function CreateNote() {
 		if (isRecordingComplete && !audioFile) {
 			toast.success('Please save audio')
 		}
-		if (note.trim().length === 0 && !isRecordingComplete) {
+		if (
+			note.trim().length === 0 &&
+			!isRecordingComplete &&
+			images.length === 0
+		) {
 			toast.success('Empty Note')
 		}
 		const documentObject = {
@@ -212,32 +273,38 @@ function CreateNote() {
 			comment: false,
 			heading: new Date().toDateString().slice(4),
 			body: note,
+			DocumentMetadata: {
+				documentType: 'note',
+			},
 		}
 
-		if (isVoiceNote) {
-			const newBlob = new Blob([blob], { type: 'audio/mpeg' })
-			handleAudioChange(newBlob)
-				.then(() => {
-					documentObject.DocumentMetadata = {
-						documentType: 'audio',
-						url: {
-							audio: audioFile,
-						},
-					}
-					setIsRecordingComplete(false)
-					setIsRecordingStarted(false)
-					setIsVoiceNote(false)
-					setVideoDuration('')
-				})
-				.catch((err) => {
-					toast.error('Error Saving Audio')
-					discardAudio()
-					return
-				})
-		} else {
+		if (images.length > 0) {
+			toast.success('Image Saved')
+			const response = await uploadImage({
+				file: images[0],
+				accessToken: accessToken,
+			})
 			documentObject.DocumentMetadata = {
-				documentType: 'note',
+				documentType: 'image',
+				url: {
+					images: [response.data.data.url],
+				},
 			}
+
+			setImages([])
+		}
+		if (audioFile) {
+			documentObject.DocumentMetadata = {
+				documentType: 'audio',
+				url: {
+					...documentObject.DocumentMetadata?.url,
+					audio: audioFile,
+				},
+			}
+			setIsRecordingComplete(false)
+			setIsRecordingStarted(false)
+			setIsVoiceNote(false)
+			setVideoDuration('')
 		}
 		try {
 			const response = await createDocument({
@@ -248,7 +315,7 @@ function CreateNote() {
 				setNote('')
 				toast.success('Document saved')
 				setAudioFile('')
-
+				setImages([])
 				//dispatch action to get updated bookmarks
 				dispatch(getDocumentList({ accessToken: userInfo.accessToken }))
 			} else {
@@ -268,44 +335,94 @@ function CreateNote() {
 
 			<div className='relative h-full px-4 py-2'>
 				{/* button - handles save note, set audio note & cancel audio note */}
-				<button
-					onClick={handleClick}
-					className='absolute z-10 flex items-center justify-center rounded-full right-4 top-2 shrink-0 w-7 h-7 bg-gradient-to-br from-indigo-300/20 to-indigo-300/20'
-				>
-					<FloppyDisk
-						size={18}
-						strokeWidth={1.5}
-						className={cn(
-							'absolute text-primary duration-200',
-							note.trim().length > 0 || isRecordingComplete
-								? 'scale-100'
-								: 'scale-0'
-						)}
-					/>
-					<Microphone
-						size={18}
-						strokeWidth={1.5}
-						className={cn(
-							'absolute text-primary duration-200',
-							note.trim().length > 0 || isVoiceNote
-								? 'scale-0'
-								: 'scale-100'
-						)}
-					/>
-					<X
-						size={18}
-						strokeWidth={1.5}
-						className={cn(
-							'absolute text-primary duration-200',
-							isVoiceNote && !isRecordingComplete
-								? 'scale-100'
-								: 'scale-0'
-						)}
-					/>
-				</button>
+				<div className='absolute z-10 flex items-center justify-center rounded-full right-4 top-2 shrink-0 gap-1'>
+					{images.length > 0 && !isVoiceNote && (
+						<button
+							className='flex items-center justify-center rounded-full h-7 w-7 bg-gradient-to-br from-indigo-300/20 to-indigo-300/20 '
+							onClick={() => handleClick('removeImage')}
+						>
+							<ImageBroken
+								size={18}
+								strokeWidth={1.5}
+								className={cn(
+									'text-primary duration-200',
+									'scale-100'
+								)}
+							/>
+						</button>
+					)}
+
+					{audioSaved && (
+						<button
+							className='flex items-center justify-center rounded-full h-7 w-7 bg-gradient-to-br from-indigo-300/20 to-indigo-300/20 '
+							onClick={() => handleClick('audioSaved')}
+						>
+							<MicrophoneSlash
+								size={18}
+								strokeWidth={1.5}
+								className={cn(
+									'text-primary duration-200',
+									audioSaved ? 'scale-100' : 'scale-0'
+								)}
+							/>
+						</button>
+					)}
+
+					{!(note.trim().length > 0 || isVoiceNote) && (
+						<button
+							className='flex items-center justify-center rounded-full h-7 w-7 bg-gradient-to-br from-indigo-300/20 to-indigo-300/20 '
+							onClick={() => handleClick('startRecording')}
+						>
+							<Microphone
+								size={18}
+								strokeWidth={1.5}
+								className={cn(
+									' text-primary duration-200',
+									note.trim().length > 0 || isVoiceNote
+										? 'scale-0'
+										: 'scale-100'
+								)}
+							/>
+						</button>
+					)}
+					{(note.trim().length > 0 ||
+						isRecordingComplete ||
+						images.length > 0) && (
+						<button
+							className='flex items-center justify-center rounded-full h-7 w-7 bg-gradient-to-br from-indigo-300/20 to-indigo-300/20 '
+							onClick={() => handleClick('submit')}
+						>
+							<FloppyDisk
+								size={18}
+								strokeWidth={1.5}
+								className={cn(
+									'text-primary duration-200 ',
+									note.trim().length > 0 || 'scale-100'
+								)}
+							/>
+						</button>
+					)}
+					{isVoiceNote && !isRecordingComplete && (
+						<button
+							className='flex items-center justify-center rounded-full h-7 w-7 bg-gradient-to-br from-indigo-300/20 to-indigo-300/20 '
+							onClick={() => handleClick('discard')}
+						>
+							<X
+								size={18}
+								strokeWidth={1.5}
+								className={cn(
+									' text-primary duration-200',
+									isVoiceNote && !isRecordingComplete
+										? 'scale-100'
+										: 'scale-0'
+								)}
+							/>
+						</button>
+					)}
+				</div>
 
 				<div className='relative h-full'>
-					{isVoiceNote ? (
+					{isVoiceNote && !audioSaved ? (
 						<div className='h-full'>
 							{recorder.recordingTime ? (
 								<p className='italic libre-font'>

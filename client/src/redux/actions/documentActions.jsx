@@ -62,8 +62,8 @@ export const createDocument =
 			// console.log(response)
 
 			if (response.status === 200) {
-				toast.success('Bookmark created successfully')
-				dispatch(getBookmarkList({ accessToken }))
+				toast.success('Document created successfully')
+				dispatch(getDocumentList({ accessToken }))
 			} else {
 				dispatch({
 					type: DOCUMENT_CREATE_FAIL,
@@ -90,15 +90,18 @@ export const deleteDocument =
 			})
 
 			if (response.status === 200) {
-				dispatch({ type: DOCUMENT_DELETE_SUCCESS, payload: bookmarkId })
-				toast.success('Bookmark deleted successfully')
+				dispatch({
+					type: DOCUMENT_DELETE_SUCCESS,
+					payload: documentObject.id,
+				})
+				toast.success('Document deleted successfully')
 			} else {
 				dispatch({
 					type: DOCUMENT_DELETE_FAIL,
 					payload: 'Invalid Credentials',
 				})
 
-				toast.error('Bookmark deletion failed')
+				toast.error('Document deletion failed')
 			}
 
 			//api logic
@@ -120,7 +123,7 @@ export const updateDocument =
 			})
 
 			if (response.status === 200) {
-				toast.success('Bookmark updated successfully')
+				toast.success('Document updated successfully')
 				dispatch({
 					type: DOCUMENT_UPDATE_SUCCESS,
 					payload: response.data,
@@ -136,7 +139,7 @@ export const updateDocument =
 		}
 	}
 
-export const setUpdateBookmark = (document) => async (dispatch, getState) => {
+export const setUpdateDocument = (document) => async (dispatch, getState) => {
 	dispatch({ type: DOCUMENT_UPDATE_REQUEST })
 	dispatch({ type: DOCUMENT_UPDATE_SUCCESS, payload: document })
 }

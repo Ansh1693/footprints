@@ -2,9 +2,9 @@ import React from 'react'
 import NoteIcon from '../../assets/Icons/note.svg'
 import Image from 'next/image'
 
-function NoteCard({ data, onClick, profile }) {
+function NoteCard({ data, onClick }) {
 	const date = new Date(data.createdAt).toDateString()
-	// console.log(date)
+	// console.log(data, profile)
 	return (
 		<div
 			onClick={() => onClick(data)}
@@ -14,7 +14,7 @@ function NoteCard({ data, onClick, profile }) {
 			<div className='flex items-center gap-2 py-2 px-[16px] text-sm text-gray-600 border-b border-b-gray-300'>
 				<Image src={NoteIcon} width={20} height={20} />
 				<p className=''>
-					@{profile?.name ? profile?.name : 'testing'} •{' '}
+					@{data?.User?.username ? data?.User?.username : 'testing'} •{' '}
 					{date.slice(4)}
 				</p>
 			</div>

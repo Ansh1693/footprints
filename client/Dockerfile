@@ -1,5 +1,6 @@
 FROM node:21
 
+WORKDIR /footprints/client
 
 COPY package* .
 

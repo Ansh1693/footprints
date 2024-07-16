@@ -91,7 +91,7 @@ def extract_colors():
 
 # Set your OpenAI API key here
 client = Groq(
-    api_key=f"{tag_api}",
+    api_key=tag_api,
 )
 
 

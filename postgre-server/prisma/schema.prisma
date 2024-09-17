@@ -177,7 +177,7 @@ model BloksDocument {
 
 model BlokMetadata {
   id         String   @id @default(cuid())
-  blokHeader String
+  blokHeader String?
   blokId     String   @unique
   Blok       Blok     @relation(fields: [blokId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
@@ -195,7 +195,3 @@ model BlokFollowers {
   @@id([blokId, userId])
 }
 
-generator zod {
-  provider         = "zod-prisma-types"
-  useMultipleFiles = true
-}

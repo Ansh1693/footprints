@@ -56,7 +56,7 @@ function Page() {
 	})
 	const [selectedDocuments, setSelectedDocuments] = useState([])
 	const dispatch = useDispatch()
-	const userLogin = useSelector((state) => state.userInfo)
+	const userInfo = useSelector((state) => state.userInfo)
 	const getCookie = useGetCookie()
 	const removeCookie = useRemoveCookie()
 	const debouncedValue = useDebounce(blokObject, 1000)
@@ -78,7 +78,7 @@ function Page() {
 		} else {
 			if (debouncedValue?.blokName) {
 				createBlok({
-					accessToken: userLogin.userInfo.accessToken,
+					accessToken: userInfo.userInfo.accessToken,
 					blokObject,
 				})
 					.then((res) => {
@@ -105,33 +105,33 @@ function Page() {
 		const accessToken = getCookie('accessToken')
 		if (!accessToken) {
 			router.push('/signin')
-		} else if (!userLogin?.userInfo.id) {
+		} else if (!userInfo?.userInfo.id) {
 			dispatch(login({ accessToken }))
 		}
 	}, [])
 
 	useEffect(() => {
-		if (userLogin?.error) {
+		if (userInfo?.error) {
 			removeCookie('accessToken')
 			ToastNotification({ message: 'Please Login Again' })
 			router.push('/signin')
 		}
-	}, [userLogin])
+	}, [userInfo])
 
 	useEffect(() => {
-		if (userLogin.userInfo.accessToken) {
+		if (userInfo.userInfo.accessToken) {
 			setBlokObject({
 				...blokObject,
-				profileId: userLogin.userInfo.profileId,
-				userId: userLogin.userInfo.id,
+				profileId: userInfo.userInfo.profileId,
+				userId: userInfo.userInfo.id,
 			})
 			dispatch(
-				getDocumentList({ accessToken: userLogin.userInfo.accessToken })
+				getDocumentList({ accessToken: userInfo.userInfo.accessToken })
 			)
 
 			setShowDocuments(true)
 		}
-	}, [userLogin.userInfo.accessToken])
+	}, [userInfo.userInfo.accessToken])
 
 	return (
 		<div className='relative px-8 py-8'>
@@ -208,7 +208,7 @@ function Page() {
 				>
 					<Masonry gutter='24px' className='mt-2'>
 						{selectedDocuments &&
-							setSelectedDocuments.map((item) => {
+							selectedDocuments.map((item) => {
 								switch (item.DocumentMetadata.documentType) {
 									case 'reddit':
 										return (
@@ -361,7 +361,7 @@ function Page() {
 						<ShowDocuments
 							// data={activeDocument}
 							handleClose={() => {
-								if (blokObject.documents.length > 0) {
+								if (selectedDocuments?.length > 0) {
 									setShowDocuments(false)
 								} else {
 									ToastNotification({
@@ -373,7 +373,7 @@ function Page() {
 							blok={blokObject}
 							setBlok={setBlokObject}
 							selectedDocuments={selectedDocuments}
-							selectedDocuments={selectedDocuments}
+							setSelectedDocuments={setSelectedDocuments}
 						/>
 					</motion.div>
 				)}

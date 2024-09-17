@@ -152,7 +152,9 @@ export const update = async (documentObject) => {
       ...documentObject,
       DocumentMetadata: {
         update: {
-          ...documentObject.DocumentMetadata,
+          id: documentObject.DocumentMetadata.id,
+          documentType: documentObject.DocumentMetadata.documentType,
+          url: documentObject.DocumentMetadata.url,
         },
       },
     };
@@ -172,7 +174,14 @@ export const update = async (documentObject) => {
         },
       };
     }
+    delete updatedDocument.Comments;
+    delete updatedDocument.User;
+    delete updatedDocument.TagsDocument;
+    delete updatedDocument.userId;
 
+    if (updatedDocument.PinterestData == null)
+      delete updatedDocument.PinterestData;
+    if (updatedDocument.RedditData == null) delete updatedDocument.RedditData;
     return await Document.update({
       where: {
         id: documentObject.id,

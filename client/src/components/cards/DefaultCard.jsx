@@ -2,12 +2,15 @@ import React, { useState } from 'react'
 import ImageComponent from '../ui/Image'
 import { AnimatePresence, motion } from 'framer-motion'
 
-function DefaultCard({ data, onClick }) {
+function DefaultCard({ data, onClick = null }) {
 	const [hover, setHover] = useState(false)
 	const images = data?.DocumentMetadata?.url?.images || []
 	return (
 		<div
-			onClick={() => onClick(data)}
+			onClick={() => {
+				if (onClick) onClick(data)
+				else return
+			}}
 			className='relative cursor-pointer rounded-xl group overflow-hidden'
 			onMouseEnter={() => setHover(true)}
 			onMouseLeave={() => setHover(false)}
@@ -42,8 +45,8 @@ function DefaultCard({ data, onClick }) {
 								{data?.heading
 									? data?.heading
 									: data?.body.slice(0, 1).toUpperCase() +
-										data?.body.slice(1, 5) +
-										'...'}
+									  data?.body.slice(1, 5) +
+									  '...'}
 							</span>
 							{/* <YoutubeSvg /> */}
 						</div>

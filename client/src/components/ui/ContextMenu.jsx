@@ -40,7 +40,7 @@ const ContextMenuSubContent = ({ className, ...props }) => (
 			className
 		)}
 		{...props}
-	/>
+	></ContextMenuPrimitive.SubContent>
 )
 ContextMenuSubContent.displayName = ContextMenuPrimitive.SubContent.displayName
 
@@ -52,7 +52,7 @@ const ContextMenuContent = ({ className, ...props }) => (
 				className
 			)}
 			{...props}
-		/>
+		></ContextMenuPrimitive.Content>
 	</ContextMenuPrimitive.Portal>
 )
 ContextMenuContent.displayName = ContextMenuPrimitive.Content.displayName
@@ -65,7 +65,7 @@ const ContextMenuItem = ({ className, inset, ...props }) => (
 			className
 		)}
 		{...props}
-	/>
+	></ContextMenuPrimitive.Item>
 )
 ContextMenuItem.displayName = ContextMenuPrimitive.Item.displayName
 
@@ -120,7 +120,7 @@ const ContextMenuLabel = ({ className, inset, ...props }) => (
 			className
 		)}
 		{...props}
-	/>
+	></ContextMenuPrimitive.Label>
 )
 ContextMenuLabel.displayName = ContextMenuPrimitive.Label.displayName
 
@@ -128,7 +128,7 @@ const ContextMenuSeparator = ({ className, ...props }) => (
 	<ContextMenuPrimitive.Separator
 		className={cn('-mx-1 my-1 h-px bg-border', className)}
 		{...props}
-	/>
+	></ContextMenuPrimitive.Separator>
 )
 ContextMenuSeparator.displayName = ContextMenuPrimitive.Separator.displayName
 

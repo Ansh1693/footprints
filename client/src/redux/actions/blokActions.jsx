@@ -21,7 +21,7 @@ import {
 } from '@/helpers/utils/apis/crud/Blok'
 
 // BLOK LIST
-const getBlokList =
+export const getBlokList =
 	({ accessToken }) =>
 	async (dispatch, getState) => {
 		try {
@@ -48,7 +48,7 @@ const getBlokList =
 	}
 
 // CREATE Blok
-const createBlok =
+export const createBlok =
 	({ blokObject, accessToken }) =>
 	async (dispatch, getState) => {
 		try {
@@ -58,13 +58,13 @@ const createBlok =
 			//
 			const response = await create({ accessToken, blokObject })
 
-			dispatch({ type: BLOK_CREATE_SUCCESS, payload: data })
+			dispatch({ type: BLOK_CREATE_SUCCESS, payload: response.data })
 		} catch (error) {
 			dispatch({ type: BLOK_CREATE_FAIL, payload: error })
 		}
 	}
 
-const deleteBlok =
+export const deleteBlok =
 	({ blokObject, accessToken }) =>
 	async (dispatch, getState) => {
 		try {
@@ -91,7 +91,7 @@ const deleteBlok =
 	}
 
 // UPDATE Blok
-const updateBlok =
+export const updateBlok =
 	({ blokObject, accessToken }) =>
 	async (dispatch, getState) => {
 		try {
@@ -116,5 +116,3 @@ const updateBlok =
 			dispatch({ type: BLOK_UPDATE_FAIL, payload: error })
 		}
 	}
-
-export { getBlokList, createBlok, deleteBlok, updateBlok }

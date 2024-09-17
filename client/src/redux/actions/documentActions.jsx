@@ -126,7 +126,7 @@ export const updateDocument =
 				toast.success('Document updated successfully')
 				dispatch({
 					type: DOCUMENT_UPDATE_SUCCESS,
-					payload: response.data,
+					payload: documentObject,
 				})
 			} else {
 				dispatch({

@@ -51,26 +51,26 @@ function Navbar({ activeTab }) {
 				<div className='hel space-x-8'>
 					<ul className='flex text-slate-600 space-x-12'>
 						<Link
-							href='/bookmarks'
+							href='/documents'
 							className={`p-2 font-normal ${
 								activeTab === 'bookmarks'
 									? 'text-primary underline underline-offset-4'
 									: 'text-[#9CB1DA]'
 							}`}
 						>
-							My Bookmarks
+							My Documents
 						</Link>
 						<Link
-							href='/boards'
+							href='/bloks'
 							className={`p-2 font-normal ${
 								activeTab === 'boards'
 									? 'text-primary underline underline-offset-4'
 									: 'text-[#9CB1DA]'
 							}`}
 						>
-							Boards
+							Bloks
 						</Link>
-						<Link
+						{/* <Link
 							href='/feed'
 							className={`p-2 font-normal ${
 								activeTab === 'feed'
@@ -79,7 +79,7 @@ function Navbar({ activeTab }) {
 							}`}
 						>
 							Feed
-						</Link>
+						</Link> */}
 					</ul>
 					{/*
 					<Link

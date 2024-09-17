@@ -260,7 +260,7 @@ function Page() {
 						Authorization: `Bearer ${process.env.NEXT_PUBLIC_CLIENT_TOKEN}`,
 					},
 					crossorigin: true,
-					// mode: 'no-cors',
+					mode: 'no-cors',
 				}
 			)
 			const res = await response.json()

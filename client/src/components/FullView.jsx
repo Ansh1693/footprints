@@ -12,6 +12,10 @@ import {
 	X,
 	Play,
 	Pause,
+	Chat,
+	ChatSlash,
+	LockKey,
+	LockKeyOpen,
 } from '@phosphor-icons/react'
 import { Settings } from 'lucide-react'
 import { useAutosave } from 'react-autosave'
@@ -24,6 +28,8 @@ import { useDispatch } from 'react-redux'
 import { AudioVisualizer } from 'react-audio-visualize'
 import SettingOptions from './controls/SettingOptions'
 import { updateDocument as update } from '@/helpers/utils/apis/crud/Document'
+import SettingDocument from './controls/SettingDocument'
+import { setUpdateDocument } from '@/redux/actions/documentActions'
 
 function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 	const imageRef = React.useRef(null)
@@ -52,7 +58,7 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 
 	const [blob, setBlob] = useState(null)
 	const [isPlaying, setIsPlaying] = useState(false)
-
+	const [removeAudio, setRemoveAudio] = useState(false)
 	const visualizerRef = useRef(null)
 	const audioPlayer = useRef(null)
 
@@ -160,9 +166,11 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 	React.useEffect(() => {
 		if (
 			data?.body !== documentData?.body ||
-			data?.heading !== documentData?.heading
+			data?.heading !== documentData?.heading ||
+			data?.public !== documentData?.public ||
+			data?.comment !== documentData?.comment
 		) {
-			dispatch(setUpdateBookmark(documentData))
+			dispatch(setUpdateDocument(documentData))
 		}
 	}, [documentData])
 
@@ -181,7 +189,6 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 		update({ accessToken, documentObject: data }).then((response) => {
 			if (response.status === 200) {
 				toast.success('Bookmark updated successfully')
-			} else {
 			}
 		})
 	}
@@ -225,6 +232,22 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 		const { naturalHeight, naturalWidth } = imageRef.current
 		setImageDimensions({ width: naturalWidth, height: naturalHeight })
 	}
+
+	const handlePublic = () => {
+		setDocumentData({ ...documentData, public: !documentData.public })
+		toast.success(
+			`Document made ${documentData.public ? 'private' : 'public'}`
+		)
+	}
+
+	const handleComment = () => {
+		setDocumentData({ ...documentData, comment: !documentData.comment })
+		toast.success(
+			`Comment section ${
+				documentData.comment ? 'disabled' : 'enabled'
+			} for this document`
+		)
+	}
 	return (
 		<div className='space-y-4'>
 			{/* header */}
@@ -233,14 +256,21 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 				Logo
 				{/* full view controls */}
 				<div className='ml-3 flex gap-4'>
-					{/* open button */}
-					<Button
-						// onClick={handleClose}
-						variant={'secondary'}
-						size={'icon'}
-					>
-						<ArrowSquareOut size={24} />
-					</Button>
+					{/* share button */}
+					{data?.public && (
+						<Button
+							onClick={() => {
+								navigator.clipboard.writeText(
+									`http://localhost:5001/document/${id}`
+								)
+								toast.success('Link copied to clipboard')
+							}}
+							variant={'secondary'}
+							size={'icon'}
+						>
+							<ArrowSquareOut size={24} />
+						</Button>
+					)}
 
 					{/* collapse button */}
 					<Button
@@ -252,13 +282,46 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 					</Button>
 
 					{/* settings button */}
-					<Button
-						onClick={() => peakView()}
+					{/* <Button
+						// onClick={() => peakView()}
 						variant={'secondary'}
 						size={'icon'}
 					>
 						<SettingOptions />
-					</Button>
+					</Button> */}
+
+					{/* <SettingDocument
+						editable={true}
+						publicCheck={data?.public}
+						handlePublic={() => {}}
+						id={data.id}
+					/> */}
+					{edit && (
+						<Button
+							variant={'secondary'}
+							size={'icon'}
+							onClick={() => handlePublic()}
+						>
+							{documentData?.public ? (
+								<LockKeyOpen size={24} />
+							) : (
+								<LockKey size={24} />
+							)}
+						</Button>
+					)}
+					{edit && (
+						<Button
+							variant={'secondary'}
+							size={'icon'}
+							onClick={() => handleComment()}
+						>
+							{documentData?.comment ? (
+								<Chat size={24} />
+							) : (
+								<ChatSlash size={24} />
+							)}
+						</Button>
+					)}
 
 					{/* close button */}
 					<Button
@@ -297,30 +360,39 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 								{title}
 							</div>
 						)}
-						{/* {documentData.documentMetadata &&
-							documentData.documentMetadata.bodyImage_url && (
-								<img
-									ref={imageRef}
-									src={
-										documentData.documentMetadata
-											.bodyImage_url
-									}
-									onLoad={handleImageLoad}
-									style={{
-										aspectRatio: `${
-											imageDimensions.width /
-											imageDimensions.height
-										}`,
-										maxHeight: `min(600px,${imageDimensions.height}px)`,
-										maxWidth: `min(800px, ${imageDimensions.width}px)`,
-									}}
-									className={`rounded-md shadow-lg`}
-								/>
-							)} */}
+						{documentData.DocumentMetadata &&
+							documentData.DocumentMetadata.url?.images &&
+							documentData.DocumentMetadata.url?.images.map(
+								(image, ind) => (
+									<img
+										ref={imageRef}
+										src={image}
+										onLoad={handleImageLoad}
+										style={{
+											aspectRatio: `${
+												imageDimensions.width /
+												imageDimensions.height
+											}`,
+											maxHeight: `min(600px,${imageDimensions.height}px)`,
+											maxWidth: `min(800px, ${imageDimensions.width}px)`,
+										}}
+										className={`rounded-md shadow-lg`}
+										key={ind}
+									/>
+								)
+							)}
 
 						{documentData?.DocumentMetadata.documentType ===
 							'audio' && (
-							<div className='flex items-center gap-4'>
+							<div
+								className='flex items-center gap-4 px-4'
+								onMouseEnter={() => {
+									setRemoveAudio(true)
+								}}
+								onMouseLeave={() => {
+									setRemoveAudio(false)
+								}}
+							>
 								<button
 									onClick={() => setIsPlaying(!isPlaying)}
 									className='w-12 h-12 p-2 text-white rounded-full bg-primary'
@@ -363,6 +435,10 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 										/>
 									</div>
 								)}
+
+								{/* <button onClick={() => {}}>
+									<X />
+								</button> */}
 							</div>
 						)}
 
@@ -436,35 +512,37 @@ function FullView({ data, handleClose, peakView, accessToken, edit = true }) {
 						</div>
 
 						{/* comments */}
-						<div className='overflow-hidden bg-white border-2 rounded-lg border-secondary'>
-							{/* add tags */}
-							<div className='flex items-center gap-4 p-4 border-b'>
-								<Image
-									alt='profile'
-									src={ProfileImg}
-									width={32}
-									height={32}
-									alt={documentData.name}
-									className='rounded-full'
-								/>
-								<div className='p-[1px] rounded-[6px] gradient-border h-[31px]'>
-									<Input
-										type='text'
-										placeholder='Comment your thoughts'
-										className={
-											'text-[12px] text-primary border-none h-full rounded-[6px]'
-										}
+						{documentData.comment && (
+							<div className='overflow-hidden bg-white border-2 rounded-lg border-secondary'>
+								{/* add tags */}
+								<div className='flex items-center gap-4 p-4 border-b'>
+									<Image
+										alt='profile'
+										src={ProfileImg}
+										width={32}
+										height={32}
+										alt={documentData.name}
+										className='rounded-full'
 									/>
+									<div className='p-[1px] rounded-[6px] gradient-border h-[31px]'>
+										<Input
+											type='text'
+											placeholder='Comment your thoughts'
+											className={
+												'text-[12px] text-primary border-none h-full rounded-[6px]'
+											}
+										/>
+									</div>
+									<Button className={'text-xs'}>Add</Button>
 								</div>
-								<Button className={'text-xs'}>Add</Button>
-							</div>
 
-							{/* comments */}
-							<div>
-								<Comment />
-								<Comment />
+								{/* comments */}
+								<div>
+									<Comment />
+									<Comment />
+								</div>
 							</div>
-						</div>
+						)}
 					</div>
 				</div>
 			</div>

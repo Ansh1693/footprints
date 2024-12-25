@@ -1,21 +1,7 @@
 // Existing code for context menu and screenshot handling
-/*
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log(request, sender, sendResponse);
-});
-
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: "saveWebpage",
-    title: "Footprint webpage!",
-    contexts: ["all"],
-  });
-
-  chrome.contextMenus.create({
-    id: "saveScreenshot",
-    title: "Footprint screenshot!",
-    contexts: ["all"],
-  });
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
@@ -39,9 +25,15 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         });
       });
     });
+  } else if (info.menuItemId === "saveText") {
+    // console.log(info);
+
+    console.log(info.selectionText);
+  } else if (info.menuItemId === "saveImage") {
+    console.log(info.srcUrl);
+    console.log(info);
   }
 });
-*/
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
@@ -50,42 +42,57 @@ chrome.runtime.onInstalled.addListener(() => {
     contexts: ["all"],
   });
 
+  // chrome.contextMenus.create({
+  //   id: "saveScreenshot",
+  //   title: "Footprint screenshot!",
+  //   contexts: ["all"],
+  // });
+
   chrome.contextMenus.create({
-    id: "saveScreenshot",
-    title: "Footprint screenshot!",
-    contexts: ["all"],
+    id: "saveImage",
+    title: "Footprint image!",
+    contexts: ["image"],
+  });
+
+  chrome.contextMenus.create({
+    id: "saveText",
+    title: "Footprint text!",
+    contexts: ["selection"],
   });
 });
-
-// background.js
-const WEBSITE_URL = "https://your-website.com";
 
 function checkAuthAndLogin() {
   chrome.storage.local.get(["authToken"], function (result) {
     if (!result.authToken) {
-      chrome.tabs.create({ url: "https://bloks.social/login" });
+      chrome.tabs.create({ url: "http://localhost:5001/signin" });
+    } else {
+      if (result.expirationDate < Date.now()) {
+        console.log("Auth token exists");
+        console.log(result);
+      } else {
+        chrome.tabs.create({ url: "http://localhost:5001/signin" });
+      }
     }
   });
 }
 
-// Listen for extension installation or update
-chrome.runtime.onInstalled.addListener(checkAuthAndLogin);
+function getAndSetCookie() {
+  let cookie;
+  chrome.cookies.getAll({ domain: "localhost" }, (cookies) => {
+    cookie = cookies.find((cookie) => cookie.name === "accessToken");
 
-// Listen for extension startup
-chrome.runtime.onStartup.addListener(checkAuthAndLogin);
+    if (cookie) {
+      chrome.storage.local.set({ authToken: cookie }, function () {
+        console.log("Auth token stored");
+      });
 
-// Listen for messages from the website
-chrome.runtime.onMessageExternal.addListener(function (
-  request,
-  sender,
-  sendResponse
-) {
-  if (request.type === "LOGIN") {
-    // Store the auth token
-    chrome.storage.local.set({ authToken: request.token }, function () {
-      console.log("Auth token stored");
-      sendResponse({ success: true });
-    });
-  }
-  return true; // Indicates that the response is sent asynchronously
-});
+      checkAuthAndLogin();
+    } else {
+      checkAuthAndLogin();
+    }
+  });
+}
+
+chrome.runtime.onInstalled.addListener(getAndSetCookie);
+
+chrome.runtime.onStartup.addListener(getAndSetCookie);

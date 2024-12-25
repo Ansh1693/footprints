@@ -15,6 +15,22 @@ const page = () => {
 			if (code) {
 				setCookie('accessToken', code, { expires: 30 })
 				router.push('/documents')
+
+				// chrome.runtime.sendMessage(
+				// 	{
+				// 		type: 'footprint_access',
+				// 		data: {
+				// 			accessToken: code,
+				// 		},
+				// 	},
+				// 	function (response) {
+				// 		if (response.success) {
+				// 			console.log(response.message)
+				// 		} else {
+				// 			console.error('Error:', response.message)
+				// 		}
+				// 	}
+				// )
 			}
 		}
 	}, [searchParams])

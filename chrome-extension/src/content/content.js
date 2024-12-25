@@ -80,13 +80,7 @@ function displayImageInFullScreen(image) {
   img.onload = function () {
     imageElement.height = img.height;
     imageElement.width = img.width;
-    ctx.drawImage(
-      img,
-      0,
-      0,
-      window.innerWidth,
-      window.innerHeight
-    );
+    ctx.drawImage(img, 0, 0, window.innerWidth, window.innerHeight);
   };
   imageElement.style.cursor = "crosshair";
   imageElement.id = "image";
@@ -146,9 +140,12 @@ function displayImageInFullScreen(image) {
   });
 }
 
+// save text
+
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.message === "save_screenshot") {
     displayImageInFullScreen(message.data);
+  } else if (message.message === "save_text") {
+    console.log(message.data);
   }
 });
-

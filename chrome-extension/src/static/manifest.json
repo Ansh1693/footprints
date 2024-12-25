@@ -16,11 +16,13 @@
     "activeTab",
     "contextMenus",
     "scripting",
+    "webNavigation",
+    "webRequest",
     "tabs",
     "notifications",
     "background",
     "storage",
-    "https://bloks.social"
+    "cookies"
   ],
   "background": {
     "service_worker": "background.js"
@@ -34,5 +36,6 @@
   ],
   "externally_connectable": {
     "matches": ["https://bloks.social/*"]
-  }
+  },
+  "host_permissions": ["<all_urls>"]
 }

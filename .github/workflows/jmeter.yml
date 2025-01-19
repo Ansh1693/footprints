@@ -30,6 +30,7 @@ jobs:
         working-directory: ./postgre-server
         run: |
           npm install
+          npx prisma generate
           npx prisma db push
           npm run start
         env:

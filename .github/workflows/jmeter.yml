@@ -54,18 +54,18 @@ jobs:
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
 
-      - name: Setup JMeter
-        uses: tush-tr/setup-jmeter@v1.1.0
-
-      - name: Run JMeter
-        run: |
-          jmeter -n -t Tests/Load.jmx -l Tests/results.jtl
+      - name: Run JMeter Action on a test
+        uses: rbhadti94/apache-jmeter-action@v0.5.0
+        with:
+          testFilePath: test/Load.jmx
+          outputReportsFolder: reports/
+          args: "--loglevel INFO"
 
       - name: Upload JMeter Results
         uses: actions/upload-artifact@v3
         with:
           name: jmeter-results
-          path: Tests/results.jtl
+          path: Tests/
 
       - name: Stop Postgres
         run: |

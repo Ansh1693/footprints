@@ -23,6 +23,9 @@ jobs:
           -e POSTGRES_PASSWORD=12345678 \
           -e POSTGRES_USER=postgres \
           -p 6500:5432 postgres
+      - name: Wait for Postgres to start
+        run: | 
+            sleep 10
 
       - name: Run Server
         working-directory: ./postgre-server

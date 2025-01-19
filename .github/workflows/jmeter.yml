@@ -1,0 +1,77 @@
+name: Run JMeter Test
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+  workflow_dispatch:
+
+jobs:
+  jmeter-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Postgres
+        run: |
+          docker pull postgres
+          docker run --name postgres-container -d \
+          -e POSTGRES_DB=footprints \
+          -e POSTGRES_PASSWORD=12345678 \
+          -e POSTGRES_USER=postgres \
+          -p 6500:5432 postgres
+
+      - name: Run Server
+        working-directory: ./postgre-server
+        run: |
+          npm install
+          npx prisma db push
+          npm run start
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BLACKLISTEDUSERNAMES: ${{ secrets.BLACKLISTEDUSERNAMES }}
+          LOGTAIL_TOKEN: ${{ secrets.LOGTAIL_TOKEN }}
+          RESEND_TOKEN: ${{ secrets.RESEND_TOKEN }}
+          GOOGLE_ID: ${{ secrets.GOOGLE_ID }}
+          GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
+          CLOUDFARE_ID: ${{ secrets.CLOUDFARE_ID }}
+          CLOUDFARE_SECRET: ${{ secrets.CLOUDFARE_SECRET }}
+          CLOUDFARE_URI: ${{ secrets.CLOUDFARE_URI }}
+          CLOUDFARE_CDN: ${{ secrets.CLOUDFARE_CDN }}
+          CLOUDFARE_BUCKET: ${{ secrets.CLOUDFARE_BUCKET }}
+          HOST: ${{ secrets.HOST }}
+          CLIENT: ${{ secrets.CLIENT }}
+          STATIC_AUTH: ${{ secrets.STATIC_AUTH }}
+          JWT_AUTH: ${{ secrets.JWT_AUTH }}
+          REDDIT_REDIRECT_URI: ${{ secrets.REDDIT_REDIRECT_URI }}
+          REDDIT_HOST: ${{ secrets.REDDIT_HOST }}
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+
+      - name: Setup JMeter
+        uses: tush-tr/setup-jmeter@v1.1.0
+
+      - name: Run JMeter
+        run: |
+          jmeter -n -t Tests/Load.jmx -l Tests/results.jtl
+
+      - name: Upload JMeter Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: jmeter-results
+          path: Tests/results.jtl
+
+      - name: Stop Postgres
+        run: |
+          docker stop postgres-container
+
+      - name: Cleanup Postgres
+        run: |
+          docker rm postgres-container
+
+      - name: Cleanup Server
+        run: |
+          rm -rf node_modules

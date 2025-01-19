@@ -56,7 +56,14 @@ jobs:
         uses: rbhadti94/apache-jmeter-action@v0.5.0
         with:
           testFilePath: tests/Load.jmx
-          outputReportsFolder: reports/
+          outputReportsFolder: reports/Load/
+          args: "--loglevel INFO"
+
+      - name: Run JMeter Action on a second test
+        uses: rbhadti94/apache-jmeter-action@v0.5.0
+        with:
+          testFilePath: tests/Load1.jmx
+          outputReportsFolder: reports/Load1/
           args: "--loglevel INFO"
 
       - name: Upload JMeter Results

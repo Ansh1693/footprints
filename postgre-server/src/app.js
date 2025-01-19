@@ -13,6 +13,10 @@ const app = fastify({
           target: "pino-pretty",
           options: { colorize: true },
         },
+        {
+          target: "pino/file",
+          options: { destination: "./app.log" },
+        },
       ],
     },
   }),

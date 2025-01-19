@@ -69,7 +69,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: server-logs
-          path: ./postgre-server/server.log
+          path: ./postgre-server/app.log
       - name: Stop Postgres
         run: |
           docker stop postgres-container

@@ -23,8 +23,6 @@ jobs:
           -e POSTGRES_PASSWORD=12345678 \
           -e POSTGRES_USER=postgres \
           -p 6500:5432 postgres
-          docker ps
-          sleep 10
 
       - name: Run Server
         working-directory: ./postgre-server
@@ -32,7 +30,7 @@ jobs:
           npm install
           npx prisma generate
           npx prisma db push
-          npm run start &
+          npm run start > server.log 2>&1 &
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BLACKLISTEDUSERNAMES: ${{ secrets.BLACKLISTEDUSERNAMES }}
@@ -65,8 +63,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: jmeter-results
-          path: tests/
+          path: reports/
 
+      - name: Upload Server Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: server-logs
+          path: ./postgre-server/server.log
       - name: Stop Postgres
         run: |
           docker stop postgres-container

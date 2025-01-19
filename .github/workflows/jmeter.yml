@@ -87,7 +87,7 @@ jobs:
         with:
           testFilePath: tests/Load.jmx
           outputReportsFolder: reports/
-          args: "-Jhostip=$(hostname -I)"
+          args: "-Jhostip=$(hostname)"
 
       - name: Run JMeter Action on a second test
         uses: rbhadti94/apache-jmeter-action@v0.5.0

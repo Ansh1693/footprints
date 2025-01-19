@@ -21,7 +21,7 @@
       </ThreadGroup>
       <hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Initialise Auth" enabled="true">
-          <stringProp name="HTTPSampler.domain">0.0.0.0</stringProp>
+          <stringProp name="HTTPSampler.domain">${__property(hostip, localhost)}</stringProp>
           <stringProp name="HTTPSampler.port">3000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">auth/initialize?queryType=email</stringProp>
@@ -104,7 +104,7 @@
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Callback Auth" enabled="true">
-          <stringProp name="HTTPSampler.domain">0.0.0.0</stringProp>
+          <stringProp name="HTTPSampler.domain">${__property(hostip, localhost)}</stringProp>
           <stringProp name="HTTPSampler.port">3000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/auth/callback/email?state=${STATE}&amp;code=${OTP}</stringProp>
@@ -150,7 +150,7 @@
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Read User" enabled="true">
-          <stringProp name="HTTPSampler.domain">0.0.0.0</stringProp>
+          <stringProp name="HTTPSampler.domain">${__property(hostip, localhost)}</stringProp>
           <stringProp name="HTTPSampler.port">3000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/user/read</stringProp>
@@ -222,7 +222,7 @@
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create Document" enabled="true">
-          <stringProp name="HTTPSampler.domain">0.0.0.0</stringProp>
+          <stringProp name="HTTPSampler.domain">${__property(hostip, localhost)}</stringProp>
           <stringProp name="HTTPSampler.port">3000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/document/create</stringProp>
@@ -310,7 +310,7 @@
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Read Document" enabled="true">
-          <stringProp name="HTTPSampler.domain">0.0.0.0</stringProp>
+          <stringProp name="HTTPSampler.domain">${__property(hostip, localhost)}</stringProp>
           <stringProp name="HTTPSampler.port">3000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/document/read?documentId=${DOCID}</stringProp>
@@ -375,7 +375,7 @@
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create Blok" enabled="true">
-          <stringProp name="HTTPSampler.domain">0.0.0.0</stringProp>
+          <stringProp name="HTTPSampler.domain">${__property(hostip, localhost)}</stringProp>
           <stringProp name="HTTPSampler.port">3000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/blok/create</stringProp>
@@ -467,7 +467,7 @@
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Read Blok" enabled="true">
-          <stringProp name="HTTPSampler.domain">0.0.0.0</stringProp>
+          <stringProp name="HTTPSampler.domain">${__property(hostip, localhost)}</stringProp>
           <stringProp name="HTTPSampler.port">3000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/blok/read?blokId=${BLOKID}</stringProp>

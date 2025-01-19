@@ -56,14 +56,14 @@ jobs:
         uses: rbhadti94/apache-jmeter-action@v0.5.0
         with:
           testFilePath: tests/Load.jmx
-          outputReportsFolder: reports/Load/
+          outputReportsFolder: reports/
           args: "--loglevel INFO"
 
       - name: Run JMeter Action on a second test
         uses: rbhadti94/apache-jmeter-action@v0.5.0
         with:
           testFilePath: tests/Load1.jmx
-          outputReportsFolder: reports/Load1/
+          outputReportsFolder: report/
           args: "--loglevel INFO"
 
       - name: Upload JMeter Results
@@ -71,6 +71,12 @@ jobs:
         with:
           name: jmeter-results
           path: reports/
+
+      - name: Upload JMeter Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: jmeter-results
+          path: report/
 
       - name: Upload Server Logs
         uses: actions/upload-artifact@v3

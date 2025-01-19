@@ -43,7 +43,7 @@ import redditClient from "../../utils/clients/reddit.client.js";
 //   }
 // };
 
-export const Reddit = async ({ profileId, userId }) => {
+export const Reddit = async ({ userId }) => {
   try {
     const redditUserClient = await redditClient({ id: userId });
 

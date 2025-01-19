@@ -21,7 +21,7 @@ export const checkUsername = async (username) => {
 
     const foundUsername = await User.findUnique({
       where: { username: username },
-      select: { profileId: true, id: true },
+      select: { id: true },
     });
 
     if (!foundUsername) {
@@ -30,7 +30,6 @@ export const checkUsername = async (username) => {
       return {
         availabilityStatus: false,
         user: {
-          profileId: foundUsername.profileId,
           id: foundUsername.id,
         },
       };
@@ -48,14 +47,13 @@ export const checkEmail = async (email) => {
   try {
     const foundEmail = await User.findUnique({
       where: { email: email },
-      select: { email: true, profileId: true, id: true },
+      select: { email: true, id: true },
     });
 
     if (foundEmail) {
       return {
         foundUser: true,
         user: {
-          profileId: foundEmail.profileId,
           id: foundEmail.id,
         },
       };
@@ -73,7 +71,7 @@ export const checkEmail = async (email) => {
  * A function that will check access to different models for a particular user
  *
  */
-export const checkAccess = async (profileId, modelType, modelId) => {
+export const checkAccess = async (userId, modelType, modelId) => {
   try {
     if (modelType === "tag") {
       const tag = await Tag.findUnique({
@@ -81,7 +79,6 @@ export const checkAccess = async (profileId, modelType, modelId) => {
         include: {
           User: {
             select: {
-              profileId: true,
               id: true,
               username: true,
             },
@@ -89,7 +86,7 @@ export const checkAccess = async (profileId, modelType, modelId) => {
         },
       });
 
-      if (profileId !== tag.User.profileId) {
+      if (userId !== tag.User.id) {
         throw new Error(
           "User doesn't have permissions to make modifications to this tag.",
         );
@@ -100,7 +97,6 @@ export const checkAccess = async (profileId, modelType, modelId) => {
         include: {
           User: {
             select: {
-              profileId: true,
               id: true,
               username: true,
             },
@@ -108,7 +104,7 @@ export const checkAccess = async (profileId, modelType, modelId) => {
         },
       });
 
-      if (profileId !== blok.profileId) {
+      if (userId !== blok.userId) {
         throw new Error(
           "User doesn't have permissions to make modifications to this blok.",
         );
@@ -119,7 +115,6 @@ export const checkAccess = async (profileId, modelType, modelId) => {
         include: {
           User: {
             select: {
-              profileId: true,
               id: true,
               username: true,
             },
@@ -127,7 +122,7 @@ export const checkAccess = async (profileId, modelType, modelId) => {
         },
       });
 
-      if (profileId !== document.User.profileId) {
+      if (userId !== document.User.userId) {
         throw new Error(
           "User doesn't have permissions to make modifications to this document.",
         );
@@ -136,13 +131,12 @@ export const checkAccess = async (profileId, modelType, modelId) => {
       const user = await User.findUnique({
         where: { id: modelId },
         select: {
-          profileId: true,
           id: true,
           username: true,
         },
       });
 
-      if (profileId !== user.profileId) {
+      if (userId !== user.id) {
         throw new Error(
           "User doesn't have permissions to make modifications to this user.",
         );

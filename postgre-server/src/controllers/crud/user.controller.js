@@ -13,14 +13,14 @@ import { checkAccess } from "../../functions/utility/check.function.js";
  */
 export const read = async (req, res) => {
   try {
-    const { profileId } = req.user;
+    const { userId } = req.user;
     const { username } = req.query;
     const userObject = {};
 
     if (username) {
       userObject.username = username;
     } else {
-      userObject.profileId = profileId;
+      userObject.id = userId;
     }
 
     const data = await readUser(userObject);
@@ -40,9 +40,9 @@ export const read = async (req, res) => {
 export const update = async (req, res) => {
   try {
     const { userObject } = req.body;
-    const { profileId } = req.user;
+    const { userId } = req.user;
 
-    await checkAccess(profileId, "user", userObject.id);
+    await checkAccess(userId, "user", userObject.id);
 
     const data = await updateUser(userObject);
 
@@ -61,9 +61,9 @@ export const update = async (req, res) => {
 export const del = async (req, res) => {
   try {
     const { userObject } = req.body;
-    const { profileId } = req.user;
+    const { userId } = req.user;
 
-    await checkAccess(profileId, "user", userObject.id);
+    await checkAccess(userId, "user", userObject.id);
 
     const data = await deleteUser(userObject);
 

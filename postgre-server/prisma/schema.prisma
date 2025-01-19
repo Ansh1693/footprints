@@ -13,7 +13,6 @@ model User {
   name          String
   description   String?
   username      String          @unique @db.VarChar(255)
-  profileId     String          @unique @default(cuid())
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   UserMetadata  UserMetadata?
@@ -72,7 +71,6 @@ model RedditAuth {
 model Document {
   id               String            @id @default(cuid())
   userId           String
-  profileId        String
   User             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   heading          String?
   body             String?
@@ -151,7 +149,6 @@ model TagsDocument {
 model Blok {
   id            String          @id @default(cuid())
   userId        String
-  profileId     String
   User          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   blokName      String
   description   String?
@@ -194,4 +191,3 @@ model BlokFollowers {
 
   @@id([blokId, userId])
 }
-

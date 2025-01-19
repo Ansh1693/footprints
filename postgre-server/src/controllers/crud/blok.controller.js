@@ -28,7 +28,7 @@ export const create = async (req, res) => {
  */
 export const read = async (req, res) => {
   try {
-    const { profileId, userId } = req.user;
+    const { userId } = req.user;
     const { blokId } = req.query;
 
     let blokObject = {};
@@ -54,9 +54,9 @@ export const read = async (req, res) => {
 export const update = async (req, res) => {
   try {
     const { blokObject } = req.body;
-    const { profileId } = req.user;
+    const { userId } = req.user;
 
-    await checkAccess(profileId, "blok", blokObject.id);
+    await checkAccess(userId, "blok", blokObject.id);
 
     const data = await updateBlok(blokObject);
 
@@ -73,9 +73,9 @@ export const update = async (req, res) => {
 export const del = async (req, res) => {
   try {
     const { blokObject } = req.body;
-    const { profileId } = req.user;
+    const { userId } = req.user;
 
-    await checkAccess(profileId, "blok", blokObject.id);
+    await checkAccess(userId, "blok", blokObject.id);
 
     const data = await deleteBlok(blokObject);
 

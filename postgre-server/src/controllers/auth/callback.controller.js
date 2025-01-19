@@ -35,13 +35,9 @@ const callbackAuth = async (req, res) => {
 
       res.status(200).send({ data: { session_token } });
     } else if (platform === "google") {
-      const { profileId, userId } = await googleCallback(
-        state,
-        code,
-        authParams,
-      );
+      const { userId } = await googleCallback(state, code, authParams);
 
-      const sessionToken = await res.jwtSign({ profileId, userId });
+      const sessionToken = await res.jwtSign({ userId });
 
       res
         .status(302)

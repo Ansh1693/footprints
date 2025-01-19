@@ -11,12 +11,12 @@ import { redditLogin } from "../../functions/auth/initialize.function.js";
 const initialiseConnect = async (req, res) => {
   try {
     const { queryType } = req.query;
-    const { profileId } = req.user;
+    const { userId } = req.user;
 
     if (queryType === "reddit") {
       const { state, url } = redditLogin();
 
-      const saved = { state, profileId };
+      const saved = { state, userId };
 
       cache.set(state, saved, 60 * 4);
 

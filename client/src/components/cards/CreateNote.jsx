@@ -282,7 +282,7 @@ function CreateNote({ images, setImages }) {
 			toast.success('Image Saved')
 			const response = await uploadImage({
 				file: images[0],
-				accessToken: accessToken,
+				accessToken: userInfo.accessToken,
 			})
 			documentObject.DocumentMetadata = {
 				documentType: 'image',
@@ -336,7 +336,7 @@ function CreateNote({ images, setImages }) {
 			<div className='relative h-full px-4 py-2'>
 				{/* button - handles save note, set audio note & cancel audio note */}
 				<div className='absolute z-10 flex items-center justify-center rounded-full right-4 top-2 shrink-0 gap-1'>
-					{images.length > 0 && !isVoiceNote && (
+					{images.length > 0 && !isRecordingStarted && (
 						<button
 							className='flex items-center justify-center rounded-full h-7 w-7 bg-gradient-to-br from-indigo-300/20 to-indigo-300/20 '
 							onClick={() => handleClick('removeImage')}
@@ -552,8 +552,8 @@ function CreateNote({ images, setImages }) {
 											<X
 												width={'auto'}
 												height={'auto'}
-												weight='fill'
-												fill='white'
+												weight='regular'
+												color='white'
 											/>
 										</button>
 
@@ -580,8 +580,8 @@ function CreateNote({ images, setImages }) {
 											<Check
 												width={'auto'}
 												height={'auto'}
-												weight='fill'
-												fill='white'
+												weight='regular'
+												color='white'
 											/>
 										</button>
 									</div>

@@ -10,7 +10,6 @@ export const create = async (userObject) => {
   try {
     const newUser = {
       ...userObject,
-      profileId: uuidv4(),
       UserMetadata: {
         create: {
           ...userObject.UserMetadata,

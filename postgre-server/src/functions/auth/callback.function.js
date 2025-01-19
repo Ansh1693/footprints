@@ -65,19 +65,18 @@ export const googleCallback = async (state, code, { state: sessionState }) => {
           ...user.UserAuth,
         },
       };
-      console.log(user, "user");
+      // console.log(user, "user");
 
       await update(user);
 
       return {
-        profileId: checkUser.user.profileId,
         userId: checkUser.user.id,
       };
     }
 
     const newUser = await create(user);
 
-    return { profileId: newUser.profileId, userId: newUser.id };
+    return { userId: newUser.id };
   } catch (error) {
     throw error;
   }
@@ -97,7 +96,6 @@ export const emailCallback = async (state, userObject) => {
 
     if (checkUser.foundUser) {
       return {
-        profileId: checkUser.user.profileId,
         userId: checkUser.user.id,
       };
     }
@@ -112,20 +110,18 @@ export const emailCallback = async (state, userObject) => {
 
     const newUser = await create(user);
 
-    return { profileId: newUser.profileId, userId: newUser.id };
+    return { userId: newUser.id };
   } catch (error) {
     throw error;
   }
 };
 
-export const redditCallback = async (profileId, sessionState, state, code) => {
+export const redditCallback = async (userId, sessionState, state, code) => {
   try {
     if (!state || !sessionState || !code)
       throw new Error("You denied the app or your session expired!");
 
     if (state !== sessionState) throw new Error("Stored tokens didn't match!");
-
-    console.log(profileId, "gg");
 
     const client = await Snoowrap.fromAuthCode({
       code: code,
@@ -142,11 +138,10 @@ export const redditCallback = async (profileId, sessionState, state, code) => {
     //   console.log(data , "151");
 
     const checkedUser = await read({
-      profileId,
+      id: userId,
     });
 
     let user = {
-      profileId: profileId,
       id: checkedUser.id,
       name: checkedUser.name,
       UserAuth: {

@@ -11,13 +11,16 @@ export const uploadImage = async (file, profileId) => {
   try {
     if (
       !["image/heic", "image/jpeg", "image/png", "image/jpg"].some(
-        (type) => type === file.mimetype,
+        (type) => type === file.mimetype
       )
     ) {
       throw new Error("Unsupported file type.");
     }
 
-    const fileKey = `${profileId}_${file.filename.replace(/\s/g, "_")}_${Date.now()}`;
+    const fileKey = `${profileId}_${Date.now()}_${file.filename.replace(
+      /\s/g,
+      "_"
+    )}`;
 
     const h2 = await S3.send(
       new PutObjectCommand({
@@ -33,7 +36,7 @@ export const uploadImage = async (file, profileId) => {
           profile_id: profileId,
           fileName: file.filename,
         },
-      }),
+      })
     );
 
     console.log(h2);
@@ -56,7 +59,10 @@ export const uploadAudio = async (file, profileId) => {
       throw new Error("Unsupported audio file type.");
     }
 
-    const fileKey = `${profileId}_${file.filename.replace(/\s/g, "_")}_${Date.now()}`;
+    const fileKey = `${profileId}__${Date.now()}_${file.filename.replace(
+      /\s/g,
+      "_"
+    )}`;
 
     const h2 = await S3.send(
       new PutObjectCommand({
@@ -69,7 +75,7 @@ export const uploadAudio = async (file, profileId) => {
           profile_id: profileId,
           fileName: file.filename,
         },
-      }),
+      })
     );
 
     console.log(h2);

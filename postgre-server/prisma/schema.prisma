@@ -13,7 +13,6 @@ model User {
   name          String
   description   String?
   username      String          @unique @db.VarChar(255)
-  profileId     String          @unique @default(cuid())
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   UserMetadata  UserMetadata?
@@ -72,7 +71,6 @@ model RedditAuth {
 model Document {
   id               String            @id @default(cuid())
   userId           String
-  profileId        String
   User             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   heading          String?
   body             String?
@@ -151,7 +149,6 @@ model TagsDocument {
 model Blok {
   id            String          @id @default(cuid())
   userId        String
-  profileId     String
   User          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   blokName      String
   description   String?
@@ -177,7 +174,7 @@ model BloksDocument {
 
 model BlokMetadata {
   id         String   @id @default(cuid())
-  blokHeader String
+  blokHeader String?
   blokId     String   @unique
   Blok       Blok     @relation(fields: [blokId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
@@ -193,9 +190,4 @@ model BlokFollowers {
   updatedAt DateTime @updatedAt
 
   @@id([blokId, userId])
-}
-
-generator zod {
-  provider         = "zod-prisma-types"
-  useMultipleFiles = true
 }

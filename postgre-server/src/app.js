@@ -84,6 +84,7 @@ app.listen(
   async (error) => {
     try {
       await prisma.$connect();
+      console.log("Connected to database!");
     } catch (e) {
       console.log(e);
     }

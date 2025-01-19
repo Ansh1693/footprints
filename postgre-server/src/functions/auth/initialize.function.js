@@ -17,6 +17,8 @@ export const emailLogin = async (userObject) => {
 
     const checkUser = await checkEmail(userObject.email);
 
+    console.log(userObject.email);
+
     if (checkUser.foundUser) {
       newUser = false;
     }

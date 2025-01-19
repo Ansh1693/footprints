@@ -35,7 +35,7 @@ import AudioCard from '@/components/cards/AudioCard'
 import useGetCookie from '@/components/cookies/useGetCookie'
 import { toast } from 'react-hot-toast'
 import { uploadAudio, uploadImage } from '@/helpers/utils/apis/utilities/upload'
-// import { getBLokList } from '@/redux/actions/blokActions'
+import { getBlokList } from '@/redux/actions/blokActions'
 import SearchBar from '@/components/SearchBar'
 import { readDocument } from '@/helpers/utils/apis/query/Document'
 
@@ -114,7 +114,12 @@ function Page() {
 		setIsPeakOpen(true)
 	}
 
-	const handleDelete = (documentData) => {
+	const handleDelete = (documentData, type = undefined) => {
+		if (type !== undefined) {
+			setIsFullView(false)
+			setIsPeakOpen(false)
+		}
+		router.push('/documents')
 		dispatch(
 			deleteDocument({
 				documentObject: { id: documentData.id },
@@ -133,11 +138,10 @@ function Page() {
 	}
 	useEffect(() => {
 		if (userInfo?.accessToken) {
-			console.log(userInfo.accessToken)
 			dispatch(getDocumentList({ accessToken: userInfo.accessToken }))
 		}
 		if (userInfo?.accessToken) {
-			// dispatch(getBLokList({ accessToken: userInfo.accessToken }))
+			dispatch(getBlokList({ accessToken: userInfo.accessToken }))
 		}
 	}, [userInfo])
 
@@ -163,24 +167,30 @@ function Page() {
 	}, [isPeakOpen, isFullView])
 
 	const handleDrop = (e) => {
+		if (isPeakOpen || isFullView) return
 		e.preventDefault()
-		const files = e.dataTransfer.files
-		if (files.length > 1) {
-			toast.error('You can only upload one file at a time')
+		try {
+			const files = e.dataTransfer.files
+			if (files.length > 1) {
+				toast.error('You can only upload one file at a time')
+				return
+			}
+
+			if (
+				files[0].type !== 'image/png' &&
+				files[0].type !== 'image/jpeg' &&
+				files[0].type !== 'image/jpg'
+			) {
+				toast.error('You can only upload image files')
+				return
+			}
+
+			setImages([files[0]])
+			toast.success('Image added to Note')
+		} catch (err) {
+			toast.error('Something went wrong')
 			return
 		}
-
-		if (
-			files[0].type !== 'image/png' &&
-			files[0].type !== 'image/jpeg' &&
-			files[0].type !== 'image/jpg'
-		) {
-			toast.error('You can only upload image files')
-			return
-		}
-
-		setImages([files[0]])
-		toast.success('Image added to Note')
 
 		// const response = await uploadImage({
 		// 	file: files[0],
@@ -425,6 +435,7 @@ function Page() {
 							data={activeDocument}
 							handleClose={handleBackgroundClick}
 							setIsFullView={switchFullView}
+							handleDelete={handleDelete}
 						/>
 					</motion.div>
 				)}
@@ -445,6 +456,7 @@ function Page() {
 							peakView={switchPeakView}
 							handleClose={handleBackgroundClick}
 							accessToken={userInfo.accessToken}
+							handleDelete={handleDelete}
 						/>
 					</motion.div>
 				)}

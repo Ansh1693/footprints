@@ -8,10 +8,11 @@ import {
 	CaretDoubleRight,
 	Pause,
 	Play,
+	Trash,
 } from '@phosphor-icons/react'
 import { AudioVisualizer } from 'react-audio-visualize'
 
-function PeakView({ data, handleClose, setIsFullView }) {
+function PeakView({ data, handleClose, setIsFullView, handleDelete }) {
 	const imageRef = React.useRef(null)
 
 	const [imageDimensions, setImageDimensions] = React.useState({
@@ -53,8 +54,9 @@ function PeakView({ data, handleClose, setIsFullView }) {
 		const { naturalHeight, naturalWidth } = imageRef.current
 		setImageDimensions({ width: naturalWidth, height: naturalHeight })
 	}
+
 	return (
-		<div className='space-y-4 bg-gray-50 h-full rounded-xl shadow-sm py-4 px-8'>
+		<div className=' bg-gray-50 h-full rounded-xl shadow-sm py-4 px-4'>
 			{/* peak view controls */}
 			<div className='w-full flex-end flex items-center gap-4'>
 				{/* collapse button */}
@@ -66,7 +68,7 @@ function PeakView({ data, handleClose, setIsFullView }) {
 					<CaretDoubleRight size={24} />
 				</Button>
 
-				{/* expnad button */}
+				{/* expand button */}
 				<Button
 					variant={'secondary'}
 					size={'icon'}
@@ -74,19 +76,27 @@ function PeakView({ data, handleClose, setIsFullView }) {
 				>
 					<ArrowsOutSimple size={24} />
 				</Button>
+				{/*Delete button*/}
+				<Button
+					variant={'secondary'}
+					size={'icon'}
+					onClick={() => handleDelete(data, 'peak')}
+				>
+					<Trash size={24} />
+				</Button>
 			</div>
 
 			{data && (
-				<>
+				<div className='flex flex-col gap-8 py-4 px-4'>
 					<div className='text-[26px] uppercase font-semibold  font-sans'>
 						{data?.heading
 							? data?.heading
 							: data?.body.slice(0, 1).toUpperCase() +
-								data?.body.slice(1, 5) +
-								'...'}
+							  data?.body.slice(1, 5) +
+							  '...'}
 					</div>
 					{data.DocumentMetadata.documentType === 'audio' && (
-						<div className='space-y-6'>
+						<div className=''>
 							<div className='flex items-center gap-4'>
 								<button
 									onClick={() => setIsPlaying(!isPlaying)}
@@ -133,27 +143,32 @@ function PeakView({ data, handleClose, setIsFullView }) {
 							</div>
 						</div>
 					)}
-					{/* {data.documentMetadata &&
-						data.documentMetadata.bodyImage_url && (
-							<img
-								ref={imageRef}
-								src={data.documentMetadata.bodyImage_url}
-								onLoad={handleImageLoad}
-								style={{
-									aspectRatio: `${
-										imageDimensions.width /
-										imageDimensions.height
-									}`,
-									maxHeight: `min(500px,${imageDimensions.height}px)`,
-									maxWidth: `min(500px, ${imageDimensions.width}px)`,
-								}}
-								className={`rounded-md shadow-lg`}
-							/>
-						)} */}
+					{data.DocumentMetadata &&
+						data.DocumentMetadata?.url?.images &&
+						data.DocumentMetadata?.url?.images.map(
+							(image, index) => (
+								<img
+									ref={imageRef}
+									src={image}
+									onLoad={handleImageLoad}
+									style={{
+										aspectRatio: `${
+											imageDimensions.width /
+											imageDimensions.height
+										}`,
+										maxHeight: `min(500px,${imageDimensions.height}px)`,
+										maxWidth: `min(500px, ${imageDimensions.width}px)`,
+									}}
+									key={index}
+									className={`rounded-md shadow-lg`}
+								/>
+							)
+						)}
+
 					<div className='font-normal text-base text-slate-600 mt-1 font-inter max-w-[600px]'>
 						{data?.body}
 					</div>
-				</>
+				</div>
 			)}
 		</div>
 	)

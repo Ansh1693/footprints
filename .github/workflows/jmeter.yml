@@ -31,6 +31,7 @@ jobs:
           npx prisma generate
           npx prisma db push
           npm run start > server.log 2>&1 &
+          sleep 10
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BLACKLISTEDUSERNAMES: ${{ secrets.BLACKLISTEDUSERNAMES }}

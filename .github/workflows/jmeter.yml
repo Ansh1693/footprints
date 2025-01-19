@@ -52,6 +52,35 @@ jobs:
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
 
+      - name: Check occupied ports
+        run: |
+          echo "Checking for open ports on the system..."
+          sudo netstat -tuln
+
+          # OR use ss for a more modern approach:
+          # sudo ss -tuln
+
+          # Optionally, check which services are listening on which ports
+          echo "Checking active processes on ports..."
+          sudo lsof -i -P -n
+
+          # You can also check for specific ports (for example, port 3000)
+          echo "Checking for service listening on port 3000..."
+          sudo lsof -i :3000
+
+          # Output the host details
+          echo "Host Information:"
+          hostname -I
+          hostname
+          uname -a
+
+          # Display the container's IP address in GitHub Actions
+          ip a
+
+          # Show the listening state of services
+          echo "Checking listening services..."
+          sudo lsof -i -sTCP:LISTEN
+
       - name: Run JMeter Action on a test
         uses: rbhadti94/apache-jmeter-action@v0.5.0
         with:

@@ -23,6 +23,8 @@ jobs:
           -e POSTGRES_PASSWORD=12345678 \
           -e POSTGRES_USER=postgres \
           -p 6500:5432 postgres
+          docker ps
+          sleep 10
 
       - name: Run Server
         working-directory: ./postgre-server

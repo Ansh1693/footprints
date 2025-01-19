@@ -10,10 +10,6 @@ const app = fastify({
     transport: {
       targets: [
         {
-          target: "@logtail/pino",
-          options: { sourceToken: process.env.LOGTAIL_TOKEN },
-        },
-        {
           target: "pino-pretty",
           options: { colorize: true },
         },

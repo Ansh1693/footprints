@@ -35,7 +35,7 @@
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
     &quot;userObject&quot;: {&#xd;
-        &quot;email&quot;: &quot;test${__time(,curTime)}@gmail.com&quot;&#xd;
+        &quot;email&quot;: &quot;test_${__time(YMDHMS)}_${__Random(1000,9999)}@gmail.com&quot;&#xd;
     }&#xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
